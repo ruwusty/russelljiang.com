@@ -59,9 +59,9 @@ export default function Home() {
         >
           First-year Data Science student at UNSW Sydney, exploring the overlap
           between machine learning, statistics, and software that actually does
-          something useful. I tutor students across all subjects on the side.
-          When I&apos;m away from a screen, I&apos;m playing clarinet or saxophone
-          — or slowly getting better at guitar.
+          something useful. I tutor students one-on-one across all subjects —
+          including Science Olympiad prep. When I&apos;m away from a screen,
+          I&apos;m playing clarinet or saxophone — or slowly getting better at guitar.
         </p>
 
         {/* Links */}
