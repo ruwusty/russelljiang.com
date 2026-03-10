@@ -10,11 +10,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Russell Jiang",
-  description: "Data Science @ UNSW | Tutor | Musician",
+  description: "Data Science @ UNSW | Tutor | AmusA",
   metadataBase: new URL("https://russelljiang.com"),
   openGraph: {
     title: "Russell Jiang",
-    description: "Data Science @ UNSW | Tutor | Musician",
+    description: "Data Science @ UNSW | Tutor | AmusA",
     url: "https://russelljiang.com",
     siteName: "Russell Jiang",
     locale: "en_AU",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary",
     title: "Russell Jiang",
-    description: "Data Science @ UNSW | Tutor | Musician",
+    description: "Data Science @ UNSW | Tutor | AmusA",
   },
   robots: { index: true, follow: true },
 };

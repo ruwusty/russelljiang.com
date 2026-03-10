@@ -5,10 +5,9 @@
 html,
 body {
   background-color: #0a0a0a;
-  background-image: radial-gradient(
-    ellipse at 50% 0%,
-    rgba(129, 140, 248, 0.07) 0%,
-    transparent 60%
-  );
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(129, 140, 248, 0.09) 0%, transparent 55%),
+    radial-gradient(circle, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: auto, 28px 28px;
   min-height: 100vh;
 }
