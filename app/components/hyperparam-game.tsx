@@ -276,7 +276,7 @@ export function HyperparamGame() {
             </span>
           </div>
           <input
-            type="range" min={0.001} max={0.4} step={0.001}
+            type="range" min={0.001} max={0.15} step={0.001}
             value={lr}
             onChange={(e) => setLr(+e.target.value)}
             style={{ width: "100%", accentColor: "var(--accent)", cursor: "pointer" }}
