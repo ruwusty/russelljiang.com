@@ -1,6 +1,6 @@
 import { ThemeToggle } from "./components/theme-toggle";
 import { TypewriterAbout } from "./components/typewriter-about";
-import { GradientDescent } from "./components/gradient-descent";
+import { HyperparamGame } from "./components/hyperparam-game";
 
 const GitHubIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -110,7 +110,7 @@ export default function Home() {
             className="opacity-0 animate-fade-up"
             style={{ animationDelay: "480ms" }}
           >
-            <GradientDescent />
+            <HyperparamGame />
           </div>
 
         </div>
