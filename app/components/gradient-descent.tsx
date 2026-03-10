@@ -31,8 +31,8 @@ interface State {
 
 const W = 224;
 const H = 148;
-const LR = 0.07;
-const MOMENTUM = 0.82;
+const LR = 0.035;
+const MOMENTUM = 0.78;
 const DOMAIN = 1.0; // x,y range: [-DOMAIN, DOMAIN]
 
 export function GradientDescent() {
@@ -104,18 +104,16 @@ export function GradientDescent() {
       const s = stateRef.current;
       if (!s.heatmap) return;
 
-      // Several gradient steps per frame so it converges visibly fast
-      if (s.ep < 400) {
-        for (let i = 0; i < 4; i++) {
-          const [gx, gy] = grad(s.x, s.y);
-          s.vx = MOMENTUM * s.vx - LR * gx;
-          s.vy = MOMENTUM * s.vy - LR * gy;
-          s.x = Math.max(-DOMAIN + 0.01, Math.min(DOMAIN - 0.01, s.x + s.vx));
-          s.y = Math.max(-DOMAIN + 0.01, Math.min(DOMAIN - 0.01, s.y + s.vy));
-          s.path.push([s.x, s.y]);
-          s.ep++;
-        }
-        if (s.path.length > 300) s.path = s.path.slice(-300);
+      // One step per frame for a visible, satisfying descent
+      if (s.ep < 600) {
+        const [gx, gy] = grad(s.x, s.y);
+        s.vx = MOMENTUM * s.vx - LR * gx;
+        s.vy = MOMENTUM * s.vy - LR * gy;
+        s.x = Math.max(-DOMAIN + 0.01, Math.min(DOMAIN - 0.01, s.x + s.vx));
+        s.y = Math.max(-DOMAIN + 0.01, Math.min(DOMAIN - 0.01, s.y + s.vy));
+        s.path.push([s.x, s.y]);
+        s.ep++;
+        if (s.path.length > 400) s.path = s.path.slice(-400);
       }
 
       // Draw heatmap

@@ -87,8 +87,8 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="font-[var(--font-inter)] bg-[#0a0a0a] text-[#ededed] antialiased"
-        style={{ fontFamily: "var(--font-inter), Inter, system-ui, sans-serif" }}
+        className="font-[var(--font-inter)] antialiased"
+        style={{ fontFamily: "var(--font-inter), Inter, system-ui, sans-serif", color: "var(--text-primary)" }}
       >
         <Providers>{children}</Providers>
       </body>

@@ -1,6 +1,5 @@
 import { ThemeToggle } from "./components/theme-toggle";
 import { TypewriterAbout } from "./components/typewriter-about";
-import { NeuralBackground } from "./components/neural-background";
 import { GradientDescent } from "./components/gradient-descent";
 
 const GitHubIcon = () => (
@@ -33,9 +32,6 @@ const links = [
 export default function Home() {
   return (
     <>
-      {/* Neural network background — fixed, behind everything */}
-      <NeuralBackground />
-
       {/* Theme toggle */}
       <div
         className="fixed top-5 right-5 z-50 opacity-0 animate-fade-up"
@@ -44,7 +40,7 @@ export default function Home() {
         <ThemeToggle />
       </div>
 
-      <main className="relative z-10 min-h-screen flex items-center justify-center px-6 py-24">
+      <main className="relative min-h-screen flex items-center justify-center px-6 py-24">
         <div className="w-full max-w-[440px] space-y-9">
 
           {/* Name + tag pills */}
