@@ -4,12 +4,12 @@
 
 :root {
   --bg: #f6f6f9;
-  --dot: rgba(0, 0, 0, 0.032);
   --glow: rgba(99, 102, 241, 0.055);
   --text-primary: #0e0e1a;
   --text-muted: #6a6a7e;
   --text-link: #58587a;
   --accent: #6366f1;
+  --accent-bg: rgba(99, 102, 241, 0.07);
   --border: #e0e0eb;
   --tag-text: #7878a0;
   --name-from: #0e0e1a;
@@ -18,12 +18,12 @@
 
 .dark {
   --bg: #0a0a0a;
-  --dot: rgba(255, 255, 255, 0.028);
   --glow: rgba(129, 140, 248, 0.09);
   --text-primary: #ededed;
   --text-muted: #7a7a8e;
   --text-link: #54546a;
   --accent: #a5b4fc;
+  --accent-bg: rgba(129, 140, 248, 0.07);
   --border: #252532;
   --tag-text: #48485e;
   --name-from: #ffffff;
@@ -33,10 +33,7 @@
 html,
 body {
   background-color: var(--bg);
-  background-image:
-    radial-gradient(ellipse at 50% 0%, var(--glow) 0%, transparent 55%),
-    radial-gradient(circle, var(--dot) 1px, transparent 1px);
-  background-size: auto, 28px 28px;
+  background-image: radial-gradient(ellipse at 50% 0%, var(--glow) 0%, transparent 55%);
   min-height: 100vh;
   transition: background-color 0.3s ease;
 }
@@ -48,4 +45,20 @@ body {
   background-clip: text;
   padding-bottom: 0.12em;
   display: inline-block;
+}
+
+.site-link {
+  color: var(--text-link);
+  background: transparent;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.site-link:hover {
+  color: var(--accent);
+  background-color: var(--accent-bg);
+}
+
+@keyframes dot-bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40%           { transform: translateY(-4px); opacity: 1; }
 }

@@ -1,4 +1,7 @@
 import { ThemeToggle } from "./components/theme-toggle";
+import { TypewriterAbout } from "./components/typewriter-about";
+import { NeuralBackground } from "./components/neural-background";
+import { GradientDescent } from "./components/gradient-descent";
 
 const GitHubIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -21,94 +24,101 @@ const EmailIcon = () => (
 
 const tags = ["Data Science @ UNSW", "Tutor", "AmusA"];
 
+const links = [
+  { href: "https://github.com/ruwusty", label: "GitHub", icon: <GitHubIcon />, external: true },
+  { href: "https://linkedin.com/in/russelljiang", label: "LinkedIn", icon: <LinkedInIcon />, external: true },
+  { href: "mailto:russelljiang@pm.me", label: "Email", icon: <EmailIcon />, external: false },
+];
+
 export default function Home() {
   return (
-    <main className="relative min-h-screen flex items-center justify-center px-6 py-24">
+    <>
+      {/* Neural network background — fixed, behind everything */}
+      <NeuralBackground />
 
-      {/* Theme toggle — top right */}
-      <div className="fixed top-5 right-5 z-50 opacity-0 animate-fade-up" style={{ animationDelay: "500ms" }}>
+      {/* Theme toggle */}
+      <div
+        className="fixed top-5 right-5 z-50 opacity-0 animate-fade-up"
+        style={{ animationDelay: "500ms" }}
+      >
         <ThemeToggle />
       </div>
 
-      <div className="w-full max-w-[440px] space-y-9">
+      <main className="relative z-10 min-h-screen flex items-center justify-center px-6 py-24">
+        <div className="w-full max-w-[440px] space-y-9">
 
-        {/* Name + tag pills */}
-        <div
-          className="space-y-4 opacity-0 animate-fade-up"
-          style={{ animationDelay: "0ms" }}
-        >
-          <h1 className="name-gradient text-[2.5rem] font-semibold tracking-tight">
-            Russell Jiang
-          </h1>
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-[0.7rem] px-2.5 py-1 rounded-full tracking-wider uppercase"
-                style={{ border: "1px solid var(--border)", color: "var(--tag-text)" }}
+          {/* Name + tag pills */}
+          <div
+            className="space-y-4 opacity-0 animate-fade-up"
+            style={{ animationDelay: "0ms" }}
+          >
+            <h1 className="name-gradient text-[2.5rem] font-semibold tracking-tight">
+              Russell Jiang
+            </h1>
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-[0.7rem] px-2.5 py-1 rounded-full tracking-wider uppercase"
+                  style={{ border: "1px solid var(--border)", color: "var(--tag-text)" }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Gradient divider */}
+          <div
+            className="opacity-0 animate-fade-up"
+            style={{ animationDelay: "130ms" }}
+          >
+            <div
+              className="h-px w-20"
+              style={{
+                background: "linear-gradient(to right, var(--accent), transparent)",
+                opacity: 0.5,
+              }}
+            />
+          </div>
+
+          {/* Typewriter about */}
+          <div
+            className="opacity-0 animate-fade-up"
+            style={{ animationDelay: "240ms" }}
+          >
+            <TypewriterAbout />
+          </div>
+
+          {/* Links */}
+          <div
+            className="flex items-center gap-1 opacity-0 animate-fade-up"
+            style={{ animationDelay: "360ms" }}
+          >
+            {links.map(({ href, label, icon, external }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="site-link flex items-center gap-2 px-3 py-1.5 rounded-lg text-[0.8rem]"
               >
-                {tag}
-              </span>
+                {icon}
+                <span>{label}</span>
+              </a>
             ))}
           </div>
-        </div>
 
-        {/* Gradient divider */}
-        <div
-          className="opacity-0 animate-fade-up"
-          style={{ animationDelay: "130ms" }}
-        >
+          {/* Gradient descent widget */}
           <div
-            className="h-px w-20"
-            style={{ background: "linear-gradient(to right, var(--accent), transparent)", opacity: 0.5 }}
-          />
+            className="opacity-0 animate-fade-up"
+            style={{ animationDelay: "480ms" }}
+          >
+            <GradientDescent />
+          </div>
+
         </div>
-
-        {/* About */}
-        <p
-          className="text-[0.9375rem] leading-[1.8] opacity-0 animate-fade-up"
-          style={{ animationDelay: "240ms", color: "var(--text-muted)" }}
-        >
-          First-year Data Science student at UNSW Sydney, exploring the overlap
-          between machine learning, statistics, and software that actually does
-          something useful. I tutor students one-on-one across STEM and beyond.
-          When I&apos;m away from a screen, I&apos;m playing clarinet or saxophone
-          — or slowly getting better at guitar.
-        </p>
-
-        {/* Links */}
-        <div
-          className="flex items-center gap-1 opacity-0 animate-fade-up"
-          style={{ animationDelay: "360ms" }}
-        >
-          {[
-            { href: "https://github.com/ruwusty", label: "GitHub", icon: <GitHubIcon />, external: true },
-            { href: "https://linkedin.com/in/russelljiang", label: "LinkedIn", icon: <LinkedInIcon />, external: true },
-            { href: "mailto:russelljiang@pm.me", label: "Email", icon: <EmailIcon />, external: false },
-          ].map(({ href, label, icon, external }) => (
-            <a
-              key={label}
-              href={href}
-              aria-label={label}
-              {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[0.8rem] transition-all duration-200"
-              style={{ color: "var(--text-link)" }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.color = "var(--accent)";
-                (e.currentTarget as HTMLAnchorElement).style.background = "color-mix(in srgb, var(--accent) 8%, transparent)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.color = "var(--text-link)";
-                (e.currentTarget as HTMLAnchorElement).style.background = "transparent";
-              }}
-            >
-              {icon}
-              <span>{label}</span>
-            </a>
-          ))}
-        </div>
-
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
