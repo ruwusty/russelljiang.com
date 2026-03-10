@@ -1,3 +1,5 @@
+import { ThemeToggle } from "./components/theme-toggle";
+
 const GitHubIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
@@ -22,6 +24,12 @@ const tags = ["Data Science @ UNSW", "Tutor", "AmusA"];
 export default function Home() {
   return (
     <main className="relative min-h-screen flex items-center justify-center px-6 py-24">
+
+      {/* Theme toggle — top right */}
+      <div className="fixed top-5 right-5 z-50 opacity-0 animate-fade-up" style={{ animationDelay: "500ms" }}>
+        <ThemeToggle />
+      </div>
+
       <div className="w-full max-w-[440px] space-y-9">
 
         {/* Name + tag pills */}
@@ -29,14 +37,15 @@ export default function Home() {
           className="space-y-4 opacity-0 animate-fade-up"
           style={{ animationDelay: "0ms" }}
         >
-          <h1 className="text-[2.5rem] font-semibold tracking-tight leading-none bg-gradient-to-r from-white to-[#a5b4fc] bg-clip-text text-transparent">
+          <h1 className="name-gradient text-[2.5rem] font-semibold tracking-tight">
             Russell Jiang
           </h1>
           <div className="flex flex-wrap gap-2">
             {tags.map((tag) => (
               <span
                 key={tag}
-                className="text-[0.7rem] px-2.5 py-1 rounded-full border border-[#252532] text-[#48485e] tracking-wider uppercase"
+                className="text-[0.7rem] px-2.5 py-1 rounded-full tracking-wider uppercase"
+                style={{ border: "1px solid var(--border)", color: "var(--tag-text)" }}
               >
                 {tag}
               </span>
@@ -49,19 +58,22 @@ export default function Home() {
           className="opacity-0 animate-fade-up"
           style={{ animationDelay: "130ms" }}
         >
-          <div className="h-px w-20 bg-gradient-to-r from-[#818cf8]/50 to-transparent" />
+          <div
+            className="h-px w-20"
+            style={{ background: "linear-gradient(to right, var(--accent), transparent)", opacity: 0.5 }}
+          />
         </div>
 
         {/* About */}
         <p
-          className="text-[0.9375rem] text-[#7a7a8e] leading-[1.8] opacity-0 animate-fade-up"
-          style={{ animationDelay: "240ms" }}
+          className="text-[0.9375rem] leading-[1.8] opacity-0 animate-fade-up"
+          style={{ animationDelay: "240ms", color: "var(--text-muted)" }}
         >
           First-year Data Science student at UNSW Sydney, exploring the overlap
           between machine learning, statistics, and software that actually does
-          something useful. I tutor students one-on-one across all subjects —
-          including Science Olympiad prep. When I&apos;m away from a screen,
-          I&apos;m playing clarinet or saxophone — or slowly getting better at guitar.
+          something useful. I tutor students one-on-one across STEM and beyond.
+          When I&apos;m away from a screen, I&apos;m playing clarinet or saxophone
+          — or slowly getting better at guitar.
         </p>
 
         {/* Links */}
@@ -69,36 +81,31 @@ export default function Home() {
           className="flex items-center gap-1 opacity-0 animate-fade-up"
           style={{ animationDelay: "360ms" }}
         >
-          <a
-            href="https://github.com/ruwusty"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub"
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[0.8rem] text-[#54546a] hover:text-[#a5b4fc] hover:bg-[#818cf8]/[0.07] transition-all duration-200"
-          >
-            <GitHubIcon />
-            <span>GitHub</span>
-          </a>
-
-          <a
-            href="https://linkedin.com/in/russelljiang"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn"
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[0.8rem] text-[#54546a] hover:text-[#a5b4fc] hover:bg-[#818cf8]/[0.07] transition-all duration-200"
-          >
-            <LinkedInIcon />
-            <span>LinkedIn</span>
-          </a>
-
-          <a
-            href="mailto:russelljiang@pm.me"
-            aria-label="Email"
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[0.8rem] text-[#54546a] hover:text-[#a5b4fc] hover:bg-[#818cf8]/[0.07] transition-all duration-200"
-          >
-            <EmailIcon />
-            <span>Email</span>
-          </a>
+          {[
+            { href: "https://github.com/ruwusty", label: "GitHub", icon: <GitHubIcon />, external: true },
+            { href: "https://linkedin.com/in/russelljiang", label: "LinkedIn", icon: <LinkedInIcon />, external: true },
+            { href: "mailto:russelljiang@pm.me", label: "Email", icon: <EmailIcon />, external: false },
+          ].map(({ href, label, icon, external }) => (
+            <a
+              key={label}
+              href={href}
+              aria-label={label}
+              {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[0.8rem] transition-all duration-200"
+              style={{ color: "var(--text-link)" }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.color = "var(--accent)";
+                (e.currentTarget as HTMLAnchorElement).style.background = "color-mix(in srgb, var(--accent) 8%, transparent)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.color = "var(--text-link)";
+                (e.currentTarget as HTMLAnchorElement).style.background = "transparent";
+              }}
+            >
+              {icon}
+              <span>{label}</span>
+            </a>
+          ))}
         </div>
 
       </div>

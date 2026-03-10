@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const inter = Inter({
@@ -23,14 +24,13 @@ const jsonLd = {
     name: "UNSW Sydney",
   },
   description:
-    "First-year Data Science student at UNSW Sydney. One-on-one tutor across all subjects including Science Olympiad preparation. AmusA musician.",
+    "First-year Data Science student at UNSW Sydney. One-on-one tutor across STEM and beyond. AmusA musician.",
   knowsAbout: [
     "Data Science",
     "Machine Learning",
     "Mathematics",
     "Chemistry",
     "Physics",
-    "Science Olympiad",
     "Clarinet",
     "Saxophone",
     "Guitar",
@@ -40,13 +40,13 @@ const jsonLd = {
 export const metadata: Metadata = {
   title: "Russell Jiang",
   description:
-    "Data Science student at UNSW Sydney. One-on-one tutor across all subjects including Science Olympiad prep. AmusA musician.",
+    "Data Science student at UNSW Sydney. One-on-one tutor across STEM and beyond. AmusA musician.",
   keywords: [
     "Russell Jiang",
     "UNSW",
     "Data Science",
     "tutor",
-    "Science Olympiad",
+    "STEM",
     "AmusA",
     "Sydney",
     "machine learning",
@@ -90,7 +90,7 @@ export default function RootLayout({
         className="font-[var(--font-inter)] bg-[#0a0a0a] text-[#ededed] antialiased"
         style={{ fontFamily: "var(--font-inter), Inter, system-ui, sans-serif" }}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

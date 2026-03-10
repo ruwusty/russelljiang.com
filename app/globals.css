@@ -2,12 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg: #f6f6f9;
+  --dot: rgba(0, 0, 0, 0.032);
+  --glow: rgba(99, 102, 241, 0.055);
+  --text-primary: #0e0e1a;
+  --text-muted: #6a6a7e;
+  --text-link: #58587a;
+  --accent: #6366f1;
+  --border: #e0e0eb;
+  --tag-text: #7878a0;
+  --name-from: #0e0e1a;
+  --name-to: #6366f1;
+}
+
+.dark {
+  --bg: #0a0a0a;
+  --dot: rgba(255, 255, 255, 0.028);
+  --glow: rgba(129, 140, 248, 0.09);
+  --text-primary: #ededed;
+  --text-muted: #7a7a8e;
+  --text-link: #54546a;
+  --accent: #a5b4fc;
+  --border: #252532;
+  --tag-text: #48485e;
+  --name-from: #ffffff;
+  --name-to: #a5b4fc;
+}
+
 html,
 body {
-  background-color: #0a0a0a;
+  background-color: var(--bg);
   background-image:
-    radial-gradient(ellipse at 50% 0%, rgba(129, 140, 248, 0.09) 0%, transparent 55%),
-    radial-gradient(circle, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+    radial-gradient(ellipse at 50% 0%, var(--glow) 0%, transparent 55%),
+    radial-gradient(circle, var(--dot) 1px, transparent 1px);
   background-size: auto, 28px 28px;
   min-height: 100vh;
+  transition: background-color 0.3s ease;
+}
+
+.name-gradient {
+  background: linear-gradient(to right, var(--name-from), var(--name-to));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  padding-bottom: 0.12em;
+  display: inline-block;
 }
