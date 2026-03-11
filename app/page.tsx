@@ -1,6 +1,5 @@
 import { ThemeToggle } from "./components/theme-toggle";
 import { TypewriterAbout } from "./components/typewriter-about";
-import { HyperparamGame } from "./components/hyperparam-game";
 
 const GitHubIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -103,14 +102,6 @@ export default function Home() {
                 <span>{label}</span>
               </a>
             ))}
-          </div>
-
-          {/* Gradient descent widget */}
-          <div
-            className="opacity-0 animate-fade-up"
-            style={{ animationDelay: "480ms" }}
-          >
-            <HyperparamGame />
           </div>
 
         </div>
