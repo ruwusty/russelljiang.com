@@ -1,4 +1,5 @@
 import { ThemeToggle } from "./components/theme-toggle";
+import { DiscordStatus } from "./components/discord-status";
 
 const bio =
   "First-year Data Science student at UNSW Sydney, exploring the overlap between machine learning, statistics, and software that actually does something useful. I tutor students one-on-one across STEM and beyond. When I'm away from a screen, I'm playing clarinet or saxophone — or slowly getting better at guitar.";
@@ -26,7 +27,7 @@ export default function Home() {
             Russell Jiang
           </h1>
           <p className="mt-1.5 text-sm" style={{ color: "var(--muted)" }}>
-            Data Science · UNSW Sydney · Tutor · AmusA
+            Data Science @ UNSW · Tutor · AmusA
           </p>
 
           <div
@@ -41,7 +42,9 @@ export default function Home() {
             {bio}
           </p>
 
-          <div className="mt-8 flex items-center gap-1 text-sm">
+          <div className="mt-8 space-y-4">
+          <DiscordStatus />
+          <div className="flex items-center gap-1 text-sm">
             {links.map(({ href, label, external }, i) => (
               <span key={label} className="flex items-center">
                 {i > 0 && (
@@ -58,6 +61,7 @@ export default function Home() {
                 </a>
               </span>
             ))}
+          </div>
           </div>
 
         </div>
