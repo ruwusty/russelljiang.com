@@ -28,7 +28,6 @@ export function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  // Render an invisible placeholder before mount to avoid layout shift
   if (!mounted) return <div style={{ width: 52, height: 28 }} />;
 
   const isDark = theme === "dark";
@@ -48,26 +47,23 @@ export function ThemeToggle() {
         padding: 0,
         display: "flex",
         alignItems: "center",
-        transition: "border-color 0.2s ease",
+        transition: "border-color 0.15s ease",
         flexShrink: 0,
       }}
       onMouseEnter={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.borderColor =
-          "var(--accent)";
+        (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--muted)";
       }}
       onMouseLeave={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.borderColor =
-          "var(--border)";
+        (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border)";
       }}
     >
-      {/* Moon label */}
       <span
         style={{
           position: "absolute",
           left: 8,
-          color: isDark ? "var(--accent)" : "var(--tag-text)",
-          opacity: isDark ? 1 : 0.5,
-          transition: "all 0.25s ease",
+          color: "var(--muted)",
+          opacity: isDark ? 1 : 0.4,
+          transition: "opacity 0.2s ease",
           display: "flex",
           alignItems: "center",
           pointerEvents: "none",
@@ -76,14 +72,13 @@ export function ThemeToggle() {
         <MoonIcon />
       </span>
 
-      {/* Sun label */}
       <span
         style={{
           position: "absolute",
           right: 7,
-          color: !isDark ? "var(--accent)" : "var(--tag-text)",
-          opacity: !isDark ? 1 : 0.5,
-          transition: "all 0.25s ease",
+          color: "var(--muted)",
+          opacity: !isDark ? 1 : 0.4,
+          transition: "opacity 0.2s ease",
           display: "flex",
           alignItems: "center",
           pointerEvents: "none",
@@ -92,22 +87,17 @@ export function ThemeToggle() {
         <SunIcon />
       </span>
 
-      {/* Sliding handle */}
       <span
         style={{
           position: "absolute",
           width: 22,
           height: 22,
           borderRadius: "50%",
-          background: isDark ? "#1c1c2e" : "#ffffff",
-          border: isDark
-            ? "1px solid rgba(129,140,248,0.25)"
-            : "1px solid rgba(99,102,241,0.2)",
-          boxShadow: isDark
-            ? "0 0 10px rgba(129,140,248,0.18), inset 0 1px 0 rgba(255,255,255,0.05)"
-            : "0 1px 4px rgba(0,0,0,0.12), 0 0 10px rgba(99,102,241,0.12)",
+          background: isDark ? "#2a2a2a" : "#ffffff",
+          border: "1px solid var(--border)",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
           left: isDark ? 2 : 26,
-          transition: "left 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.25s ease, box-shadow 0.25s ease",
+          transition: "left 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease",
           pointerEvents: "none",
         }}
       />
