@@ -69,16 +69,7 @@ export function DiscordStatus() {
           display: "inline-block",
         }}
       />
-      <span
-        style={{
-          maxWidth: "28ch",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
-      >
-        {label}
-      </span>
+      <span>{label}</span>
     </span>
   );
 }
