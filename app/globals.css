@@ -16,20 +16,33 @@
   --border: #282828;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 24px;
+}
+
 html,
 body {
   background-color: var(--bg);
   transition: background-color 0.2s ease;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 .site-link {
   color: var(--muted);
   text-decoration: none;
-  transition: color 0.15s ease;
+  transition: color 0.15s ease, font-variation-settings 0.2s ease;
+  font-variation-settings: "wght" 400;
 }
 
 .site-link:hover {
   color: var(--text);
+  font-variation-settings: "wght" 600;
 }
 
 @keyframes fade-in {
@@ -38,5 +51,36 @@ body {
 }
 
 .fade-in {
-  animation: fade-in 0.4s ease forwards;
+  animation: fade-in 0.5s ease forwards;
+}
+
+@keyframes char-in {
+  from { opacity: 0; transform: translateY(8px); font-variation-settings: "wght" 300; }
+  to   { opacity: 1; transform: translateY(0);   font-variation-settings: "wght" 600; }
+}
+
+.name-char {
+  display: inline-block;
+  opacity: 0;
+  animation: char-in 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  font-variation-settings: "wght" 600;
+  transition: font-variation-settings 0.25s ease;
+}
+
+.name-hover:hover .name-char {
+  font-variation-settings: "wght" 720;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in,
+  .name-char {
+    animation: none;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .site-link,
+  .name-char,
+  .name-hover:hover .name-char {
+    transition: color 0.15s ease;
+  }
 }

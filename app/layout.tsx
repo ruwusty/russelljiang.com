@@ -7,6 +7,7 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
+  axes: ["opsz"],
 });
 
 const jsonLd = {
