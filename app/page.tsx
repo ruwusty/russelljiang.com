@@ -11,10 +11,16 @@ const toc = [
 
 const interests = [
   "causal inference, and models that can explain themselves",
+  "game theory, and the equilibria people actually play",
+  "teaching as debugging: finding the exact line where understanding diverges",
   "how good typography quietly does half the work",
   "small, sharp CLI tools and whatever's in people's dotfiles",
+  "interfaces that load instantly and never animate without a reason",
+  "keyboards with the right amount of click",
   "chamber music — where no one's hiding in the back row",
+  "transcribing things by ear that have perfectly good sheet music",
   "notebooks, note-taking systems, and the graphs that form between ideas",
+  "a properly constructed bowl of pho",
 ];
 
 export default function Home() {
@@ -60,21 +66,21 @@ export default function Home() {
         style={{ color: "var(--soft)" }}
       >
         <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
-          university
-        </dt>
-        <dd>UNSW Sydney</dd>
-        <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
           degree
         </dt>
-        <dd>B. Data Science &amp; Decisions</dd>
+        <dd>B. Data Science &amp; Decisions @ UNSW · year 1 of 3</dd>
         <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
-          year
+          editor
         </dt>
-        <dd>1st year</dd>
+        <dd>VS Code, with recurring nvim ambitions</dd>
         <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
-          city
+          instruments
         </dt>
-        <dd>Sydney, AU</dd>
+        <dd>clarinet · tenor sax · telecaster</dd>
+        <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
+          on repeat
+        </dt>
+        <dd>yorushika · jpop/jrock that survives the practice room</dd>
       </dl>
 
       <h2
