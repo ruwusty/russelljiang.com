@@ -53,6 +53,13 @@ const ITEMS = [
   "walking to a lecture i could've streamed",
   "refactoring my notes instead of reading them",
   "alt-tabbing with intent",
+  "upper day, allegedly",
+  "lower day (dreading it)",
+  "two sets of eight, both honest",
+  "progressive overload, statistically significant",
+  "failing the last rep on purpose",
+  "recovering (this counts as training)",
+  "bulking on pho",
 ];
 
 function shuffled<T>(arr: readonly T[]): T[] {

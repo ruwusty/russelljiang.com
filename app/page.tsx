@@ -20,6 +20,7 @@ const interests = [
   "chamber music — where no one's hiding in the back row",
   "transcribing things by ear that have perfectly good sheet music",
   "notebooks, note-taking systems, and the graphs that form between ideas",
+  "training like this site is designed: high intensity, low volume, nothing wasted",
   "a properly constructed bowl of pho",
 ];
 
