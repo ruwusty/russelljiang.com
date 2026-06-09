@@ -13,3 +13,6 @@
 
 # vercel
 .vercel
+
+# Claude Code local files
+.claude/
