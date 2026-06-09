@@ -1,4 +1,3 @@
-import { Graph } from "./graph";
 import { Sidebar } from "./sidebar";
 import { RightRail, type TocItem } from "./right-rail";
 import { StatusStrip } from "./status-strip";
@@ -15,8 +14,6 @@ interface DocsShellProps {
 export function DocsShell({ crumb, toc, children }: DocsShellProps) {
   return (
     <>
-      <Graph />
-
       <div className="relative z-10 min-h-screen flex flex-col">
         <StatusStrip />
 

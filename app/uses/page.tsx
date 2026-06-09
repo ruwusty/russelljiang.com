@@ -69,7 +69,6 @@ const sections: Section[] = [
       ["styling", "Tailwind"],
       ["font", "Inter"],
       ["host", "Vercel"],
-      ["graph", "custom canvas, force-directed"],
     ],
   },
 ];
