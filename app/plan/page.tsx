@@ -3,7 +3,7 @@ import { DocsShell } from "../components/docs-shell";
 import { ProgramPlanner } from "./planner";
 
 export const metadata: Metadata = {
-  title: "Program Planner — Russell Jiang",
+  title: "program planner — russell jiang",
   robots: { index: false, follow: false },
 };
 
@@ -15,16 +15,19 @@ const toc = [
 
 export default function PlanPage() {
   return (
-    <DocsShell crumb="Plan" toc={toc}>
+    <DocsShell crumb="plan" toc={toc}>
       <h1
-        className="text-2xl font-semibold tracking-tight mb-1"
-        style={{ color: "var(--text)" }}
+        className="display text-[26px] leading-[1.4]"
+        style={{ color: "var(--ink)" }}
       >
-        Program Planner
+        program planner
       </h1>
-      <p className="text-sm mb-8" style={{ color: "var(--muted)" }}>
-        Bachelor of Data Science and Decisions — 3959 COMPZ1
+      <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
+        bachelor of data science and decisions — 3959 compz1
       </p>
+
+      <div className="hrule my-8" />
+
       <ProgramPlanner />
     </DocsShell>
   );

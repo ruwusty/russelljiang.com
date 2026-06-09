@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import { useSiteAuth, LoginRow } from "../components/site-auth";
 
-const STORAGE_KEY = "unsw_planner_v2";
+const SAVE_DEBOUNCE_MS = 800;
 
 type CourseType = "core" | "prescribed" | "free" | "gened";
 
@@ -14,6 +15,8 @@ interface Course {
   type: CourseType;
 }
 
+type SyncState = "idle" | "saving" | "error";
+
 const TYPE_LABELS: Record<CourseType, string> = {
   core: "core",
   prescribed: "prescribed elective",
@@ -21,11 +24,11 @@ const TYPE_LABELS: Record<CourseType, string> = {
   gened: "gen ed",
 };
 
-const TYPE_COLORS: Record<CourseType, { bg: string; text: string; dot: string }> = {
-  core: { bg: "var(--plan-core-bg)", text: "var(--plan-core-text)", dot: "var(--plan-core-dot)" },
-  prescribed: { bg: "var(--plan-prescribed-bg)", text: "var(--plan-prescribed-text)", dot: "var(--plan-prescribed-dot)" },
-  free: { bg: "var(--plan-free-bg)", text: "var(--plan-free-text)", dot: "var(--plan-free-dot)" },
-  gened: { bg: "var(--plan-gened-bg)", text: "var(--plan-gened-text)", dot: "var(--plan-gened-dot)" },
+const TYPE_COLORS: Record<CourseType, string> = {
+  core: "var(--green)",
+  prescribed: "var(--accent)",
+  free: "var(--soft)",
+  gened: "var(--faint)",
 };
 
 const TERMS = [
@@ -41,9 +44,9 @@ const TERMS = [
 ];
 
 const YEARS = [
-  { label: "Year 1", id: "year-1", terms: ["1-2026", "2-2026", "3-2026"] },
-  { label: "Year 2", id: "year-2", terms: ["1-2027", "2-2027", "3-2027"] },
-  { label: "Year 3", id: "year-3", terms: ["1-2028", "2-2028", "3-2028"] },
+  { label: "year 1", index: "01", id: "year-1", terms: ["1-2026", "2-2026", "3-2026"] },
+  { label: "year 2", index: "02", id: "year-2", terms: ["1-2027", "2-2027", "3-2027"] },
+  { label: "year 3", index: "03", id: "year-3", terms: ["1-2028", "2-2028", "3-2028"] },
 ];
 
 const DEFAULT_COURSES: Course[] = [
@@ -73,24 +76,19 @@ const DEFAULT_COURSES: Course[] = [
   { id: 24, term: "3-2028", code: "ECON3203", name: "Econometric Theory & ML", type: "core" },
 ];
 
-function loadCourses(): Course[] {
-  if (typeof window === "undefined") return DEFAULT_COURSES;
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) return JSON.parse(stored);
-  } catch {}
-  return DEFAULT_COURSES;
-}
-
-function saveCourses(courses: Course[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(courses));
-}
-
-const mono = "ui-monospace, SFMono-Regular, Menlo, monospace";
+const inputStyle = {
+  background: "transparent",
+  border: "1px solid var(--line)",
+  color: "var(--ink)",
+  fontFamily: "inherit",
+} as const;
 
 export function ProgramPlanner() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [syncState, setSyncState] = useState<SyncState>("idle");
+  const { password, ready: authReady, login, logout, dropSession } = useSiteAuth();
+  const [loginOpen, setLoginOpen] = useState(false);
   const [dragOverTerm, setDragOverTerm] = useState<string | null>(null);
   const [modal, setModal] = useState<{ mode: "edit" | "add"; id?: number; term?: string } | null>(null);
   const [formCode, setFormCode] = useState("");
@@ -99,18 +97,65 @@ export function ProgramPlanner() {
   const dragIdRef = useRef<number | null>(null);
   const nextIdRef = useRef(25);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const passwordRef = useRef<string | null>(null);
+  passwordRef.current = password;
 
   useEffect(() => {
-    const loaded = loadCourses();
-    setCourses(loaded);
-    nextIdRef.current = Math.max(...loaded.map((c) => c.id), 0) + 1;
-    setMounted(true);
+    let cancelled = false;
+    const load = async () => {
+      let loaded: Course[] = DEFAULT_COURSES;
+      try {
+        const res = await fetch("/api/plan", { cache: "no-store" });
+        const json = await res.json();
+        if (Array.isArray(json.courses)) loaded = json.courses;
+      } catch {}
+      if (cancelled) return;
+      setCourses(loaded);
+      nextIdRef.current = Math.max(...loaded.map((c) => c.id), 0) + 1;
+      setMounted(true);
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const updateCourses = useCallback((next: Course[]) => {
-    setCourses(next);
-    saveCourses(next);
-  }, []);
+  const pushToServer = useCallback((next: Course[]) => {
+    const pw = passwordRef.current;
+    if (!pw) return;
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    setSyncState("saving");
+    saveTimerRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch("/api/plan", {
+          method: "PUT",
+          headers: {
+            "content-type": "application/json",
+            "x-site-password": pw,
+          },
+          body: JSON.stringify(next),
+        });
+        if (res.status === 401) {
+          // password rotated out from under us — drop the session
+          dropSession();
+          setSyncState("idle");
+          return;
+        }
+        setSyncState(res.ok ? "idle" : "error");
+      } catch {
+        setSyncState("error");
+      }
+    }, SAVE_DEBOUNCE_MS);
+  }, [dropSession]);
+
+  const updateCourses = useCallback(
+    (next: Course[]) => {
+      setCourses(next);
+      pushToServer(next);
+    },
+    [pushToServer]
+  );
 
   const countByType = (type: CourseType) => courses.filter((c) => c.type === type).length * 6;
   const totalUoc = courses.length * 6;
@@ -189,61 +234,71 @@ export function ProgramPlanner() {
     setDragOverTerm(null);
   };
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return (
+      <p className="text-[12px] lowercase" style={{ color: "var(--faint)" }}>
+        loading plan…
+      </p>
+    );
+  }
 
   return (
     <>
-      <style>{`
-        :root {
-          --plan-core-bg: #e8f0fb; --plan-core-text: #1a4a8a; --plan-core-dot: #3a72d0;
-          --plan-prescribed-bg: #e6f7ed; --plan-prescribed-text: #1a6b3a; --plan-prescribed-dot: #2ea855;
-          --plan-free-bg: #f0e8f8; --plan-free-text: #5a2a8a; --plan-free-dot: #8844cc;
-          --plan-gened-bg: #fef3e2; --plan-gened-text: #7a4010; --plan-gened-dot: #d4720a;
-        }
-        .dark {
-          --plan-core-bg: #1a2a4a; --plan-core-text: #90b8f0; --plan-core-dot: #5090e0;
-          --plan-prescribed-bg: #1a3a2a; --plan-prescribed-text: #80d0a0; --plan-prescribed-dot: #40b870;
-          --plan-free-bg: #2a1a4a; --plan-free-text: #c090f0; --plan-free-dot: #a060e0;
-          --plan-gened-bg: #3a2a10; --plan-gened-text: #f0c080; --plan-gened-dot: #e09030;
-        }
-      `}</style>
-
-      {/* Counters + IO */}
-      <div className="flex items-center gap-3 flex-wrap mb-6">
-        <Counter label="/ 144 UOC" value={totalUoc} ok={totalUoc >= 144} />
-        <Counter label="/ 18 prescribed" value={countByType("prescribed")} />
-        <Counter label="/ 12 free" value={countByType("free")} />
-        <Counter label="/ 12 gen ed" value={countByType("gened")} />
-        <div className="ml-auto flex gap-2">
-          <button onClick={exportPlan} className="plan-io-btn">export</button>
-          <button onClick={() => fileInputRef.current?.click()} className="plan-io-btn">import</button>
+      {/* counters + io */}
+      <div className="flex items-baseline gap-x-5 gap-y-1 flex-wrap text-[12px]" style={{ color: "var(--soft)" }}>
+        <Counter label="/144 uoc" value={totalUoc} ok={totalUoc >= 144} />
+        <Counter label="/18 prescribed" value={countByType("prescribed")} />
+        <Counter label="/12 free" value={countByType("free")} />
+        <Counter label="/12 gen ed" value={countByType("gened")} />
+        <span className="ml-auto flex gap-3">
+          <button onClick={exportPlan} className="tui-btn text-[12px]">
+            [export]
+          </button>
+          <button onClick={() => fileInputRef.current?.click()} className="tui-btn text-[12px]">
+            [import]
+          </button>
+          {password ? (
+            <button onClick={logout} className="tui-btn text-[12px]">
+              [logout]
+            </button>
+          ) : (
+            <button
+              onClick={() => setLoginOpen((v) => !v)}
+              className="tui-btn text-[12px]"
+              style={{ color: "var(--green)" }}
+            >
+              [login]
+            </button>
+          )}
           <input ref={fileInputRef} type="file" accept=".json" className="hidden" onChange={importPlan} />
-        </div>
+        </span>
       </div>
 
-      {/* Legend */}
-      <div className="flex items-center gap-4 flex-wrap mb-6 text-[11px]" style={{ color: "var(--muted)" }}>
+      {/* login prompt */}
+      {loginOpen && !password && (
+        <LoginRow login={login} onClose={() => setLoginOpen(false)} />
+      )}
+
+      {/* legend */}
+      <div className="mt-3 flex items-baseline gap-4 flex-wrap text-[11px] lowercase" style={{ color: "var(--soft)" }}>
         {(Object.entries(TYPE_LABELS) as [CourseType, string][]).map(([type, label]) => (
-          <span key={type} className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full" style={{ background: TYPE_COLORS[type].dot }} />
+          <span key={type} className="flex items-baseline gap-1.5">
+            <span style={{ color: TYPE_COLORS[type] }}>■</span>
             {label}
           </span>
         ))}
-        <span className="ml-auto hidden sm:inline" style={{ color: "var(--muted)" }}>
+        <span className="ml-auto hidden sm:inline" style={{ color: "var(--faint)" }}>
           drag courses between terms
         </span>
       </div>
 
-      {/* Grid */}
+      {/* grid */}
       {YEARS.map((year) => (
-        <div key={year.id} id={year.id} className="mb-8">
-          <h3
-            className="text-[11px] font-semibold uppercase tracking-wider mb-3"
-            style={{ color: "var(--muted)", fontFamily: mono }}
-          >
-            {year.label}
+        <div key={year.id} id={year.id} className="mt-12">
+          <h3 className="text-[13px] lowercase tracking-[0.15em]" style={{ color: "var(--ink)" }}>
+            <span style={{ color: "var(--faint)" }}>{year.index}</span> {year.label}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
             {year.terms.map((termKey) => {
               const termCourses = courses.filter((c) => c.term === termKey);
               const termLabel = TERMS.find((t) => t.key === termKey)!.label;
@@ -251,55 +306,50 @@ export function ProgramPlanner() {
               return (
                 <div
                   key={termKey}
-                  className="rounded-xl p-3 min-h-[120px] transition-colors"
+                  className="p-3 min-h-[120px]"
                   style={{
-                    background: isOver ? "var(--plan-core-bg)" : "var(--bg)",
-                    border: `1px solid ${isOver ? "var(--plan-core-dot)" : "var(--border)"}`,
+                    border: `1px solid ${isOver ? "var(--accent)" : "var(--line)"}`,
                   }}
                   onDragOver={(e) => { e.preventDefault(); setDragOverTerm(termKey); }}
                   onDragLeave={() => setDragOverTerm(null)}
                   onDrop={(e) => { e.preventDefault(); onDrop(termKey); }}
                 >
-                  <div className="flex justify-between text-[11px] mb-2.5" style={{ color: "var(--muted)", fontFamily: mono }}>
+                  <div className="flex justify-between text-[11px] lowercase mb-2" style={{ color: "var(--soft)" }}>
                     <span>{termLabel}</span>
-                    <span className="font-medium">{termCourses.length * 6} UOC</span>
+                    <span style={{ color: "var(--faint)" }}>{termCourses.length * 6} uoc</span>
                   </div>
                   {termCourses.map((c) => (
                     <div
                       key={c.id}
                       draggable
                       onDragStart={() => onDragStart(c.id)}
-                      className="rounded-lg p-2 mb-1.5 cursor-grab active:cursor-grabbing select-none group"
-                      style={{ background: TYPE_COLORS[c.type].bg }}
+                      className="mb-2 cursor-grab active:cursor-grabbing select-none group flex items-baseline gap-2"
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold" style={{ color: TYPE_COLORS[c.type].text }}>
-                          {c.code}
-                        </span>
-                        <button
-                          onClick={() => openEdit(c.id)}
-                          className="opacity-0 group-hover:opacity-100 text-[11px] transition-opacity"
-                          style={{ color: "var(--muted)", background: "none", border: "none", cursor: "pointer" }}
-                        >
-                          ✎
-                        </button>
-                      </div>
-                      <div className="text-[11px] mt-0.5 leading-snug" style={{ color: "var(--muted)" }}>
-                        {c.name}
-                      </div>
-                      <div className="text-[10px] mt-0.5" style={{ color: TYPE_COLORS[c.type].dot }}>
-                        {TYPE_LABELS[c.type]}
+                      <span className="text-[10px]" style={{ color: TYPE_COLORS[c.type] }}>
+                        ■
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <span className="text-[12px]" style={{ color: "var(--ink)" }}>
+                            {c.code}
+                          </span>
+                          <button
+                            onClick={() => openEdit(c.id)}
+                            className="tui-btn text-[11px] opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+                          >
+                            [e]
+                          </button>
+                        </div>
+                        <div className="text-[11px] leading-[1.6]" style={{ color: "var(--soft)" }}>
+                          {c.name}
+                        </div>
                       </div>
                     </div>
                   ))}
                   <button
                     onClick={() => openAdd(termKey)}
-                    className="w-full text-left px-2 py-1 rounded-md text-[11px] mt-1 transition-colors"
-                    style={{
-                      border: "1px dashed var(--border)",
-                      color: "var(--muted)",
-                      background: "none",
-                    }}
+                    className="tui-btn block text-left text-[11px] mt-1"
+                    style={{ color: "var(--faint)" }}
                   >
                     + add course
                   </button>
@@ -310,120 +360,113 @@ export function ProgramPlanner() {
         </div>
       ))}
 
-      <p className="text-[11px] text-center mt-4" style={{ color: "var(--muted)" }}>
-        changes are saved automatically in your browser
+      <p
+        className="text-[11px] text-center mt-8 lowercase"
+        style={{ color: syncState === "error" ? "var(--accent)" : "var(--faint)" }}
+        aria-live="polite"
+      >
+        {!authReady
+          ? "loading…"
+          : syncState === "saving"
+            ? "saving…"
+            : syncState === "error"
+              ? "save failed — retrying on next change"
+              : password
+                ? "synced"
+                : "edits stay local until you log in"}
       </p>
 
-      {/* Modal */}
+      {/* modal */}
       {modal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{ background: "rgba(0,0,0,0.45)" }}
+          style={{ background: "color-mix(in srgb, var(--ink) 30%, transparent)" }}
           onClick={(e) => { if (e.target === e.currentTarget) setModal(null); }}
         >
           <div
-            className="rounded-xl p-5 w-[340px] max-w-[90vw]"
-            style={{ background: "var(--bg)", border: "1px solid var(--border)" }}
+            className="p-5 w-[340px] max-w-[90vw]"
+            style={{ background: "var(--bg)", border: "1px solid var(--line)" }}
           >
-            <h3 className="text-sm font-semibold mb-4" style={{ color: "var(--text)" }}>
+            <h3 className="text-[13px] lowercase tracking-[0.15em] mb-4" style={{ color: "var(--ink)" }}>
               {modal.mode === "edit"
-                ? "Edit course"
-                : `Add course to ${TERMS.find((t) => t.key === modal.term)?.label}`}
+                ? "edit course"
+                : `add course — ${TERMS.find((t) => t.key === modal.term)?.label.toLowerCase()}`}
             </h3>
             <div className="mb-3">
-              <label className="block text-[11px] mb-1" style={{ color: "var(--muted)" }}>Course code</label>
+              <label className="block text-[11px] lowercase mb-1" style={{ color: "var(--soft)" }}>
+                course code
+              </label>
               <input
                 value={formCode}
                 onChange={(e) => setFormCode(e.target.value)}
                 placeholder="e.g. COMP9444"
-                className="w-full px-2.5 py-1.5 text-sm rounded-lg outline-none"
-                style={{ background: "color-mix(in srgb, var(--border) 30%, var(--bg))", border: "1px solid var(--border)", color: "var(--text)" }}
+                className="w-full px-2.5 py-1.5 text-[13px] outline-none"
+                style={inputStyle}
               />
             </div>
             <div className="mb-3">
-              <label className="block text-[11px] mb-1" style={{ color: "var(--muted)" }}>Course name</label>
+              <label className="block text-[11px] lowercase mb-1" style={{ color: "var(--soft)" }}>
+                course name
+              </label>
               <input
                 value={formName}
                 onChange={(e) => setFormName(e.target.value)}
                 placeholder="e.g. Neural Networks"
-                className="w-full px-2.5 py-1.5 text-sm rounded-lg outline-none"
-                style={{ background: "color-mix(in srgb, var(--border) 30%, var(--bg))", border: "1px solid var(--border)", color: "var(--text)" }}
+                className="w-full px-2.5 py-1.5 text-[13px] outline-none"
+                style={inputStyle}
               />
             </div>
             <div className="mb-3">
-              <label className="block text-[11px] mb-1" style={{ color: "var(--muted)" }}>Type</label>
+              <label className="block text-[11px] lowercase mb-1" style={{ color: "var(--soft)" }}>
+                type
+              </label>
               <select
                 value={formType}
                 onChange={(e) => setFormType(e.target.value as CourseType)}
-                className="w-full px-2.5 py-1.5 text-sm rounded-lg outline-none"
-                style={{ background: "color-mix(in srgb, var(--border) 30%, var(--bg))", border: "1px solid var(--border)", color: "var(--text)" }}
+                className="w-full px-2.5 py-1.5 text-[13px] outline-none"
+                style={inputStyle}
               >
-                <option value="core">Core</option>
-                <option value="prescribed">Prescribed elective</option>
-                <option value="free">Free elective</option>
-                <option value="gened">Gen ed</option>
+                <option value="core">core</option>
+                <option value="prescribed">prescribed elective</option>
+                <option value="free">free elective</option>
+                <option value="gened">gen ed</option>
               </select>
             </div>
-            <div className="flex gap-2 mt-4">
-              {modal.mode === "edit" && (
-                <button
-                  onClick={deleteFromModal}
-                  className="flex-1 px-3 py-2 text-sm rounded-lg transition-colors"
-                  style={{ border: "1px solid #c0392b", color: "#c0392b", background: "none" }}
-                >
-                  Remove
+            <div className="flex justify-between gap-3 mt-5 text-[12px]">
+              {modal.mode === "edit" ? (
+                <button onClick={deleteFromModal} className="tui-btn" style={{ color: "var(--accent)" }}>
+                  [remove]
                 </button>
+              ) : (
+                <span />
               )}
-              <button
-                onClick={() => setModal(null)}
-                className="flex-1 px-3 py-2 text-sm rounded-lg transition-colors"
-                style={{ border: "1px solid var(--border)", color: "var(--text)", background: "none" }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={saveModal}
-                className="flex-1 px-3 py-2 text-sm rounded-lg transition-colors"
-                style={{ background: "var(--text)", color: "var(--bg)", border: "1px solid var(--text)" }}
-              >
-                Save
-              </button>
+              <span className="flex gap-3">
+                <button onClick={() => setModal(null)} className="tui-btn">
+                  [cancel]
+                </button>
+                <button onClick={saveModal} className="tui-btn" style={{ color: "var(--green)" }}>
+                  [save]
+                </button>
+              </span>
             </div>
           </div>
         </div>
       )}
-
-      <style>{`
-        .plan-io-btn {
-          padding: 4px 10px;
-          font-size: 12px;
-          border-radius: 6px;
-          border: 1px solid var(--border);
-          background: none;
-          color: var(--muted);
-          cursor: pointer;
-          transition: background 0.1s, color 0.1s;
-          font-family: ${mono};
-        }
-        .plan-io-btn:hover {
-          background: color-mix(in srgb, var(--border) 30%, var(--bg));
-          color: var(--text);
-        }
-      `}</style>
     </>
   );
 }
 
 function Counter({ label, value, ok }: { label: string; value: number; ok?: boolean }) {
   return (
-    <div
-      className="rounded-lg px-3 py-1.5 text-xs"
-      style={{ background: "color-mix(in srgb, var(--border) 30%, var(--bg))" }}
-    >
-      <strong className="text-base font-semibold block" style={{ color: ok === true ? "#2ea855" : ok === false ? "#d4720a" : "var(--text)" }}>
+    <span>
+      <span
+        style={{
+          color: ok === true ? "var(--green)" : ok === false ? "var(--accent)" : "var(--ink)",
+        }}
+      >
         {value}
-      </strong>
-      <span style={{ color: "var(--muted)" }}>{label}</span>
-    </div>
+      </span>
+      <span style={{ color: "var(--faint)" }}>{label}</span>
+    </span>
   );
 }

@@ -16,16 +16,16 @@ interface LanyardData {
 }
 
 const STATUS_COLOR: Record<StatusType, string> = {
-  online:  "#22c55e",
-  idle:    "#f59e0b",
-  dnd:     "#ef4444",
-  offline: "#6b7280",
+  online: "var(--green)",
+  idle: "var(--accent)",
+  dnd: "var(--accent)",
+  offline: "var(--faint)",
 };
 
 const STATUS_LABEL: Record<StatusType, string> = {
-  online:  "online",
-  idle:    "idle",
-  dnd:     "do not disturb",
+  online: "online",
+  idle: "idle",
+  dnd: "do not disturb",
   offline: "offline",
 };
 
@@ -48,28 +48,18 @@ export function DiscordStatus() {
   if (!data) return null;
 
   const { discord_status, listening_to_spotify, spotify } = data;
-  const color = STATUS_COLOR[discord_status];
   const label =
     listening_to_spotify && spotify
       ? `${spotify.song} — ${spotify.artist}`
       : STATUS_LABEL[discord_status];
 
   return (
-    <span
-      className="flex items-center gap-2 text-sm"
-      style={{ color: "var(--muted)" }}
-    >
-      <span
-        style={{
-          width: 7,
-          height: 7,
-          borderRadius: "50%",
-          background: color,
-          flexShrink: 0,
-          display: "inline-block",
-        }}
-      />
-      <span>{label}</span>
+    <span className="flex items-baseline gap-2" style={{ color: "var(--soft)" }}>
+      <span style={{ color: "var(--green)" }}>❯</span>
+      <span className="shrink-0">status</span>
+      <span className="truncate" style={{ color: STATUS_COLOR[discord_status] }}>
+        {label}
+      </span>
     </span>
   );
 }

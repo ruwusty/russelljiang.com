@@ -1,21 +1,12 @@
 import { DocsShell } from "./components/docs-shell";
 
-const mono = "ui-monospace, SFMono-Regular, Menlo, monospace";
-
 const bio =
-  "First-year Data Science student at UNSW Sydney, exploring the overlap between machine learning, statistics, and software that actually does something useful. I tutor students one-on-one across STEM and beyond. When I'm away from a screen, I play clarinet and sax — or slowly get better at guitar.";
+  "first-year data science student at UNSW Sydney, working somewhere in the overlap of statistics, computing, and decision-making. i tutor students across STEM and beyond, turning exam panic into working method. away from the screen i'm a clarinettist and saxophonist, and a guitarist on a good day.";
 
 const toc = [
   { label: "Introduction", href: "#introduction" },
   { label: "Background", href: "#background" },
   { label: "Interests", href: "#interests" },
-  { label: "Contact", href: "#contact" },
-];
-
-const links = [
-  { href: "https://github.com/ruwusty", label: "GitHub", external: true },
-  { href: "https://linkedin.com/in/russelljiang", label: "LinkedIn", external: true },
-  { href: "mailto:russelljiang@pm.me", label: "Email", external: false },
 ];
 
 const interests = [
@@ -28,104 +19,80 @@ const interests = [
 
 export default function Home() {
   return (
-    <DocsShell crumb="Introduction" toc={toc}>
+    <DocsShell crumb="introduction" toc={toc}>
       <h1
         id="introduction"
-        className="text-[34px] leading-[1.15] tracking-tight font-semibold"
-        style={{ color: "var(--text)" }}
+        className="display text-[26px] leading-[1.4]"
+        style={{ color: "var(--ink)" }}
       >
-        Russell Jiang
+        russell jiang
       </h1>
-      <p className="mt-3 text-[15px]" style={{ color: "var(--muted)" }}>
-        Data Science @ UNSW · Tutor · AmusA
+      <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
+        data science @ unsw · tutor · amusa
       </p>
 
-      <div className="my-8 h-px" style={{ background: "var(--border)" }} />
+      <div className="hrule my-8" />
 
-      <p className="text-[15px] leading-[1.75]" style={{ color: "var(--muted)" }}>
+      <p className="text-[14px] leading-[1.9]" style={{ color: "var(--soft)" }}>
         {bio}
       </p>
 
-      <div
-        className="mt-6 px-4 py-3 rounded-md text-[13px] leading-[1.7]"
-        style={{
-          border: "1px solid var(--border)",
-          color: "var(--muted)",
-          background: "color-mix(in srgb, var(--bg) 60%, transparent)",
-        }}
+      <aside
+        className="mt-8 pl-4 text-[12px] leading-[1.9] lowercase"
+        style={{ borderLeft: "1px solid var(--line)", color: "var(--soft)" }}
       >
-        <span style={{ color: "var(--text)", fontFamily: mono, fontSize: "11px" }}>
-          NOTE
+        <span style={{ color: "var(--green)" }}>note</span> — this site is a work
+        in progress. check back occasionally — or don&apos;t.{" "}
+        <span style={{ color: "var(--faint)" }} aria-hidden="true">
+          (￣ー￣)ゞ
         </span>
-        <span className="mx-2" style={{ color: "var(--border)" }}>·</span>
-        This site is a work in progress. Check back occasionally — or don't.
-      </div>
+      </aside>
 
       <h2
         id="background"
-        className="mt-14 text-[20px] tracking-tight font-semibold"
-        style={{ color: "var(--text)" }}
+        className="mt-16 text-[13px] lowercase tracking-[0.15em]"
+        style={{ color: "var(--ink)" }}
       >
-        Background
+        <span style={{ color: "var(--faint)" }}>01</span> background
       </h2>
       <dl
-        className="mt-4 text-[14px] grid grid-cols-[120px_1fr] gap-y-2"
-        style={{ color: "var(--muted)" }}
+        className="mt-4 text-[14px] grid grid-cols-[140px_1fr] gap-y-1"
+        style={{ color: "var(--soft)" }}
       >
-        <dt style={{ fontFamily: mono, fontSize: "12px" }}>university</dt>
+        <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
+          university
+        </dt>
         <dd>UNSW Sydney</dd>
-        <dt style={{ fontFamily: mono, fontSize: "12px" }}>degree</dt>
-        <dd>B. Data Science & Decisions</dd>
-        <dt style={{ fontFamily: mono, fontSize: "12px" }}>year</dt>
+        <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
+          degree
+        </dt>
+        <dd>B. Data Science &amp; Decisions</dd>
+        <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
+          year
+        </dt>
         <dd>1st year</dd>
-        <dt style={{ fontFamily: mono, fontSize: "12px" }}>city</dt>
+        <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
+          city
+        </dt>
         <dd>Sydney, AU</dd>
       </dl>
 
       <h2
         id="interests"
-        className="mt-14 text-[20px] tracking-tight font-semibold"
-        style={{ color: "var(--text)" }}
+        className="mt-16 text-[13px] lowercase tracking-[0.15em]"
+        style={{ color: "var(--ink)" }}
       >
-        Interests
+        <span style={{ color: "var(--faint)" }}>02</span> interests
       </h2>
-      <ul
-        className="mt-4 text-[14px] space-y-1.5"
-        style={{ color: "var(--muted)" }}
-      >
+      <ul className="mt-4 text-[14px] space-y-1 list-none p-0" style={{ color: "var(--soft)" }}>
         {interests.map((line) => (
-          <li key={line}>
-            <span style={{ fontFamily: mono, color: "var(--text)" }}>—</span>{" "}
-            {line}
+          <li key={line} className="flex items-baseline gap-3">
+            <span style={{ color: "var(--faint)" }}>▸</span>
+            <span>{line}</span>
           </li>
         ))}
       </ul>
 
-      <h2
-        id="contact"
-        className="mt-14 text-[20px] tracking-tight font-semibold"
-        style={{ color: "var(--text)" }}
-      >
-        Contact
-      </h2>
-      <div className="mt-4 flex items-center gap-1 text-[14px]">
-        {links.map(({ href, label, external }, i) => (
-          <span key={label} className="flex items-center">
-            {i > 0 && (
-              <span className="mx-2.5 select-none" style={{ color: "var(--border)" }}>
-                ·
-              </span>
-            )}
-            <a
-              href={href}
-              className="site-link"
-              {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-            >
-              {label}
-            </a>
-          </span>
-        ))}
-      </div>
     </DocsShell>
   );
 }

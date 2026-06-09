@@ -3,7 +3,7 @@ import { DocsShell } from "../components/docs-shell";
 import { PresetsGrid } from "./presets-grid";
 
 export const metadata: Metadata = {
-  title: "Amp Presets — Russell Jiang",
+  title: "amp presets — russell jiang",
   robots: { index: false, follow: false },
 };
 
@@ -19,16 +19,19 @@ const toc = [
 
 export default function PresetsPage() {
   return (
-    <DocsShell crumb="Presets" toc={toc}>
+    <DocsShell crumb="presets" toc={toc}>
       <h1
-        className="text-2xl font-semibold tracking-tight mb-1"
-        style={{ color: "var(--text)" }}
+        className="display text-[26px] leading-[1.4]"
+        style={{ color: "var(--ink)" }}
       >
-        Amp Presets
+        amp presets
       </h1>
-      <p className="text-sm mb-8" style={{ color: "var(--muted)" }}>
+      <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
         tele 3-pos single coil — jpop / jrock
       </p>
+
+      <div className="hrule my-8" />
+
       <PresetsGrid />
     </DocsShell>
   );

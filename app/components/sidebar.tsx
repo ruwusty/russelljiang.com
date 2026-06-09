@@ -1,140 +1,134 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { ThemeToggle } from "./theme-toggle";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
-const mono = "ui-monospace, SFMono-Regular, Menlo, monospace";
+interface NavItem {
+  label: string;
+  href: string;
+  soon?: boolean;
+  external?: boolean;
+}
 
-const pages = [
-  { label: "Overview", href: "/" },
-  { label: "Uses", href: "/uses" },
-  { label: "Writing", href: "/writing" },
-  { label: "Projects", href: "/projects", soon: true },
+const items: NavItem[] = [
+  { label: "overview", href: "/" },
+  { label: "writing", href: "/writing" },
+  { label: "projects", href: "", soon: true },
+  { label: "github", href: "https://github.com/ruwusty", external: true },
+  { label: "linkedin", href: "https://linkedin.com/in/russelljiang", external: true },
+  { label: "email", href: "mailto:russelljiang@pm.me", external: true },
 ];
 
-const external = [
-  { label: "GitHub", href: "https://github.com/ruwusty" },
-  { label: "LinkedIn", href: "https://linkedin.com/in/russelljiang" },
-  { label: "Email", href: "mailto:russelljiang@pm.me" },
-];
+const navigable = items
+  .map((item, index) => ({ ...item, index }))
+  .filter((item) => !item.soon);
+
+function isTypingTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+  return (
+    target.tagName === "INPUT" ||
+    target.tagName === "TEXTAREA" ||
+    target.isContentEditable
+  );
+}
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [selected, setSelected] = useState(-1);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (isTypingTarget(event.target)) return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+      if (event.key === "j") {
+        setSelected((s) => (s + 1) % navigable.length);
+      } else if (event.key === "k") {
+        setSelected((s) => (s <= 0 ? navigable.length - 1 : s - 1));
+      } else if (event.key === "Enter") {
+        setSelected((s) => {
+          const item = navigable[s];
+          if (item) {
+            if (item.external) {
+              window.open(item.href, item.href.startsWith("mailto:") ? "_self" : "_blank");
+            } else {
+              router.push(item.href);
+            }
+          }
+          return s;
+        });
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [router]);
 
   return (
-    <aside
-      className="hidden lg:flex flex-col sticky top-11 h-[calc(100vh-2.75rem)] w-[240px] shrink-0 px-6 py-10 border-r"
-      style={{
-        borderColor: "var(--border)",
-        background: "color-mix(in srgb, var(--bg) 85%, transparent)",
-      }}
-    >
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-semibold tracking-tight" style={{ color: "var(--text)" }}>
-          russell.jiang
-        </span>
-        <span
-          className="text-[10px] px-1.5 py-[1px] rounded"
-          style={{
-            color: "var(--muted)",
-            border: "1px solid var(--border)",
-            fontFamily: mono,
-          }}
-        >
-          v1.0
-        </span>
+    <nav className="mt-10 text-[13px]" aria-label="site navigation">
+      <div className="flex items-center gap-2 text-[12px]">
+        <span style={{ color: "var(--green)" }}>❯</span>
+        <span style={{ color: "var(--soft)" }}>ls ~/site</span>
       </div>
 
-      <button
-        type="button"
-        className="mt-5 flex items-center justify-between text-left text-[12px] px-2.5 py-1.5 rounded-md"
-        style={{
-          border: "1px solid var(--border)",
-          color: "var(--muted)",
-          background: "transparent",
-          fontFamily: mono,
-        }}
-        aria-label="Search"
-      >
-        <span>Search…</span>
-        <span className="text-[10px] px-1 rounded" style={{ border: "1px solid var(--border)" }}>
-          ⌘K
-        </span>
-      </button>
-
-      <nav className="mt-7 flex flex-col gap-0.5 text-[13px]">
-        <div
-          className="text-[10px] uppercase tracking-wider mb-2 px-2"
-          style={{ color: "var(--muted)", fontFamily: mono, letterSpacing: "0.1em" }}
-        >
-          Pages
-        </div>
-        {pages.map((item) => {
+      <ul className="mt-3 space-y-1 list-none p-0 m-0">
+        {items.map((item, i) => {
+          const index = String(i + 1).padStart(2, "0");
           const active =
             !item.soon &&
+            !item.external &&
             (pathname === item.href ||
               (item.href !== "/" && pathname.startsWith(item.href + "/")));
-          return (
-            <a
-              key={item.label}
-              href={item.soon ? undefined : item.href}
-              className="flex items-center justify-between px-2 py-1 rounded"
-              style={{
-                textDecoration: "none",
-                color: active ? "var(--text)" : "var(--muted)",
-                background: active
-                  ? "color-mix(in srgb, var(--muted) 12%, transparent)"
-                  : "transparent",
-                fontWeight: active ? 500 : 400,
-                opacity: item.soon ? 0.55 : 1,
-                pointerEvents: item.soon ? "none" : "auto",
-              }}
-            >
-              <span>{item.label}</span>
-              {item.soon && (
-                <span
-                  className="text-[9px] px-1 py-[1px] rounded"
-                  style={{
-                    border: "1px solid var(--border)",
-                    color: "var(--muted)",
-                    fontFamily: mono,
-                    letterSpacing: "0.05em",
-                  }}
-                >
-                  soon
+          const selectedHere = navigable[selected]?.index === i;
+
+          if (item.soon) {
+            return (
+              <li key={item.label} className="flex items-baseline gap-3">
+                <span className="text-[11px]" style={{ color: "var(--faint)" }}>
+                  {index}
                 </span>
-              )}
-            </a>
+                <span style={{ color: "var(--faint)" }}>▸</span>
+                <span style={{ color: "var(--faint)" }}>
+                  {item.label}{" "}
+                  <span className="text-[11px]">(soon)</span>
+                </span>
+              </li>
+            );
+          }
+
+          const LinkTag = item.external ? "a" : Link;
+          return (
+            <li key={item.label}>
+              <LinkTag
+                href={item.href}
+                className="tui-item flex items-baseline gap-3"
+                data-selected={selectedHere ? "true" : "false"}
+                {...(item.external && !item.href.startsWith("mailto:")
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+              >
+                <span className="text-[11px]" style={{ color: "var(--faint)" }}>
+                  {index}
+                </span>
+                <span className="marker">▸</span>
+                <span className="marker-hover">▹</span>
+                <span
+                  className="tui-label"
+                  style={{ color: active ? "var(--ink)" : "var(--soft)" }}
+                >
+                  {item.label}
+                </span>
+                {item.external && (
+                  <span className="text-[11px]" style={{ color: "var(--faint)" }}>
+                    ↗
+                  </span>
+                )}
+              </LinkTag>
+            </li>
           );
         })}
-
-        <div
-          className="text-[10px] uppercase tracking-wider mb-2 mt-5 px-2"
-          style={{ color: "var(--muted)", fontFamily: mono, letterSpacing: "0.1em" }}
-        >
-          External
-        </div>
-        {external.map((item) => (
-          <a
-            key={item.label}
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="site-link flex items-center justify-between px-2 py-1 rounded"
-            style={{ textDecoration: "none" }}
-          >
-            <span>{item.label}</span>
-            <span style={{ fontFamily: mono, fontSize: "11px", color: "var(--border)" }}>↗</span>
-          </a>
-        ))}
-      </nav>
-
-      <div className="mt-auto pt-6 flex items-center justify-between">
-        <span className="text-[10px]" style={{ color: "var(--muted)", fontFamily: mono }}>
-          updated 2026-04-22
-        </span>
-        <ThemeToggle />
-      </div>
-    </aside>
+      </ul>
+    </nav>
   );
 }

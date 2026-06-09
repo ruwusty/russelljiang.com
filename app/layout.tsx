@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import { Providers } from "./providers";
 import "./globals.css";
 
-const inter = Inter({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-jetbrains",
   display: "swap",
-  axes: ["opsz"],
 });
 
 const jsonLd = {
@@ -39,7 +38,7 @@ const jsonLd = {
 };
 
 export const metadata: Metadata = {
-  title: "Russell Jiang",
+  title: "russell jiang",
   description:
     "Data Science student at UNSW Sydney. One-on-one tutor across STEM and beyond. AmusA musician.",
   keywords: [
@@ -57,17 +56,17 @@ export const metadata: Metadata = {
     canonical: "https://russelljiang.com",
   },
   openGraph: {
-    title: "Russell Jiang",
+    title: "russell jiang",
     description:
       "Data Science student at UNSW Sydney. One-on-one tutor across all subjects including Science Olympiad prep. AmusA musician.",
     url: "https://russelljiang.com",
-    siteName: "Russell Jiang",
+    siteName: "russell jiang",
     locale: "en_AU",
     type: "profile",
   },
   twitter: {
     card: "summary",
-    title: "Russell Jiang",
+    title: "russell jiang",
     description:
       "Data Science student at UNSW Sydney. One-on-one tutor across all subjects including Science Olympiad prep. AmusA musician.",
   },
@@ -80,17 +79,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body
-        className="font-[var(--font-inter)] antialiased"
-        style={{ fontFamily: "var(--font-inter), Inter, system-ui, sans-serif", color: "var(--text-primary)" }}
-      >
+      <body className="antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>
