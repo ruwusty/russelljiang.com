@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CommandBar } from "./command-bar";
 import { Sidebar } from "./sidebar";
 import { StatusStrip } from "./status-strip";
 import { ThemeToggle } from "./theme-toggle";
@@ -76,25 +77,7 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
           </div>
 
           {/* statusbar */}
-          <footer
-            className="flex items-center justify-between gap-4 px-3 py-1 text-[11px] lowercase"
-            style={{ borderTop: "1px solid var(--line)", color: "var(--soft)" }}
-          >
-            <span className="flex items-baseline gap-2 truncate">
-              <span
-                className="px-1.5"
-                style={{ background: "var(--green)", color: "var(--bg)" }}
-              >
-                normal
-              </span>
-              <span className="hidden sm:inline" style={{ color: "var(--faint)" }}>
-                j/k move · enter open
-              </span>
-            </span>
-            <span className="shrink-0 text-right" style={{ color: "var(--faint)" }}>
-              {toc.length} sections · © 2026 · utf-8
-            </span>
-          </footer>
+          <CommandBar sections={toc.length} />
         </div>
       </div>
     </div>
