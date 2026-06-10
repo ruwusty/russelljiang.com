@@ -23,7 +23,6 @@ const DEFAULT_ITEMS = [
   "Ctrl+F'ing lecture slides",
   "debugging my sleep schedule",
   "reading the docs (finally)",
-  "grinding one more Leetcode problem before bed (lying)",
   "compiling excuses",
   "thinking about pho",
   "touching grass",
@@ -60,7 +59,7 @@ const DEFAULT_ITEMS = [
   "progressive overload, statistically significant",
   "failing the last rep on purpose",
   "recovering (this counts as training)",
-  "bulking on pho",
+  "bulking on pho"
 ];
 
 function shuffled<T>(arr: readonly T[]): T[] {

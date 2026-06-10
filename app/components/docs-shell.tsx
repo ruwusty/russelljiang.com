@@ -49,7 +49,7 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
             </Link>
             <Kaomoji
               slot="title"
-              fallback="( ˶ˆᗜˆ˵ )"
+              fallback="(´。• ᵕ •。`)"
               className="text-[11px]"
               style={{ letterSpacing: "normal" }}
             />

@@ -149,7 +149,7 @@ export function HomeEditor({ initial }: { initial: HomeContent }) {
       >
         <span style={{ color: "var(--green)" }}>note</span> — this site is a work
         in progress. check back occasionally — or don&apos;t.{" "}
-        <Kaomoji slot="home-note" fallback="(￣ー￣)ゞ" className="text-[12px]" />
+        <Kaomoji slot="home-note" fallback="¯\_(ツ)_/¯" className="text-[12px]" />
       </aside>
 
       <h2

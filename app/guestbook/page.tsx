@@ -23,7 +23,7 @@ export default function GuestbookPage() {
       </h1>
       <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
         like the old web i wasn&apos;t alive for. leave a line.{" "}
-        <Kaomoji slot="guestbook" />
+        <Kaomoji slot="guestbook" fallback="(˶ᵔ ᵕ ᵔ˶)" />
       </p>
 
       <div className="hrule my-8" />
