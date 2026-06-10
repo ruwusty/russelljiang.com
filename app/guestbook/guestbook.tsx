@@ -20,6 +20,24 @@ const inputStyle = {
   fontFamily: "inherit",
 } as const;
 
+// muted, paper-friendly tones; same name always hashes to the same colour
+const NAME_COLORS = [
+  "#6f8f6a", // moss
+  "#9a6a4f", // clay
+  "#a8895a", // ochre
+  "#5f8a8b", // pond teal
+  "#8a7a9e", // wisteria
+  "#9d7081", // dusty rose
+];
+
+function nameColor(name: string): string {
+  let hash = 0;
+  for (const ch of name.toLowerCase()) {
+    hash = (hash * 31 + (ch.codePointAt(0) ?? 0)) >>> 0;
+  }
+  return NAME_COLORS[hash % NAME_COLORS.length];
+}
+
 export function Guestbook() {
   const [entries, setEntries] = useState<Entry[] | null>(null);
   const [name, setName] = useState("");
@@ -172,7 +190,7 @@ export function Guestbook() {
                   [{entry.ts.slice(0, 10)}]
                 </span>
                 <span className="min-w-0">
-                  <span style={{ color: "var(--green)" }}>{entry.name}</span>
+                  <span style={{ color: nameColor(entry.name) }}>{entry.name}</span>
                   <span style={{ color: "var(--faint)" }}>: </span>
                   <span style={{ color: "var(--ink)" }}>{entry.message}</span>
                 </span>
