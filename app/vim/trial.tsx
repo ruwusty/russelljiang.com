@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSiteAuth } from "../components/site-auth";
 
-const LINES = [
+const ALL_LINES = [
   'const site = { aesthetic: "tui x japanese minimal" };',
   'let coffee = brew("stochastic caffeine descent");',
   "function practice(reps) { return reps < 8 ? practice(reps + 1) : rest(); }",
@@ -14,31 +14,44 @@ const LINES = [
   "0 and $ jump to line ends; gg and G jump the buffer",
   "export default function russell() { return <Data />; }",
   "two sets of eight, both honest — then :wq and go home",
+  "const pho = await broth.simmer({ hours: 12, shortcuts: false });",
+  "while (reed.squeaks()) { sand(reed); complain(); }",
+  'git commit -m "fix: everything (hopefully)"',
+  "SELECT sleep FROM week WHERE assessments = 0; -- 0 rows",
+  "const grade = Math.max(actual, expected - disappointment);",
+  "for (const rep of [1, 2]) { lift(heavy); rest(180); }",
+  "// the metronome is always right. the metronome is always right.",
+  'type Weekend = "study" | "practice" | "gym" | never;',
+  "def converge(self): return self.loss < yesterday.loss",
+  'echo "remember to drink water" >> ~/.bashrc',
 ];
 
 type Difficulty = "easy" | "normal" | "hard";
 
 const DIFFICULTIES: Record<
   Difficulty,
-  { targets: number; minDist: number; maxDist: number; blurb: string }
+  { targets: number; minDist: number; maxDist: number; lines: number; blurb: string }
 > = {
   easy: {
     targets: 5,
     minDist: 3,
     maxDist: 14,
-    blurb: "5 targets, always nearby — hjkl is enough",
+    lines: 8,
+    blurb: "5 targets in a small buffer, always nearby — hjkl is enough",
   },
   normal: {
     targets: 10,
     minDist: 6,
     maxDist: Infinity,
-    blurb: "10 targets anywhere — w and b start to matter",
+    lines: 14,
+    blurb: "10 targets, 14 lines — w and b start to matter",
   },
   hard: {
     targets: 15,
     minDist: 14,
     maxDist: Infinity,
-    blurb: "15 far targets — line and buffer jumps or you'll suffer",
+    lines: 20,
+    blurb: "15 far targets, 20 lines — buffer jumps or you'll suffer",
   },
 };
 
@@ -99,9 +112,9 @@ interface Best {
 
 const isWordChar = (ch: string) => /[A-Za-z0-9_]/.test(ch);
 
-function computeWordStarts(): Pos[] {
+function computeWordStarts(lines: string[]): Pos[] {
   const starts: Pos[] = [];
-  LINES.forEach((line, row) => {
+  lines.forEach((line, row) => {
     for (let col = 0; col < line.length; col++) {
       if (isWordChar(line[col]) && (col === 0 || !isWordChar(line[col - 1]))) {
         starts.push({ row, col });
@@ -111,9 +124,9 @@ function computeWordStarts(): Pos[] {
   return starts;
 }
 
-function computeWordEnds(): Pos[] {
+function computeWordEnds(lines: string[]): Pos[] {
   const ends: Pos[] = [];
-  LINES.forEach((line, row) => {
+  lines.forEach((line, row) => {
     for (let col = 0; col < line.length; col++) {
       if (isWordChar(line[col]) && (col === line.length - 1 || !isWordChar(line[col + 1]))) {
         ends.push({ row, col });
@@ -123,8 +136,22 @@ function computeWordEnds(): Pos[] {
   return ends;
 }
 
-const WORD_STARTS = computeWordStarts();
-const WORD_ENDS = computeWordEnds();
+interface Buffer {
+  lines: string[];
+  starts: Pos[];
+  ends: Pos[];
+}
+
+function buildBuffer(lineCount: number): Buffer {
+  const lines = ALL_LINES.slice(0, lineCount);
+  return { lines, starts: computeWordStarts(lines), ends: computeWordEnds(lines) };
+}
+
+const BUFFERS: Record<Difficulty, Buffer> = {
+  easy: buildBuffer(DIFFICULTIES.easy.lines),
+  normal: buildBuffer(DIFFICULTIES.normal.lines),
+  hard: buildBuffer(DIFFICULTIES.hard.lines),
+};
 
 const posKey = (p: Pos) => `${p.row}:${p.col}`;
 const isAfter = (a: Pos, b: Pos) => a.row > b.row || (a.row === b.row && a.col > b.col);
@@ -132,11 +159,12 @@ const distance = (a: Pos, b: Pos) => Math.abs(a.row - b.row) + Math.abs(a.col - 
 
 function randomTarget(notNear: Pos, difficulty: Difficulty): Pos {
   const { minDist, maxDist } = DIFFICULTIES[difficulty];
-  const candidates = WORD_STARTS.filter((p) => {
+  const starts = BUFFERS[difficulty].starts;
+  const candidates = starts.filter((p) => {
     const d = distance(p, notNear);
     return d >= minDist && d <= maxDist;
   });
-  const pool = candidates.length > 0 ? candidates : WORD_STARTS;
+  const pool = candidates.length > 0 ? candidates : starts;
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
@@ -264,7 +292,8 @@ export function VimTrial() {
   );
 
   useEffect(() => {
-    const lineLen = (row: number) => LINES[row].length;
+    const buffer = BUFFERS[difficulty];
+    const lineLen = (row: number) => buffer.lines[row].length;
     const clampCol = (row: number, col: number) =>
       Math.max(0, Math.min(col, Math.max(lineLen(row) - 1, 0)));
 
@@ -282,7 +311,7 @@ export function VimTrial() {
           return { row, col: c };
         }
         case "j": {
-          const r = Math.min(LINES.length - 1, row + 1);
+          const r = Math.min(buffer.lines.length - 1, row + 1);
           return { row: r, col: clampCol(r, goalColRef.current) };
         }
         case "k": {
@@ -298,25 +327,25 @@ export function VimTrial() {
           return { row, col: clampCol(row, lineLen(row)) };
         }
         case "w": {
-          const next = WORD_STARTS.find((p) => isAfter(p, cursor));
+          const next = buffer.starts.find((p) => isAfter(p, cursor));
           if (!next) return null;
           goalColRef.current = next.col;
           return next;
         }
         case "b": {
-          const prev = [...WORD_STARTS].reverse().find((p) => isAfter(cursor, p));
+          const prev = [...buffer.starts].reverse().find((p) => isAfter(cursor, p));
           if (!prev) return null;
           goalColRef.current = prev.col;
           return prev;
         }
         case "e": {
-          const next = WORD_ENDS.find((p) => isAfter(p, cursor));
+          const next = buffer.ends.find((p) => isAfter(p, cursor));
           if (!next) return null;
           goalColRef.current = next.col;
           return next;
         }
         case "G": {
-          const r = LINES.length - 1;
+          const r = buffer.lines.length - 1;
           goalColRef.current = 0;
           return { row: r, col: 0 };
         }
@@ -372,7 +401,7 @@ export function VimTrial() {
     // capture phase so the site-wide j/k nav never sees game keys
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [cursor, keys, startedAt, finalTime, arrive]);
+  }, [cursor, keys, startedAt, finalTime, arrive, difficulty]);
 
   const submitScore = async () => {
     if (finalTime === null || submitState === "sending" || submitState === "done") return;
@@ -468,7 +497,7 @@ export function VimTrial() {
         style={{ border: "1px solid var(--line)", color: "var(--soft)" }}
         aria-label="vim practice buffer"
       >
-        {LINES.map((line, row) => (
+        {BUFFERS[difficulty].lines.map((line, row) => (
           <div key={row}>
             {(line.length > 0 ? line.split("") : [" "]).map((ch, col) => {
               const isCursor = cursor.row === row && cursor.col === col;

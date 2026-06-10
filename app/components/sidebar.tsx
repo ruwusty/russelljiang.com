@@ -17,7 +17,6 @@ const items: NavItem[] = [
   { label: "guestbook", href: "/guestbook" },
   { label: "vim", href: "/vim" },
   { label: "projects", href: "", soon: true },
-  { label: "github", href: "https://github.com/ruwusty", external: true },
   { label: "linkedin", href: "https://linkedin.com/in/russelljiang", external: true },
   { label: "email", href: "mailto:russelljiang@pm.me", external: true },
 ];

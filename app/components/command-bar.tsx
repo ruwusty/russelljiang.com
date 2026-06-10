@@ -17,13 +17,12 @@ const ROUTES: Record<string, string> = {
 };
 
 const EXTERNAL: Record<string, string> = {
-  github: "https://github.com/ruwusty",
   linkedin: "https://linkedin.com/in/russelljiang",
   email: "mailto:russelljiang@pm.me",
 };
 
 const HELP_LINES: [string, string][] = [
-  ["go <page>", "home · writing · guestbook · plan · presets · vim · github · linkedin · email"],
+  ["go <page>", "home · writing · guestbook · plan · presets · vim · linkedin · email"],
   ["vim", "motion practice trial"],
   ["theme [dark|light]", "switch theme"],
   ["login / logout", "関係者以外立入禁止"],

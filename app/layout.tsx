@@ -14,10 +14,7 @@ const jsonLd = {
   "@type": "Person",
   name: "Russell Jiang",
   url: "https://russelljiang.com",
-  sameAs: [
-    "https://github.com/ruwusty",
-    "https://linkedin.com/in/russelljiang",
-  ],
+  sameAs: ["https://linkedin.com/in/russelljiang"],
   jobTitle: "Data Science Student",
   worksFor: {
     "@type": "CollegeOrUniversity",
