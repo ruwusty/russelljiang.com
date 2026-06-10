@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DocsShell } from "../components/docs-shell";
+import { Kaomoji } from "../components/kaomoji";
 import { Guestbook } from "./guestbook";
 
 export const metadata: Metadata = {
@@ -21,7 +22,8 @@ export default function GuestbookPage() {
         guestbook
       </h1>
       <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
-        like the old web i wasn&apos;t alive for. leave a line.
+        like the old web i wasn&apos;t alive for. leave a line.{" "}
+        <Kaomoji slot="guestbook" />
       </p>
 
       <div className="hrule my-8" />

@@ -1,4 +1,5 @@
 import { DocsShell } from "./components/docs-shell";
+import { Kaomoji } from "./components/kaomoji";
 
 const bio =
   "first-year data science student at UNSW Sydney, working somewhere in the overlap of statistics, computing, and decision-making. i tutor students across STEM and beyond, turning exam panic into working method. away from the screen i'm a clarinettist and saxophonist, and a guitarist on a good day.";
@@ -50,9 +51,7 @@ export default function Home() {
       >
         <span style={{ color: "var(--green)" }}>note</span> — this site is a work
         in progress. check back occasionally — or don&apos;t.{" "}
-        <span style={{ color: "var(--faint)" }} aria-hidden="true">
-          (￣ー￣)ゞ
-        </span>
+        <Kaomoji slot="home-note" fallback="(￣ー￣)ゞ" className="text-[12px]" />
       </aside>
 
       <h2

@@ -1,4 +1,5 @@
 import { DocsShell } from "../components/docs-shell";
+import { Kaomoji } from "../components/kaomoji";
 
 interface Post {
   title: string;
@@ -31,7 +32,8 @@ export default function WritingIndex() {
         writing
       </h1>
       <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
-        occasional essays. mostly data-science-adjacent.
+        occasional essays. mostly data-science-adjacent.{" "}
+        <Kaomoji slot="writing" />
       </p>
 
       <div className="hrule my-8" />

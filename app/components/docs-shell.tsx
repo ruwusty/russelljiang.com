@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CommandBar } from "./command-bar";
+import { Kaomoji } from "./kaomoji";
 import { Sidebar } from "./sidebar";
 import { StatusStrip } from "./status-strip";
 import { ThemeToggle } from "./theme-toggle";
@@ -29,28 +30,30 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
           style={{ border: "1px solid var(--line)" }}
         >
           {/* title sitting on the frame border */}
-          <Link
-            href="/"
-            className="display absolute text-[15px] leading-none"
+          <span
+            className="absolute flex items-baseline gap-2 leading-none"
             style={{
               top: "-0.55em",
               left: "20px",
               background: "var(--bg)",
               padding: "0 10px",
-              color: "var(--ink)",
-              textDecoration: "none",
               whiteSpace: "nowrap",
             }}
           >
-            russell jiang{" "}
-            <span
-              className="text-[11px]"
-              style={{ color: "var(--faint)", letterSpacing: "normal" }}
-              aria-hidden="true"
+            <Link
+              href="/"
+              className="display text-[15px] leading-none"
+              style={{ color: "var(--ink)", textDecoration: "none" }}
             >
-              ( ˶ˆᗜˆ˵ )
-            </span>
-          </Link>
+              russell jiang
+            </Link>
+            <Kaomoji
+              slot="title"
+              fallback="( ˶ˆᗜˆ˵ )"
+              className="text-[11px]"
+              style={{ letterSpacing: "normal" }}
+            />
+          </span>
           <span
             className="absolute leading-none"
             style={{

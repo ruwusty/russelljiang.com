@@ -206,15 +206,15 @@ export function Currently() {
           ❯
         </span>
         <span className="shrink-0">currently</span>
-        <span className="truncate" style={{ color: "var(--ink)" }} aria-hidden="true">
-          {reduced === true ? queue[index] : text}
-          <span className="cursor-block" />
-        </span>
         {password && !editing && (
           <button onClick={openEditor} className="tui-btn text-[11px] shrink-0">
             [edit]
           </button>
         )}
+        <span className="truncate" style={{ color: "var(--ink)" }} aria-hidden="true">
+          {reduced === true ? queue[index] : text}
+          <span className="cursor-block" />
+        </span>
       </span>
 
       {editing && (
