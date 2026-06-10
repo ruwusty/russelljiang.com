@@ -1,0 +1,82 @@
+# russelljiang.com — conventions
+
+personal site for Russell Jiang. tui × japanese minimal aesthetic. read this
+before changing anything visual or touching content.
+
+## design rules (hard)
+
+- palette via css vars in `app/globals.css` only: `--bg #faf8f3` (paper),
+  `--ink`, `--soft`, `--faint`, `--line`, `--accent #9a6a4f` (clay, hover/links
+  only), `--green #6f8f6a` (prompts, sparingly). dark mode inverts to `#16140f`
+  warm near-black, same accent. NO other colours (curated exceptions: guestbook
+  name palette in `app/guestbook/guestbook.tsx`).
+- no drop shadows, no border-radius, no gradients, no bold weights in body
+  text, no images as decoration (content images in /writing are fine).
+- type: JetBrains Mono everywhere; `.display` class (mincho serif, 0.2em
+  tracking, weight 400) for the site title and page h1s ONLY. body 14px,
+  line-height 1.9; small text 11–12px. lowercase except where grammar demands.
+- layout: single column inside the bordered "terminal pane" in
+  `app/components/docs-shell.tsx`. 1px solid borders only, used sparingly.
+  a 44px × 1px `.hrule` under each page heading. generous whitespace.
+- animations: ONLY the blinking cursor (`.cursor-block`) and the currently
+  typewriter; everything else is instant colour changes. always respect
+  `prefers-reduced-motion`.
+- kaomoji appear only through the `<Kaomoji>` slot component
+  (`app/components/kaomoji.tsx`) — never hardcode new ones into pages.
+
+## architecture
+
+- next.js 15 app router, tailwind v3, no ui libraries.
+- editable content lives in vercel blob, one json blob per feature, behind
+  api routes in `app/api/*`: public GET, password-gated PUT via
+  `x-site-password` header → `passwordOk()` in `app/api/_lib/auth.ts`
+  (timing-safe, env `SITE_PASSWORD`).
+- client auth = `useSiteAuth()` in `app/components/site-auth.tsx`
+  (sessionStorage `site_pw`, broadcasts changes via window event so all
+  components unlock together). one password for everything.
+- **the blob is the source of truth.** hardcoded defaults in components
+  (DEFAULT_ITEMS, DEFAULT_HOME, DEFAULT_COURSES, DEFAULT_PRESETS) are
+  first-run seeds and outage fallbacks only — to change live content, edit
+  on the site while logged in, or PUT to the api. do not edit the defaults
+  expecting the site to change.
+- exception: the home page (`app/page.tsx`) reads its blob server-side
+  (force-dynamic) so bio/background/interests stay in the SSR html for seo.
+  keep it that way.
+- public-write endpoints (guestbook, vim-scores) have honeypots, per-ip
+  cooldowns (hashed ips, never raw), length caps, validation. keep all of
+  these when touching them.
+
+## routes
+
+public: `/` `/writing` `/writing/vibe-coding-wont-save-you` `/guestbook`
+`/vim` `/projects`. unlisted + noindex: `/plan` `/presets`. nav lives in
+`app/components/sidebar.tsx` (j/k + enter navigation); command mode in
+`app/components/command-bar.tsx` (`:` key) — new pages should be added to
+both, plus the `:help` page list.
+
+## scripts
+
+- `node scripts/backup-blobs.mjs [base-url]` — snapshot all blob content to
+  `backups/` (sanitised, via public api). run occasionally, commit the diff.
+- `node scripts/sync-defaults.mjs` — rewrite in-repo fallback defaults from
+  `backups/` (skips blobs that don't exist yet).
+
+## workflow
+
+- `npx tsc --noEmit` before every commit. conventional commits
+  (`feat:`/`fix:`/`docs:`/`refactor:`), no attribution lines.
+- push straight to master; vercel auto-deploys production. previews are
+  unused. env vars (`SITE_PASSWORD`, `BLOB_READ_WRITE_TOKEN`) live in vercel;
+  local copies in gitignored `.env.local` (dev password: `changeme`).
+- `npm run build` while `npm run dev` is running corrupts `.next` — restart
+  the dev server after building.
+- the repo is PUBLIC. never commit secrets, raw ips, or anything from
+  `.env.local`; backups must come from the public api (sanitised), not raw
+  blob reads.
+
+## voice
+
+lowercase, dry, terminal-flavoured. kaomoji budget: at most one per section,
+restraint is the point. when writing copy, fewer words and no corporate tone.
+russell co-writes essays with credited co-authors; don't call the tutoring
+platform anything other than "sydney scholars".
