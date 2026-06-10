@@ -265,10 +265,12 @@ export function CommandBar({ sections }: { sections: number }) {
           </span>
         )}
       </span>
-      <span className="shrink-0 text-right flex items-baseline gap-2" style={{ color: "var(--faint)" }}>
-        <span>{sections} sections · © 2026 · utf-8</span>
-        <Kaomoji slot="statusbar" className="text-[11px]" />
-      </span>
+      {!(message && !open) && (
+        <span className="shrink-0 text-right flex items-baseline gap-2" style={{ color: "var(--faint)" }}>
+          <span>{sections} sections · © 2026 · utf-8</span>
+          <Kaomoji slot="statusbar" className="text-[11px]" />
+        </span>
+      )}
     </footer>
   );
 }
