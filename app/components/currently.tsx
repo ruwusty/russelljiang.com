@@ -82,7 +82,9 @@ type Phase = "typing" | "deleting";
 type SaveState = "idle" | "saving" | "error";
 
 export function Currently() {
-  const [queue, setQueue] = useState(() => shuffled(DEFAULT_ITEMS));
+  // deterministic first render (no shuffle) so SSR and hydration match;
+  // the queue is shuffled after mount
+  const [queue, setQueue] = useState<string[]>(DEFAULT_ITEMS);
   const [items, setItems] = useState<string[]>(DEFAULT_ITEMS);
   const [index, setIndex] = useState(0);
   const [text, setText] = useState("");
@@ -101,17 +103,20 @@ export function Currently() {
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
+      let next = DEFAULT_ITEMS;
       try {
         const res = await fetch("/api/currently", { cache: "no-store" });
         const json = await res.json();
-        if (!cancelled && Array.isArray(json.items) && json.items.length > 0) {
-          setItems(json.items);
-          setQueue(shuffled(json.items));
-          setIndex(0);
-          setText("");
-          setPhase("typing");
+        if (Array.isArray(json.items) && json.items.length > 0) {
+          next = json.items;
         }
       } catch {}
+      if (cancelled) return;
+      setItems(next);
+      setQueue(shuffled(next));
+      setIndex(0);
+      setText("");
+      setPhase("typing");
     };
     load();
     return () => {
