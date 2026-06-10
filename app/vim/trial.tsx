@@ -15,9 +15,34 @@ const LINES = [
   "two sets of eight, both honest — then :wq and go home",
 ];
 
-const TARGETS_TO_WIN = 10;
-const MIN_TARGET_DISTANCE = 6;
-const BEST_KEY = "vim_trial_best";
+type Difficulty = "easy" | "normal" | "hard";
+
+const DIFFICULTIES: Record<
+  Difficulty,
+  { targets: number; minDist: number; maxDist: number; blurb: string }
+> = {
+  easy: {
+    targets: 5,
+    minDist: 3,
+    maxDist: 14,
+    blurb: "5 targets, always nearby — hjkl is enough",
+  },
+  normal: {
+    targets: 10,
+    minDist: 6,
+    maxDist: Infinity,
+    blurb: "10 targets anywhere — w and b start to matter",
+  },
+  hard: {
+    targets: 15,
+    minDist: 14,
+    maxDist: Infinity,
+    blurb: "15 far targets — line and buffer jumps or you'll suffer",
+  },
+};
+
+const DIFFICULTY_KEY = "vim_trial_difficulty";
+const bestKeyFor = (d: Difficulty) => `vim_trial_best_${d}`;
 
 interface Pos {
   row: number;
@@ -62,15 +87,19 @@ const posKey = (p: Pos) => `${p.row}:${p.col}`;
 const isAfter = (a: Pos, b: Pos) => a.row > b.row || (a.row === b.row && a.col > b.col);
 const distance = (a: Pos, b: Pos) => Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
 
-function randomTarget(notNear: Pos): Pos {
-  const candidates = WORD_STARTS.filter((p) => distance(p, notNear) >= MIN_TARGET_DISTANCE);
+function randomTarget(notNear: Pos, difficulty: Difficulty): Pos {
+  const { minDist, maxDist } = DIFFICULTIES[difficulty];
+  const candidates = WORD_STARTS.filter((p) => {
+    const d = distance(p, notNear);
+    return d >= minDist && d <= maxDist;
+  });
   const pool = candidates.length > 0 ? candidates : WORD_STARTS;
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-function loadBest(): Best | null {
+function loadBest(difficulty: Difficulty): Best | null {
   try {
-    const raw = localStorage.getItem(BEST_KEY);
+    const raw = localStorage.getItem(bestKeyFor(difficulty));
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (typeof parsed?.time === "number" && typeof parsed?.keys === "number") {
@@ -91,8 +120,9 @@ function isTypingTarget(target: EventTarget | null): boolean {
 }
 
 export function VimTrial() {
+  const [difficulty, setDifficulty] = useState<Difficulty>("easy");
   const [cursor, setCursor] = useState<Pos>({ row: 0, col: 0 });
-  const [target, setTarget] = useState<Pos>(() => randomTarget({ row: 0, col: 0 }));
+  const [target, setTarget] = useState<Pos>(() => randomTarget({ row: 0, col: 0 }, "easy"));
   const [hits, setHits] = useState(0);
   const [keys, setKeys] = useState(0);
   const [startedAt, setStartedAt] = useState<number | null>(null);
@@ -103,7 +133,12 @@ export function VimTrial() {
   const pendingGRef = useRef(false);
 
   useEffect(() => {
-    setBest(loadBest());
+    const saved = localStorage.getItem(DIFFICULTY_KEY);
+    const d: Difficulty =
+      saved === "easy" || saved === "normal" || saved === "hard" ? saved : "easy";
+    setDifficulty(d);
+    setTarget(randomTarget({ row: 0, col: 0 }, d));
+    setBest(loadBest(d));
   }, []);
 
   // live timer
@@ -113,24 +148,36 @@ export function VimTrial() {
     return () => clearInterval(tick);
   }, [startedAt, finalTime]);
 
-  const restart = useCallback(() => {
-    const start = { row: 0, col: 0 };
-    setCursor(start);
-    setTarget(randomTarget(start));
-    setHits(0);
-    setKeys(0);
-    setStartedAt(null);
-    setElapsed(0);
-    setFinalTime(null);
-    goalColRef.current = 0;
-    pendingGRef.current = false;
-  }, []);
+  const restart = useCallback(
+    (d: Difficulty = difficulty) => {
+      const start = { row: 0, col: 0 };
+      setCursor(start);
+      setTarget(randomTarget(start, d));
+      setHits(0);
+      setKeys(0);
+      setStartedAt(null);
+      setElapsed(0);
+      setFinalTime(null);
+      goalColRef.current = 0;
+      pendingGRef.current = false;
+    },
+    [difficulty]
+  );
+
+  const pickDifficulty = (d: Difficulty) => {
+    setDifficulty(d);
+    setBest(loadBest(d));
+    try {
+      localStorage.setItem(DIFFICULTY_KEY, d);
+    } catch {}
+    restart(d);
+  };
 
   const arrive = useCallback(
     (next: Pos, keyCount: number, startTime: number) => {
       if (posKey(next) !== posKey(target)) return;
       const newHits = hits + 1;
-      if (newHits >= TARGETS_TO_WIN) {
+      if (newHits >= DIFFICULTIES[difficulty].targets) {
         const time = (Date.now() - startTime) / 1000;
         setFinalTime(time);
         setHits(newHits);
@@ -138,7 +185,7 @@ export function VimTrial() {
         setBest((current) => {
           if (!current || time < current.time) {
             try {
-              localStorage.setItem(BEST_KEY, JSON.stringify(record));
+              localStorage.setItem(bestKeyFor(difficulty), JSON.stringify(record));
             } catch {}
             return record;
           }
@@ -146,10 +193,10 @@ export function VimTrial() {
         });
       } else {
         setHits(newHits);
-        setTarget(randomTarget(next));
+        setTarget(randomTarget(next, difficulty));
       }
     },
-    [hits, target]
+    [hits, target, difficulty]
   );
 
   useEffect(() => {
@@ -264,18 +311,48 @@ export function VimTrial() {
   }, [cursor, keys, startedAt, finalTime, arrive]);
 
   const done = finalTime !== null;
+  const config = DIFFICULTIES[difficulty];
+
+  const hint = (() => {
+    if (difficulty !== "easy" || done) return null;
+    if (target.row === cursor.row) {
+      return target.col > cursor.col
+        ? "same line, to the right → w hops words, l steps"
+        : "same line, to the left → b hops back, h steps";
+    }
+    const lines = Math.abs(target.row - cursor.row);
+    return target.row > cursor.row
+      ? `${lines} line${lines > 1 ? "s" : ""} down → press j`
+      : `${lines} line${lines > 1 ? "s" : ""} up → press k`;
+  })();
 
   return (
     <div id="trial">
       <div className="flex items-baseline gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
         <span style={{ color: "var(--green)" }}>❯</span>
         <span>
-          reach <span style={{ color: "var(--ink)" }}>{TARGETS_TO_WIN}</span> targets — fast, in few keystrokes
+          reach <span style={{ color: "var(--ink)" }}>{config.targets}</span> targets — fast, in few keystrokes
+        </span>
+      </div>
+
+      <div className="mt-3 flex items-baseline gap-3 flex-wrap text-[12px]">
+        {(Object.keys(DIFFICULTIES) as Difficulty[]).map((d) => (
+          <button
+            key={d}
+            onClick={() => pickDifficulty(d)}
+            className="tui-btn text-[12px]"
+            style={{ color: d === difficulty ? "var(--green)" : "var(--soft)" }}
+          >
+            [{d}]
+          </button>
+        ))}
+        <span className="text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+          {config.blurb}
         </span>
       </div>
 
       <div className="mt-2 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
-        h j k l · w b e · 0 $ · gg G — the highlighted block is the target
+        the highlighted block is the target — see the guide below if you&apos;re new
       </div>
 
       <pre
@@ -307,6 +384,12 @@ export function VimTrial() {
         ))}
       </pre>
 
+      {hint && (
+        <div className="mt-2 text-[11px] lowercase" style={{ color: "var(--green)" }}>
+          hint: {hint}
+        </div>
+      )}
+
       <div
         className="mt-3 flex items-baseline justify-between gap-4 flex-wrap text-[11px] lowercase"
         style={{ color: "var(--soft)" }}
@@ -320,11 +403,11 @@ export function VimTrial() {
             </span>
           ) : (
             <span>
-              target {Math.min(hits + 1, TARGETS_TO_WIN)}/{TARGETS_TO_WIN} ·{" "}
+              target {Math.min(hits + 1, config.targets)}/{config.targets} ·{" "}
               {startedAt ? `${elapsed.toFixed(1)}s` : "timer starts on first key"} · {keys} keys
             </span>
           )}
-          <button onClick={restart} className="tui-btn text-[11px]">
+          <button onClick={() => restart()} className="tui-btn text-[11px]">
             [restart]
           </button>
         </span>

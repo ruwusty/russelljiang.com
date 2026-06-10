@@ -22,7 +22,14 @@ const EXTERNAL: Record<string, string> = {
   email: "mailto:russelljiang@pm.me",
 };
 
-const HELP = "go <page> · theme [dark|light] · vim · login · logout · whoami · help · q";
+const HELP_LINES: [string, string][] = [
+  ["go <page>", "home · writing · guestbook · plan · presets · vim · github · linkedin · email"],
+  ["vim", "motion practice trial"],
+  ["theme [dark|light]", "switch theme"],
+  ["login / logout", "owner mode (masked prompt)"],
+  ["whoami", "introductions"],
+  ["q / wq", "you have to try"],
+];
 const MESSAGE_MS = 5000;
 
 function isTypingTarget(target: EventTarget | null): boolean {
@@ -42,11 +49,16 @@ export function CommandBar({ sections }: { sections: number }) {
   const [mode, setMode] = useState<"cmd" | "pw">("cmd");
   const [value, setValue] = useState("");
   const [message, setMessage] = useState<string | null>(null);
+  const [helpOpen, setHelpOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const msgTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setHelpOpen(false);
+        return;
+      }
       if (event.key !== ":" || isTypingTarget(event.target)) return;
       if (event.metaKey || event.ctrlKey || event.altKey) return;
       event.preventDefault();
@@ -75,12 +87,14 @@ export function CommandBar({ sections }: { sections: number }) {
     const rawArg = rest.join(" ");
     const arg = rawArg.toLowerCase();
 
+    setHelpOpen(false);
+
     switch (head.toLowerCase()) {
       case "":
         break;
       case "help":
       case "h":
-        show(`commands: ${HELP}`);
+        setHelpOpen(true);
         break;
       case "go": {
         if (ROUTES[arg]) {
@@ -159,9 +173,30 @@ export function CommandBar({ sections }: { sections: number }) {
 
   return (
     <footer
-      className="flex items-center justify-between gap-4 px-3 py-1 text-[11px] lowercase"
+      className="relative flex items-center justify-between gap-4 px-3 py-1 text-[11px] lowercase"
       style={{ borderTop: "1px solid var(--line)", color: "var(--soft)" }}
     >
+      {helpOpen && (
+        <div
+          className="absolute left-[-1px] right-[-1px] bottom-full px-4 py-3 text-[11px] lowercase cursor-pointer"
+          style={{ background: "var(--bg)", border: "1px solid var(--line)" }}
+          onClick={() => setHelpOpen(false)}
+          role="dialog"
+          aria-label="command help"
+        >
+          <div className="grid gap-x-5 gap-y-1" style={{ gridTemplateColumns: "max-content 1fr" }}>
+            {HELP_LINES.map(([cmd, desc]) => (
+              <span key={cmd} className="contents">
+                <span style={{ color: "var(--green)" }}>:{cmd}</span>
+                <span style={{ color: "var(--soft)" }}>{desc}</span>
+              </span>
+            ))}
+          </div>
+          <div className="mt-2" style={{ color: "var(--faint)" }}>
+            esc or click to close
+          </div>
+        </div>
+      )}
       <span className="flex items-baseline gap-2 min-w-0 flex-1">
         <span
           className="px-1.5 shrink-0"
