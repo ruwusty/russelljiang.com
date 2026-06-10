@@ -58,7 +58,6 @@ const DIFFICULTIES: Record<
 const DIFFICULTY_KEY = "vim_trial_difficulty";
 const NAME_KEY = "vim_trial_name";
 const PERSONAL_MAX = 10;
-const bestKeyFor = (d: Difficulty) => `vim_trial_best_${d}`;
 const runsKeyFor = (d: Difficulty) => `vim_trial_runs_${d}`;
 
 interface PersonalRun {
@@ -103,11 +102,6 @@ function recordRun(d: Difficulty, run: PersonalRun): PersonalRun[] {
 interface Pos {
   row: number;
   col: number;
-}
-
-interface Best {
-  time: number;
-  keys: number;
 }
 
 const isWordChar = (ch: string) => /[A-Za-z0-9_]/.test(ch);
@@ -168,18 +162,6 @@ function randomTarget(notNear: Pos, difficulty: Difficulty): Pos {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-function loadBest(difficulty: Difficulty): Best | null {
-  try {
-    const raw = localStorage.getItem(bestKeyFor(difficulty));
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (typeof parsed?.time === "number" && typeof parsed?.keys === "number") {
-      return parsed;
-    }
-  } catch {}
-  return null;
-}
-
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
   return (
@@ -199,7 +181,6 @@ export function VimTrial() {
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [finalTime, setFinalTime] = useState<number | null>(null);
-  const [best, setBest] = useState<Best | null>(null);
   const [boards, setBoards] = useState<Boards | null>(null);
   const [boardView, setBoardView] = useState<"global" | "personal">("global");
   const [personal, setPersonal] = useState<PersonalRun[]>([]);
@@ -216,7 +197,6 @@ export function VimTrial() {
       saved === "easy" || saved === "normal" || saved === "hard" ? saved : "easy";
     setDifficulty(d);
     setTarget(randomTarget({ row: 0, col: 0 }, d));
-    setBest(loadBest(d));
     setPersonal(loadRuns(d));
     setPlayerName(localStorage.getItem(NAME_KEY) ?? "");
     fetch("/api/vim-scores", { cache: "no-store" })
@@ -254,7 +234,6 @@ export function VimTrial() {
 
   const pickDifficulty = (d: Difficulty) => {
     setDifficulty(d);
-    setBest(loadBest(d));
     setPersonal(loadRuns(d));
     try {
       localStorage.setItem(DIFFICULTY_KEY, d);
@@ -273,16 +252,6 @@ export function VimTrial() {
         setPersonal(
           recordRun(difficulty, { time, keys: keyCount, ts: new Date().toISOString() })
         );
-        const record: Best = { time, keys: keyCount };
-        setBest((current) => {
-          if (!current || time < current.time) {
-            try {
-              localStorage.setItem(bestKeyFor(difficulty), JSON.stringify(record));
-            } catch {}
-            return record;
-          }
-          return current;
-        });
       } else {
         setHits(newHits);
         setTarget(randomTarget(next, difficulty));
@@ -547,9 +516,6 @@ export function VimTrial() {
           <button onClick={() => restart()} className="tui-btn text-[11px]">
             [restart]
           </button>
-        </span>
-        <span style={{ color: "var(--faint)" }}>
-          {best ? `best: ${best.time.toFixed(1)}s · ${best.keys} keys` : "no best yet"}
         </span>
       </div>
 
