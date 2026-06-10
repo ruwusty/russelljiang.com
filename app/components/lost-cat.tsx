@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 // preview the art in a terminal with: node scripts/preview-cat.mjs
 const W = 30;
 const H = 20;
-const PX = 3; // on-screen size of one pixel
+const PX = 2.5; // on-screen size of one pixel
 
 const SHAPE = [
   ".....................F....F...",
@@ -69,9 +69,6 @@ function compose(legs: [number, number][], blink: boolean): string[] {
   const set = (x: number, y: number, v: string) => {
     if (g[y][x] !== ".") g[y][x] = v;
   };
-  // inner ears
-  set(21, 1, "L");
-  set(26, 1, "L");
   // eye (2×2; blink keeps only the bottom row)
   if (!blink) {
     set(25, 5, "E");
@@ -79,11 +76,6 @@ function compose(legs: [number, number][], blink: boolean): string[] {
   }
   set(25, 6, "E");
   set(26, 6, "E");
-  // muzzle
-  for (let x = 24; x <= 27; x++) {
-    set(x, 8, "L");
-    set(x, 9, "L");
-  }
   // collar
   for (let x = 19; x <= 23; x++) set(x, 10, "C");
   return g.map((r) => r.join(""));
@@ -129,7 +121,7 @@ function Sprite({ frame, flip }: { frame: string[]; flip: boolean }) {
 }
 
 const WALK_MS = 3200;
-const STEP_MS = 240;
+const STEP_MS = 130;
 const BLINK_EVERY_MS = 2900;
 const BLINK_MS = 160;
 
