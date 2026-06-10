@@ -48,29 +48,27 @@ live site, no redeploys.
 ## the site is its own cms
 
 content lives in vercel blob behind small api routes. reads are public,
-writes require a password (`x-site-password` header → timing-safe check
-against `SITE_PASSWORD`). when the owner logs in, edit affordances appear
-in place — textareas, dropdowns, inline inputs — and changes sync with a
-debounce. visitors never see any of it.
+writes are password-gated server-side. when the owner logs in, edit
+affordances appear in place — textareas, dropdowns, inline inputs — and
+changes sync with a debounce. visitors never see any of it.
 
-| content                          | route               | storage                 |
-| -------------------------------- | ------------------- | ----------------------- |
-| home bio / background / interests| `/api/home`         | `home/content.json`     |
-| `currently` rotation             | `/api/currently`    | `currently/items.json`  |
-| kaomoji slots (picker, 5 spots)  | `/api/kaomoji`      | `kaomoji/slots.json`    |
-| course planner (drag & drop)     | `/api/plan`         | `plan/courses.json`     |
-| amp presets (inline editing)     | `/api/presets`      | `presets/presets.json`  |
-| guestbook (public writes)        | `/api/guestbook`    | `guestbook/entries.json`|
-| vim trial leaderboard            | `/api/vim-scores`   | `vim/leaderboard.json`  |
+| content                          | route             |
+| -------------------------------- | ----------------- |
+| home bio / background / interests| `/api/home`       |
+| `currently` rotation             | `/api/currently`  |
+| kaomoji slots (picker, 5 spots)  | `/api/kaomoji`    |
+| course planner (drag & drop)     | `/api/plan`       |
+| amp presets (inline editing)     | `/api/presets`    |
+| guestbook (public writes)        | `/api/guestbook`  |
+| vim trial leaderboard            | `/api/vim-scores` |
 
 the home page fetches its blob server-side so the content stays in the
 ssr html (seo intact); the widgets fetch client-side. hardcoded defaults in
 the components are first-run seeds and outage fallbacks — the blob is the
 source of truth.
 
-public writes (guestbook, leaderboard) get honeypots, per-ip cooldowns
-(hashed ips only), length caps, and validation; the owner can moderate
-entries in place.
+public writes (guestbook, leaderboard) get rate limits, length caps, and
+validation; the owner can moderate entries in place.
 
 ## extras
 
