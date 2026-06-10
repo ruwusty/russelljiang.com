@@ -27,8 +27,8 @@ const projects: Project[] = [
     index: "01",
     name: "sydney scholars",
     claim:
-      "a tutoring platform for sydney students. i work on the systems side: the admin and tutor portals — session workflows, lesson planning, incident and safety logging, and the guardrails that keep ai tutoring context privacy-safe.",
-    role: "systems — admin/tutor portal, data model, ai context plumbing",
+      "a tutoring platform for sydney students. i work on the systems side: the admin and tutor portals — session workflows, lesson planning, incident and safety logging — plus a rag pipeline that grounds the ai tutor in class reference material, with privacy guardrails on what it's allowed to see.",
+    role: "systems — admin/tutor portal, rag pipeline (ingestion, retrieval, evals)",
     stack: "React · TypeScript · Supabase (Postgres, edge functions)",
     links: [{ label: "sydneyscholars.com", href: "https://sydneyscholars.com" }],
   },
