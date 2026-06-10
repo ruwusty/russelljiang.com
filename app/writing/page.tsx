@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { DocsShell } from "../components/docs-shell";
 import { Kaomoji } from "../components/kaomoji";
 
@@ -17,6 +18,7 @@ const posts: Post[] = [
     date: "2026-04-12",
     tags: ["opinion", "ai"],
     published: "DataSoc",
+    href: "/writing/vibe-coding-wont-save-you",
   },
 ];
 
@@ -88,16 +90,23 @@ export default function WritingIndex() {
               </div>
             </>
           );
-          return interactive ? (
-            <a
-              key={post.title}
-              href={post.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              {...commonProps}
-            >
-              {inner}
-            </a>
+          const isInternal = post.href?.startsWith("/");
+          return interactive && post.href ? (
+            isInternal ? (
+              <Link key={post.title} href={post.href} {...commonProps}>
+                {inner}
+              </Link>
+            ) : (
+              <a
+                key={post.title}
+                href={post.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                {...commonProps}
+              >
+                {inner}
+              </a>
+            )
           ) : (
             <div key={post.title} {...commonProps} aria-disabled="true">
               {inner}
