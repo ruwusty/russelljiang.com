@@ -37,7 +37,7 @@ const projects: Project[] = [
     index: "02",
     name: "this site",
     claim:
-      "a personal site that became its own cms. every piece of content — bio, plan, presets, the currently line, even the kaomoji — is editable on-site behind one password, stored in vercel blob. plus a vim command mode, a guestbook, and a motion-practice minigame with leaderboards.",
+      "a personal site that became its own cms. every piece of content — bio, plan, presets, the currently line, even the kaomoji — is editable on-site, stored in vercel blob. plus a vim command mode, a guestbook, and a vim motion-practice minigame with leaderboards.",
     role: "everything, with a pair programmer",
     stack: "Next.js 15 · React 19 · Tailwind · Vercel Blob",
     links: [
