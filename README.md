@@ -92,8 +92,6 @@ no ui libraries, no cms, no analytics. first load is ~100 kb.
 
 ```sh
 npm install
-echo "SITE_PASSWORD=changeme" > .env.local
-# optional, for blob-backed saves: add BLOB_READ_WRITE_TOKEN from vercel
 npm run dev
 ```
 
