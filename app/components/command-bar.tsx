@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Kaomoji } from "./kaomoji";
+import { useSiteAuth } from "./site-auth";
 
 const ROUTES: Record<string, string> = {
   home: "/",
@@ -20,7 +21,7 @@ const EXTERNAL: Record<string, string> = {
   email: "mailto:russelljiang@pm.me",
 };
 
-const HELP = "go <page> · theme [dark|light] · whoami · help · q";
+const HELP = "go <page> · theme [dark|light] · login <pw> · logout · whoami · help · q";
 const MESSAGE_MS = 5000;
 
 function isTypingTarget(target: EventTarget | null): boolean {
@@ -35,6 +36,7 @@ function isTypingTarget(target: EventTarget | null): boolean {
 export function CommandBar({ sections }: { sections: number }) {
   const router = useRouter();
   const { resolvedTheme, setTheme } = useTheme();
+  const { password, login, logout } = useSiteAuth();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [message, setMessage] = useState<string | null>(null);
@@ -67,7 +69,8 @@ export function CommandBar({ sections }: { sections: number }) {
   const run = (raw: string) => {
     const cmd = raw.trim().replace(/^:+/, "");
     const [head = "", ...rest] = cmd.split(/\s+/);
-    const arg = rest.join(" ").toLowerCase();
+    const rawArg = rest.join(" ");
+    const arg = rawArg.toLowerCase();
 
     switch (head.toLowerCase()) {
       case "":
@@ -104,7 +107,33 @@ export function CommandBar({ sections }: { sections: number }) {
         break;
       }
       case "whoami":
-        show("russell jiang · data science @ unsw ( ˶ˆᗜˆ˵ )");
+        show(
+          password
+            ? "russell (root) · permissions: all of them"
+            : "russell jiang · data science @ unsw ( ˶ˆᗜˆ˵ )"
+        );
+        break;
+      case "login": {
+        if (password) {
+          show("already logged in (try :logout)");
+          break;
+        }
+        if (!rawArg) {
+          show("usage: login <password>");
+          break;
+        }
+        login(rawArg).then((err) => {
+          show(err ?? "logged in — welcome back, russell");
+        });
+        break;
+      }
+      case "logout":
+        if (password) {
+          logout();
+          show("logged out");
+        } else {
+          show("you weren't logged in");
+        }
         break;
       case "guestbook":
         router.push("/guestbook");

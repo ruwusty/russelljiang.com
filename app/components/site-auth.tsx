@@ -3,6 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 
 const SESSION_KEY = "site_pw";
+const AUTH_EVENT = "site-auth-changed";
+
+function broadcast() {
+  window.dispatchEvent(new Event(AUTH_EVENT));
+}
 
 const inputStyle = {
   background: "transparent",
@@ -26,6 +31,9 @@ export function useSiteAuth(): SiteAuth {
   useEffect(() => {
     setPassword(sessionStorage.getItem(SESSION_KEY));
     setReady(true);
+    const sync = () => setPassword(sessionStorage.getItem(SESSION_KEY));
+    window.addEventListener(AUTH_EVENT, sync);
+    return () => window.removeEventListener(AUTH_EVENT, sync);
   }, []);
 
   const login = useCallback(async (attempt: string): Promise<string | null> => {
@@ -40,6 +48,7 @@ export function useSiteAuth(): SiteAuth {
       }
       sessionStorage.setItem(SESSION_KEY, attempt);
       setPassword(attempt);
+      broadcast();
       return null;
     } catch {
       return "login unavailable";
@@ -49,6 +58,7 @@ export function useSiteAuth(): SiteAuth {
   const logout = useCallback(() => {
     sessionStorage.removeItem(SESSION_KEY);
     setPassword(null);
+    broadcast();
   }, []);
 
   return { password, ready, login, logout, dropSession: logout };
