@@ -86,15 +86,6 @@ validation; the owner can moderate entries in place.
 next.js 15 · react 19 · tailwind · vercel blob · next-themes.
 no ui libraries, no cms, no analytics. first load is ~100 kb.
 
-## running locally
-
-```sh
-npm install
-npm run dev
-```
-
-without a blob token everything renders from the in-repo defaults.
-
 ## scripts
 
 ```sh
