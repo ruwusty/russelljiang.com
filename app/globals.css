@@ -157,6 +157,16 @@ button:focus-visible,
   }
 }
 
+/* a cat, passing through */
+@keyframes cat-walk {
+  from {
+    left: -15%;
+  }
+  to {
+    left: 104%;
+  }
+}
+
 /* fixed vertical japanese text in the right margin */
 .vertical-jp {
   position: fixed;

@@ -157,6 +157,18 @@ export function CommandBar({ sections }: { sections: number }) {
       case "vim":
         router.push("/vim");
         break;
+      case "rm": {
+        if (/^-rf\s*\/\*?$/.test(arg)) {
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            show("rm: refusing to remove '/': it's load-bearing");
+          } else {
+            window.dispatchEvent(new Event("site-rm-rf"));
+          }
+        } else {
+          show(`rm: cannot remove '${arg || "<nothing>"}': permission denied`);
+        }
+        break;
+      }
       case "q":
       case "q!":
       case "qa":

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 // 18×8 pixel cat, facing right. X = ink, o = eye (bg), c = collar (accent)
-const FRAME_A = [
+export const FRAME_A = [
   ".X.........XX..XX.",
   ".X.........XXXXXX.",
   ".X.........XoXXoX.",
@@ -14,7 +14,7 @@ const FRAME_A = [
   "...XX..XX..XX.XX..",
 ];
 
-const FRAME_B = [
+export const FRAME_B = [
   ".X.........XX..XX.",
   ".X.........XXXXXX.",
   ".X.........XoXXoX.",
@@ -31,7 +31,7 @@ const PIXEL_FILL: Record<string, string> = {
   c: "var(--accent)",
 };
 
-function Sprite({ frame, flip }: { frame: string[]; flip: boolean }) {
+export function Sprite({ frame, flip }: { frame: string[]; flip: boolean }) {
   return (
     <svg
       viewBox="0 0 18 8"
@@ -62,7 +62,10 @@ export function LostCat() {
   const [x, setX] = useState(8);
   const [dir, setDir] = useState(1);
   const [stepFrame, setStepFrame] = useState(false);
+  const [fleeing, setFleeing] = useState(false);
   const xRef = useRef(8);
+  const lastFleeRef = useRef(0);
+  const areaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -90,17 +93,44 @@ export function LostCat() {
     return () => clearInterval(tick);
   }, [reduced]);
 
+  // it does not want to be caught
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (reduced !== false) return;
+    const area = areaRef.current;
+    if (!area) return;
+    const now = performance.now();
+    if (now - lastFleeRef.current < 900) return;
+    const rect = area.getBoundingClientRect();
+    const catPx = (xRef.current / 100) * rect.width + 45; // sprite centre
+    const mousePx = e.clientX - rect.left;
+    if (Math.abs(mousePx - catPx) > 80) return;
+    lastFleeRef.current = now;
+    const away = mousePx > catPx ? -1 : 1;
+    const next = Math.min(82, Math.max(2, xRef.current + away * (24 + Math.random() * 12)));
+    setDir(next > xRef.current ? 1 : -1);
+    xRef.current = next;
+    setFleeing(true);
+    setX(next);
+    setTimeout(() => setFleeing(false), 750);
+  };
+
   return (
     <div
+      ref={areaRef}
       className="relative mt-12 h-[120px]"
       style={{ borderBottom: "1px solid var(--line)" }}
       aria-hidden="true"
+      onMouseMove={onMouseMove}
     >
       <div
         className="absolute bottom-0"
         style={{
           left: `${x}%`,
-          transition: reduced ? undefined : `left ${WALK_MS}ms linear`,
+          transition: reduced
+            ? undefined
+            : fleeing
+              ? "left 700ms cubic-bezier(0.25, 0.8, 0.4, 1)"
+              : `left ${WALK_MS}ms linear`,
         }}
       >
         <Sprite frame={stepFrame ? FRAME_B : FRAME_A} flip={dir < 0} />
