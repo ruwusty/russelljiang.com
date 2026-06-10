@@ -6,23 +6,23 @@ it gradually became its own cms: every piece of content is editable on the
 live site, no redeploys.
 
 ```
-┌ russell jiang (´。• ᵕ •。`) ─────────────────────────── [dark] ┐
-│                                                              │
-│  ~/personal/introduction                                     │
-│                                                              │
-│  ❯ ls ~/site                                                 │
-│    01 ▸ overview                                             │
-│    02 ▸ writing                                              │
-│    03 ▸ guestbook                                            │
-│    04 ▸ vim                                                  │
-│    05 ▸ projects                                             │
-│                                                              │
-│  ❯ status     online                                         │
-│  ❯ currently  overfitting to vibes▮                         │
-│                                                              │
-├──────────────────────────────────────────────────────────────┤
-│ normal  j/k move · enter open · : for cmd      © 2026 · utf-8│
-└──────────────────────────────────────────────────────────────┘
+┌ russell jiang (´。• ᵕ •。`) ─────────────────────── [dark]
+│
+│  ~/personal/introduction
+│
+│  ❯ ls ~/site
+│    01 ▸ overview
+│    02 ▸ writing
+│    03 ▸ guestbook
+│    04 ▸ vim
+│    05 ▸ projects
+│
+│  ❯ status     online
+│  ❯ currently  overfitting to vibes▮
+│
+├───────────────────────────────────────────────────────────
+│ normal  j/k move · enter open · : for cmd · © 2026 · utf-8
+└───────────────────────────────────────────────────────────
 ```
 
 ## design rules
