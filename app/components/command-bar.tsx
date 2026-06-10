@@ -54,10 +54,48 @@ export function CommandBar({ sections }: { sections: number }) {
   const msgTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    // restore the cheat across navigations within the session
+    try {
+      if (sessionStorage.getItem("phosphor") === "1") {
+        document.body.classList.add("phosphor");
+      }
+    } catch {}
+
+    const KONAMI = [
+      "ArrowUp",
+      "ArrowUp",
+      "ArrowDown",
+      "ArrowDown",
+      "ArrowLeft",
+      "ArrowRight",
+      "ArrowLeft",
+      "ArrowRight",
+      "b",
+      "a",
+    ];
+    let ki = 0;
+
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setHelpOpen(false);
         return;
+      }
+      if (!isTypingTarget(event.target)) {
+        const expected = KONAMI[ki];
+        ki =
+          event.key === expected || event.key.toLowerCase() === expected
+            ? ki + 1
+            : event.key === KONAMI[0]
+              ? 1
+              : 0;
+        if (ki === KONAMI.length) {
+          ki = 0;
+          const on = document.body.classList.toggle("phosphor");
+          try {
+            sessionStorage.setItem("phosphor", on ? "1" : "");
+          } catch {}
+          show(on ? "cheat accepted — phosphor mode (⌐■_■)" : "phosphor mode off. welcome back to 2026");
+        }
       }
       if (event.key !== ":" || isTypingTarget(event.target)) return;
       if (event.metaKey || event.ctrlKey || event.altKey) return;
@@ -69,6 +107,7 @@ export function CommandBar({ sections }: { sections: number }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -156,6 +195,9 @@ export function CommandBar({ sections }: { sections: number }) {
         break;
       case "vim":
         router.push("/vim");
+        break;
+      case "parade":
+        window.dispatchEvent(new Event("site-parade"));
         break;
       case "rm": {
         if (/^-rf\s*\/\*?$/.test(arg)) {

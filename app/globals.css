@@ -157,6 +157,37 @@ button:focus-visible,
   }
 }
 
+/* konami: phosphor mode (the one sanctioned rule-break — it's a cheat code) */
+body.phosphor {
+  --bg: #0c110c;
+  --ink: #a8d8a8;
+  --soft: #6f9b6f;
+  --faint: #3a523a;
+  --line: #233623;
+  --accent: #c9a86a;
+  --green: #8fd48f;
+  background-color: #0c110c;
+}
+
+body.phosphor::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.16) 0 1px,
+    transparent 1px 3px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.phosphor::after {
+    display: none;
+  }
+}
+
 /* a cat, passing through */
 @keyframes cat-walk {
   from {

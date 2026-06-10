@@ -6,18 +6,7 @@ import { FRAME_A, FRAME_B, Sprite } from "./lost-cat";
 const CAMEO_CHANCE = 0.05;
 const STEP_MS = 260;
 const MEOW = ["m", "e", "o", "w"];
-const KONAMI = [
-  "ArrowUp",
-  "ArrowUp",
-  "ArrowDown",
-  "ArrowDown",
-  "ArrowLeft",
-  "ArrowRight",
-  "ArrowLeft",
-  "ArrowRight",
-  "b",
-  "a",
-];
+export const PARADE_EVENT = "site-parade";
 
 interface Walker {
   id: number;
@@ -77,10 +66,9 @@ export function CatCameo() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduced]);
 
-  // typed "meow" summons one; konami summons the parade
+  // typed "meow" summons one; the hidden :parade command summons twelve
   useEffect(() => {
     let mi = 0;
-    let ki = 0;
     const onKey = (event: KeyboardEvent) => {
       if (isTypingTarget(event.target)) return;
       const lower = event.key.toLowerCase();
@@ -89,20 +77,14 @@ export function CatCameo() {
         mi = 0;
         spawn(1);
       }
-      const expected = KONAMI[ki];
-      ki =
-        event.key === expected || lower === expected
-          ? ki + 1
-          : event.key === KONAMI[0]
-            ? 1
-            : 0;
-      if (ki === KONAMI.length) {
-        ki = 0;
-        spawn(12);
-      }
     };
+    const onParade = () => spawn(12);
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener(PARADE_EVENT, onParade);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener(PARADE_EVENT, onParade);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
