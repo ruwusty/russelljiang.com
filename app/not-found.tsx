@@ -35,7 +35,10 @@ export default function NotFound() {
       <LostCat />
 
       <p className="mt-4 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
-        j/k to navigate, enter to open · or :go home
+        j/k to navigate, enter to open · or :go home ·{" "}
+        <a href="/404" className="site-link">
+          the cat lives at /404, if you want to visit properly
+        </a>
       </p>
     </DocsShell>
   );

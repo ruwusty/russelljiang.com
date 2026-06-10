@@ -196,9 +196,6 @@ export function CommandBar({ sections }: { sections: number }) {
       case "vim":
         router.push("/vim");
         break;
-      case "parade":
-        window.dispatchEvent(new Event("site-parade"));
-        break;
       case "rm": {
         if (/^-rf\s*\/\*?$/.test(arg)) {
           if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {

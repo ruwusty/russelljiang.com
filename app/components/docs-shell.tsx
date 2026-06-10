@@ -23,6 +23,7 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
     <div className="relative min-h-screen flex flex-col">
       <span className="vertical-jp" aria-hidden="true">
         余白の美
+        <span className="jp-tip">the beauty of negative space</span>
       </span>
 
       <div className="mx-auto w-full max-w-[660px] flex-1 flex flex-col px-4 py-12 lg:py-20">

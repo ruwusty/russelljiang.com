@@ -80,9 +80,10 @@ const ITEM_MAX_LENGTH = 100;
 
 type Phase = "typing" | "dozing" | "deleting";
 
-const DOZE_CHANCE = 0.08;
-const DOZE_CHAR_MS = 420;
-const DOZE_HOLD_MS = 1700;
+const DOZE_CHANCE = 0.15;
+const DOZE_TEXT = " z  z  z  z  z";
+const DOZE_CHAR_MS = 640;
+const DOZE_HOLD_MS = 2200;
 type SaveState = "idle" | "saving" | "error";
 
 export function Currently() {
@@ -157,7 +158,7 @@ export function Currently() {
         );
       }
     } else if (phase === "dozing") {
-      const dozeTarget = `${full} zzz`;
+      const dozeTarget = `${full}${DOZE_TEXT}`;
       if (text.length < dozeTarget.length) {
         t = setTimeout(() => setText(dozeTarget.slice(0, text.length + 1)), DOZE_CHAR_MS);
       } else {

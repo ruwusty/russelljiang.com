@@ -6,7 +6,6 @@ import { FRAME_A, FRAME_B, Sprite } from "./lost-cat";
 const CAMEO_CHANCE = 0.05;
 const STEP_MS = 260;
 const MEOW = ["m", "e", "o", "w"];
-export const PARADE_EVENT = "site-parade";
 
 interface Walker {
   id: number;
@@ -66,7 +65,7 @@ export function CatCameo() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduced]);
 
-  // typed "meow" summons one; the hidden :parade command summons twelve
+  // typed "meow" summons one
   useEffect(() => {
     let mi = 0;
     const onKey = (event: KeyboardEvent) => {
@@ -78,13 +77,8 @@ export function CatCameo() {
         spawn(1);
       }
     };
-    const onParade = () => spawn(12);
     window.addEventListener("keydown", onKey);
-    window.addEventListener(PARADE_EVENT, onParade);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      window.removeEventListener(PARADE_EVENT, onParade);
-    };
+    return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
