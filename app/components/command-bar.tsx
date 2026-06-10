@@ -38,6 +38,7 @@ export function CommandBar({ sections }: { sections: number }) {
   const { resolvedTheme, setTheme } = useTheme();
   const { password, login, logout } = useSiteAuth();
   const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<"cmd" | "pw">("cmd");
   const [value, setValue] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -50,6 +51,7 @@ export function CommandBar({ sections }: { sections: number }) {
       event.preventDefault();
       setMessage(null);
       setValue("");
+      setMode("cmd");
       setOpen(true);
     };
     window.addEventListener("keydown", onKey);
@@ -110,7 +112,7 @@ export function CommandBar({ sections }: { sections: number }) {
         show(
           password
             ? "russell (root) · permissions: all of them"
-            : "russell jiang · data science @ unsw ( ˶ˆᗜˆ˵ )"
+            : "hello, stranger ( ´ ▽ ` )ﾉ sign the guestbook on your way out"
         );
         break;
       case "login": {
@@ -119,8 +121,7 @@ export function CommandBar({ sections }: { sections: number }) {
           break;
         }
         if (!rawArg) {
-          show("usage: login <password>");
-          break;
+          return "password" as const;
         }
         login(rawArg).then((err) => {
           show(err ?? "logged in — welcome back, russell");
@@ -165,25 +166,44 @@ export function CommandBar({ sections }: { sections: number }) {
             color: "var(--bg)",
           }}
         >
-          {open ? "command" : "normal"}
+          {open ? (mode === "pw" ? "login" : "command") : "normal"}
         </span>
         {open ? (
-          <span className="flex items-baseline flex-1 min-w-0" style={{ color: "var(--ink)" }}>
-            :
+          <span className="flex items-baseline gap-1 flex-1 min-w-0" style={{ color: "var(--ink)" }}>
+            {mode === "pw" ? "password:" : ":"}
             <input
               ref={inputRef}
+              type={mode === "pw" ? "password" : "text"}
               value={value}
               onChange={(e) => setValue(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  setOpen(false);
-                  run(value);
+                  if (mode === "pw") {
+                    const attempt = value;
+                    setOpen(false);
+                    setMode("cmd");
+                    setValue("");
+                    if (attempt) {
+                      login(attempt).then((err) => {
+                        show(err ?? "logged in — welcome back, russell");
+                      });
+                    }
+                  } else if (run(value) === "password") {
+                    setMode("pw");
+                    setValue("");
+                  } else {
+                    setOpen(false);
+                  }
                 } else if (e.key === "Escape") {
                   setOpen(false);
+                  setMode("cmd");
                 }
               }}
-              onBlur={() => setOpen(false)}
-              className="flex-1 min-w-0 outline-none text-[11px] lowercase"
+              onBlur={() => {
+                setOpen(false);
+                setMode("cmd");
+              }}
+              className={`flex-1 min-w-0 outline-none text-[11px] ${mode === "pw" ? "" : "lowercase"}`}
               style={{
                 background: "transparent",
                 border: "none",
@@ -191,7 +211,7 @@ export function CommandBar({ sections }: { sections: number }) {
                 fontFamily: "inherit",
                 padding: 0,
               }}
-              aria-label="command input"
+              aria-label={mode === "pw" ? "password input" : "command input"}
               autoComplete="off"
               spellCheck={false}
             />
