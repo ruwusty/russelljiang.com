@@ -67,11 +67,31 @@ function H2({ id, index, children }: { id: string; index: string; children: Reac
   );
 }
 
-function Figure({ src, alt, caption }: { src: string; alt: string; caption?: string }) {
+function Figure({
+  src,
+  alt,
+  caption,
+  stretch = false,
+}: {
+  src: string;
+  alt: string;
+  caption?: string;
+  stretch?: boolean;
+}) {
   return (
     <figure className="mt-8">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} className="w-full" style={{ border: "1px solid var(--line)" }} />
+      <img
+        src={src}
+        alt={alt}
+        className={stretch ? "block w-full" : "block max-w-full h-auto"}
+        style={{
+          border: "1px solid var(--line)",
+          // fixed paper background so transparent figures stay readable in dark mode
+          background: "#faf8f3",
+          padding: "12px",
+        }}
+      />
       {caption && (
         <figcaption className="mt-2 text-[11px] leading-[1.7]" style={{ color: "var(--faint)" }}>
           {caption}
@@ -262,6 +282,7 @@ export default function VibeCodingPost() {
       <Figure
         src="/blogs/AgenticFoundations_Ex1.svg"
         alt="McKinsey figure on scaling agentic AI"
+        stretch
       />
 
       <P>
