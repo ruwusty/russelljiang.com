@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useSiteAuth } from "../components/site-auth";
 
 const LINES = [
   'const site = { aesthetic: "tui x japanese minimal" };',
@@ -42,7 +43,49 @@ const DIFFICULTIES: Record<
 };
 
 const DIFFICULTY_KEY = "vim_trial_difficulty";
+const NAME_KEY = "vim_trial_name";
+const PERSONAL_MAX = 10;
 const bestKeyFor = (d: Difficulty) => `vim_trial_best_${d}`;
+const runsKeyFor = (d: Difficulty) => `vim_trial_runs_${d}`;
+
+interface PersonalRun {
+  time: number;
+  keys: number;
+  ts: string;
+}
+
+interface ScoreEntry {
+  id: string;
+  name: string;
+  time: number;
+  keys: number;
+  ts: string;
+}
+
+type Boards = Record<Difficulty, ScoreEntry[]>;
+
+function loadRuns(d: Difficulty): PersonalRun[] {
+  try {
+    const raw = localStorage.getItem(runsKeyFor(d));
+    const parsed = raw ? JSON.parse(raw) : [];
+    if (Array.isArray(parsed)) {
+      return parsed.filter(
+        (r) => typeof r?.time === "number" && typeof r?.keys === "number"
+      );
+    }
+  } catch {}
+  return [];
+}
+
+function recordRun(d: Difficulty, run: PersonalRun): PersonalRun[] {
+  const runs = [...loadRuns(d), run]
+    .sort((a, b) => a.time - b.time || a.keys - b.keys)
+    .slice(0, PERSONAL_MAX);
+  try {
+    localStorage.setItem(runsKeyFor(d), JSON.stringify(runs));
+  } catch {}
+  return runs;
+}
 
 interface Pos {
   row: number;
@@ -129,6 +172,13 @@ export function VimTrial() {
   const [elapsed, setElapsed] = useState(0);
   const [finalTime, setFinalTime] = useState<number | null>(null);
   const [best, setBest] = useState<Best | null>(null);
+  const [boards, setBoards] = useState<Boards | null>(null);
+  const [boardView, setBoardView] = useState<"global" | "personal">("global");
+  const [personal, setPersonal] = useState<PersonalRun[]>([]);
+  const [playerName, setPlayerName] = useState("");
+  const [submitState, setSubmitState] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const { password } = useSiteAuth();
   const goalColRef = useRef(0);
   const pendingGRef = useRef(false);
 
@@ -139,6 +189,14 @@ export function VimTrial() {
     setDifficulty(d);
     setTarget(randomTarget({ row: 0, col: 0 }, d));
     setBest(loadBest(d));
+    setPersonal(loadRuns(d));
+    setPlayerName(localStorage.getItem(NAME_KEY) ?? "");
+    fetch("/api/vim-scores", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.boards) setBoards(json.boards);
+      })
+      .catch(() => {});
   }, []);
 
   // live timer
@@ -158,6 +216,8 @@ export function VimTrial() {
       setStartedAt(null);
       setElapsed(0);
       setFinalTime(null);
+      setSubmitState("idle");
+      setSubmittedId(null);
       goalColRef.current = 0;
       pendingGRef.current = false;
     },
@@ -167,6 +227,7 @@ export function VimTrial() {
   const pickDifficulty = (d: Difficulty) => {
     setDifficulty(d);
     setBest(loadBest(d));
+    setPersonal(loadRuns(d));
     try {
       localStorage.setItem(DIFFICULTY_KEY, d);
     } catch {}
@@ -181,6 +242,9 @@ export function VimTrial() {
         const time = (Date.now() - startTime) / 1000;
         setFinalTime(time);
         setHits(newHits);
+        setPersonal(
+          recordRun(difficulty, { time, keys: keyCount, ts: new Date().toISOString() })
+        );
         const record: Best = { time, keys: keyCount };
         setBest((current) => {
           if (!current || time < current.time) {
@@ -310,8 +374,52 @@ export function VimTrial() {
     return () => window.removeEventListener("keydown", onKey, true);
   }, [cursor, keys, startedAt, finalTime, arrive]);
 
+  const submitScore = async () => {
+    if (finalTime === null || submitState === "sending" || submitState === "done") return;
+    setSubmitState("sending");
+    const name = playerName.replace(/\s+/g, " ").trim().slice(0, 24) || "anon";
+    try {
+      localStorage.setItem(NAME_KEY, name);
+    } catch {}
+    try {
+      const res = await fetch("/api/vim-scores", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ name, time: finalTime, keys, difficulty }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setSubmitState("error");
+        return;
+      }
+      if (json.boards) setBoards(json.boards);
+      if (typeof json.id === "string") setSubmittedId(json.id);
+      setBoardView("global");
+      setSubmitState("done");
+    } catch {
+      setSubmitState("error");
+    }
+  };
+
+  const removeEntry = async (id: string) => {
+    if (!password) return;
+    const res = await fetch("/api/vim-scores", {
+      method: "DELETE",
+      headers: {
+        "content-type": "application/json",
+        "x-site-password": password,
+      },
+      body: JSON.stringify({ difficulty, id }),
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.boards) setBoards(json.boards);
+    }
+  };
+
   const done = finalTime !== null;
   const config = DIFFICULTIES[difficulty];
+  const globalRows = boards?.[difficulty] ?? [];
 
   const hint = (() => {
     if (difficulty !== "easy" || done) return null;
@@ -414,6 +522,128 @@ export function VimTrial() {
         <span style={{ color: "var(--faint)" }}>
           {best ? `best: ${best.time.toFixed(1)}s · ${best.keys} keys` : "no best yet"}
         </span>
+      </div>
+
+      {/* submit finished run */}
+      {done && submitState !== "done" && (
+        <div className="mt-4 flex items-baseline gap-2 flex-wrap text-[12px]" style={{ color: "var(--soft)" }}>
+          <span style={{ color: "var(--green)" }}>❯</span>
+          <span className="shrink-0">post to global as</span>
+          <input
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") submitScore();
+              e.stopPropagation();
+            }}
+            maxLength={24}
+            placeholder="anon"
+            className="px-2 py-0.5 text-[12px] outline-none w-[140px]"
+            style={{
+              background: "transparent",
+              border: "1px solid var(--line)",
+              color: "var(--ink)",
+              fontFamily: "inherit",
+            }}
+            aria-label="leaderboard name"
+          />
+          <button
+            onClick={submitScore}
+            className="tui-btn text-[12px]"
+            style={{ color: "var(--green)" }}
+          >
+            {submitState === "sending" ? "[posting…]" : "[submit]"}
+          </button>
+          {submitState === "error" && (
+            <span className="text-[11px]" style={{ color: "var(--accent)" }}>
+              failed — try again
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* leaderboards */}
+      <div className="mt-10">
+        <div className="flex items-baseline gap-3 flex-wrap text-[12px]" style={{ color: "var(--soft)" }}>
+          <span style={{ color: "var(--green)" }}>❯</span>
+          <span>leaderboard · {difficulty}</span>
+          <button
+            onClick={() => setBoardView("global")}
+            className="tui-btn text-[12px]"
+            style={{ color: boardView === "global" ? "var(--green)" : "var(--soft)" }}
+          >
+            [global]
+          </button>
+          <button
+            onClick={() => setBoardView("personal")}
+            className="tui-btn text-[12px]"
+            style={{ color: boardView === "personal" ? "var(--green)" : "var(--soft)" }}
+          >
+            [personal]
+          </button>
+        </div>
+
+        <div className="mt-3 flex flex-col gap-1 text-[12px]">
+          {boardView === "global" ? (
+            boards === null ? (
+              <span className="text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+                loading…
+              </span>
+            ) : globalRows.length === 0 ? (
+              <span className="text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+                nobody has posted a {difficulty} run yet. be the first.
+              </span>
+            ) : (
+              globalRows.map((entry, i) => (
+                <div
+                  key={entry.id}
+                  className="group flex items-baseline gap-3"
+                  style={{
+                    color: entry.id === submittedId ? "var(--accent)" : "var(--soft)",
+                  }}
+                >
+                  <span className="w-[2ch] text-right" style={{ color: "var(--faint)" }}>
+                    {i + 1}
+                  </span>
+                  <span className="min-w-0 truncate" style={{ color: entry.id === submittedId ? "var(--accent)" : "var(--ink)" }}>
+                    {entry.name}
+                  </span>
+                  <span className="ml-auto shrink-0">
+                    {entry.time.toFixed(1)}s · {entry.keys} keys
+                  </span>
+                  {password && (
+                    <button
+                      onClick={() => removeEntry(entry.id)}
+                      className="tui-btn text-[11px] opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+                      style={{ color: "var(--accent)" }}
+                      aria-label={`remove ${entry.name}'s run`}
+                    >
+                      [rm]
+                    </button>
+                  )}
+                </div>
+              ))
+            )
+          ) : personal.length === 0 ? (
+            <span className="text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+              no {difficulty} runs on this device yet.
+            </span>
+          ) : (
+            personal.map((run, i) => (
+              <div key={`${run.ts}-${i}`} className="flex items-baseline gap-3" style={{ color: "var(--soft)" }}>
+                <span className="w-[2ch] text-right" style={{ color: "var(--faint)" }}>
+                  {i + 1}
+                </span>
+                <span style={{ color: "var(--ink)" }}>
+                  {run.time.toFixed(1)}s · {run.keys} keys
+                </span>
+                <span className="ml-auto shrink-0 text-[11px]" style={{ color: "var(--faint)" }}>
+                  {run.ts.slice(0, 10)}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
