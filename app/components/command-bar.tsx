@@ -13,6 +13,7 @@ const ROUTES: Record<string, string> = {
   guestbook: "/guestbook",
   plan: "/plan",
   presets: "/presets",
+  vim: "/vim",
 };
 
 const EXTERNAL: Record<string, string> = {
@@ -21,7 +22,7 @@ const EXTERNAL: Record<string, string> = {
   email: "mailto:russelljiang@pm.me",
 };
 
-const HELP = "go <page> · theme [dark|light] · login <pw> · logout · whoami · help · q";
+const HELP = "go <page> · theme [dark|light] · vim · login · logout · whoami · help · q";
 const MESSAGE_MS = 5000;
 
 function isTypingTarget(target: EventTarget | null): boolean {
@@ -138,6 +139,9 @@ export function CommandBar({ sections }: { sections: number }) {
         break;
       case "guestbook":
         router.push("/guestbook");
+        break;
+      case "vim":
+        router.push("/vim");
         break;
       case "q":
       case "q!":
