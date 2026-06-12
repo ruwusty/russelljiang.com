@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CatCameo } from "./cat-cameo";
 import { CommandBar } from "./command-bar";
 import { Kaomoji } from "./kaomoji";
+import { MoonPhase } from "./moon-phase";
 import { PetalDrift } from "./petal-drift";
 import { RmTheater } from "./rm-theater";
 import { Sidebar } from "./sidebar";
@@ -59,7 +60,7 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
             />
           </span>
           <span
-            className="absolute leading-none"
+            className="absolute leading-none flex items-center gap-2.5"
             style={{
               top: "-0.6em",
               right: "16px",
@@ -67,6 +68,7 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
               padding: "0 8px",
             }}
           >
+            <MoonPhase />
             <ThemeToggle />
           </span>
 

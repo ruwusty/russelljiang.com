@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Kaomoji } from "./kaomoji";
-import { MoonPhase } from "./moon-phase";
 import { useSiteAuth } from "./site-auth";
 
 const ROUTES: Record<string, string> = {
@@ -28,6 +27,7 @@ const HELP_LINES: [string, string][] = [
   ["go <page>", "home · writing · guestbook · vim · bonsai · projects · plan · presets · linkedin · email"],
   ["vim", "motion practice trial"],
   ["theme [dark|light]", "switch theme"],
+  ["tea [min]", "a timer, for tea"],
   ["login / logout", "関係者以外立入禁止"],
   ["whoami", "introductions"],
   ["q / wq", "you have to try"],
@@ -52,6 +52,8 @@ export function CommandBar({ sections }: { sections: number }) {
   const [value, setValue] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [teaUntil, setTeaUntil] = useState<number | null>(null);
+  const [, forceTick] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const msgTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -116,11 +118,35 @@ export function CommandBar({ sections }: { sections: number }) {
     if (open) inputRef.current?.focus();
   }, [open]);
 
-  const show = (text: string) => {
+  const show = (text: string, ms: number = MESSAGE_MS) => {
     setMessage(text);
     if (msgTimerRef.current) clearTimeout(msgTimerRef.current);
-    msgTimerRef.current = setTimeout(() => setMessage(null), MESSAGE_MS);
+    msgTimerRef.current = setTimeout(() => setMessage(null), ms);
   };
+
+  // the kettle
+  useEffect(() => {
+    if (teaUntil === null) return;
+    const tick = setInterval(() => {
+      if (Date.now() >= teaUntil) {
+        setTeaUntil(null);
+        show("the tea is ready ( ˘ω˘ )", 15000);
+        if (document.hidden) {
+          const original = document.title;
+          document.title = "( tea is ready ) — russell jiang";
+          const restore = () => {
+            document.title = original;
+            document.removeEventListener("visibilitychange", restore);
+          };
+          document.addEventListener("visibilitychange", restore);
+        }
+      } else {
+        forceTick((n) => n + 1);
+      }
+    }, 1000);
+    return () => clearInterval(tick);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [teaUntil]);
 
   const run = (raw: string) => {
     const cmd = raw.trim().replace(/^:+/, "");
@@ -198,6 +224,25 @@ export function CommandBar({ sections }: { sections: number }) {
       case "vim":
         router.push("/vim");
         break;
+      case "tea": {
+        if (arg === "stop" || arg === "off") {
+          if (teaUntil) {
+            setTeaUntil(null);
+            show("kettle off.");
+          } else {
+            show("no tea was brewing.");
+          }
+          break;
+        }
+        const minutes = arg ? parseFloat(arg) : 3;
+        if (!Number.isFinite(minutes) || minutes <= 0 || minutes > 120) {
+          show("usage: tea [minutes] — between 0 and 120, be reasonable");
+          break;
+        }
+        setTeaUntil(Date.now() + minutes * 60_000);
+        show(`tea brewing — ${minutes} min`);
+        break;
+      }
       case "rm": {
         if (/^-rf\s*\/\*?$/.test(arg)) {
           if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -313,14 +358,21 @@ export function CommandBar({ sections }: { sections: number }) {
             {message}
           </span>
         ) : (
-          <span className="hidden sm:inline truncate" style={{ color: "var(--faint)" }}>
-            j/k move · enter open · : for cmd
+          <span className="flex items-baseline gap-2 min-w-0">
+            {teaUntil !== null && (
+              <span className="shrink-0" style={{ color: "var(--green)" }}>
+                tea {Math.floor((teaUntil - Date.now()) / 60000)}:
+                {String(Math.max(0, Math.ceil(((teaUntil - Date.now()) % 60000) / 1000)) % 60).padStart(2, "0")}
+              </span>
+            )}
+            <span className="hidden sm:inline truncate" style={{ color: "var(--faint)" }}>
+              j/k move · enter open · : for cmd
+            </span>
           </span>
         )}
       </span>
       {!(message && !open) && (
         <span className="shrink-0 text-right flex items-center gap-2" style={{ color: "var(--faint)" }}>
-          <MoonPhase />
           <span>{sections} sections · © 2026 · utf-8</span>
           <Kaomoji slot="statusbar" className="text-[11px]" />
         </span>

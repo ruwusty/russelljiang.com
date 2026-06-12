@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { FRAME_A, Sprite } from "../components/lost-cat";
+
+// the cat sleeps here sometimes, eyes closed
+const NAP_FRAME = FRAME_A.map((row) => row.replaceAll("o", "X"));
 
 const STORAGE_KEY = "bonsai";
 const W = 44;
@@ -21,6 +25,12 @@ const DRAIN_PER_H = 100 / 48; // a full pot lasts two days
 const PETAL_EVERY_H = 3;
 const PETALS_CAP = 12;
 
+interface Owned {
+  plaque: string | null;
+  lantern: boolean;
+  glaze: boolean;
+}
+
 interface BonsaiState {
   seed: number;
   plantedAt: number;
@@ -29,7 +39,10 @@ interface BonsaiState {
   petalsReady: number;
   petals: number;
   lastTick: number;
+  owned: Owned;
 }
+
+const PRICES = { plaque: 10, glaze: 15, lantern: 25 } as const;
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
@@ -53,6 +66,7 @@ function freshState(now: number): BonsaiState {
     petalsReady: 0,
     petals: 0,
     lastTick: now,
+    owned: { plaque: null, lantern: false, glaze: false },
   };
 }
 
@@ -79,7 +93,11 @@ function loadState(now: number): BonsaiState {
     if (raw) {
       const saved = JSON.parse(raw);
       if (typeof saved?.seed === "number" && typeof saved?.growthH === "number") {
-        return catchUp({ ...freshState(now), ...saved }, now);
+        const base = freshState(now);
+        return catchUp(
+          { ...base, ...saved, owned: { ...base.owned, ...(saved.owned ?? {}) } },
+          now
+        );
       }
     }
   } catch {}
@@ -183,16 +201,42 @@ function TreeSvg({ state, season }: { state: BonsaiState; season: Season }) {
       if (x >= 0 && x < W && y >= 0 && y < H) map.set(`${x},${y}`, color);
     };
 
-    // pot
+    // pot (clay-glazed if you've earned it)
+    const potBody = state.owned.glaze ? "var(--accent)" : "var(--soft)";
     for (let x = 13; x <= 30; x++) put(x, H - 5, "var(--ink)");
     for (let y = H - 4; y <= H - 2; y++) {
       const inset = y - (H - 4);
-      for (let x = 14 + inset; x <= 29 - inset; x++) put(x, y, "var(--soft)");
+      for (let x = 14 + inset; x <= 29 - inset; x++) put(x, y, potBody);
       put(13 + inset, y, "var(--ink)");
       put(30 - inset, y, "var(--ink)");
     }
     // soil
     for (let x = 15; x <= 28; x++) put(x, H - 6, "var(--faint)");
+
+    // stone lantern, keeping the tree company
+    if (state.owned.lantern) {
+      const LANTERN = [
+        "....K....",
+        "..KKKKK..",
+        ".KKKKKKK.",
+        "...KKK...",
+        "..KK@KK..",
+        "..K@@@K..",
+        "..KKKKK..",
+        "....K....",
+        "....K....",
+        "...KKK...",
+        "..KKKKK..",
+      ];
+      const x0 = 2;
+      const y0 = H - 2 - LANTERN.length + 1;
+      LANTERN.forEach((row, dy) => {
+        row.split("").forEach((ch, dx) => {
+          if (ch === "K") put(x0 + dx, y0 + dy, "var(--soft)");
+          if (ch === "@") put(x0 + dx, y0 + dy, "var(--accent)");
+        });
+      });
+    }
 
     const g = state.growthH;
     if (g < 2) {
@@ -234,7 +278,7 @@ function TreeSvg({ state, season }: { state: BonsaiState; season: Season }) {
     }
 
     return map;
-  }, [tree, state.growthH, state.seed, season]);
+  }, [tree, state.growthH, state.seed, season, state.owned.glaze, state.owned.lantern]);
 
   return (
     <svg
@@ -276,12 +320,22 @@ function stageName(growthH: number): string {
 export function Bonsai() {
   const [state, setState] = useState<BonsaiState | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [shopOpen, setShopOpen] = useState(false);
+  const [plaqueDraft, setPlaqueDraft] = useState<string | null>(null);
+  const [catNapping, setCatNapping] = useState(false);
   const msgTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const s = loadState(Date.now());
     setState(s);
     persist(s);
+    // a bonded cat sometimes wanders over from /404 for a nap
+    try {
+      const cat = JSON.parse(localStorage.getItem("cat404") ?? "null");
+      if (typeof cat?.bond === "number" && cat.bond >= 16 && Math.random() < 0.4) {
+        setCatNapping(true);
+      }
+    } catch {}
     // keep time passing while the page is open
     const tick = setInterval(() => {
       setState((current) => {
@@ -326,6 +380,22 @@ export function Bonsai() {
     say(ready === 1 ? "one petal, kept." : `${ready} petals, kept.`);
   };
 
+  const spend = (price: number, owned: Partial<Owned>, line: string) => {
+    if (state.petals < price) {
+      say("not enough petals. the tree appreciates patience.");
+      return;
+    }
+    update({ ...state, petals: state.petals - price, owned: { ...state.owned, ...owned } });
+    say(line);
+  };
+
+  const engrave = () => {
+    const name = (plaqueDraft ?? "").replace(/\s+/g, " ").trim().slice(0, 16);
+    if (!name) return;
+    spend(PRICES.plaque, { plaque: name }, "engraved.");
+    setPlaqueDraft(null);
+  };
+
   const ageDays = Math.floor((Date.now() - state.plantedAt) / 86_400_000);
   const blooming = state.growthH >= BLOOM_H;
   const petalsReady = Math.floor(state.petalsReady);
@@ -355,7 +425,23 @@ export function Bonsai() {
         style={{ borderBottom: "1px solid var(--line)" }}
       >
         <TreeSvg state={state} season={season} />
+        {catNapping && (
+          <div className="absolute bottom-0" style={{ left: "calc(50% + 76px)" }} aria-hidden="true">
+            <span
+              className="absolute -top-4 left-2 text-[10px]"
+              style={{ color: "var(--faint)" }}
+            >
+              z z
+            </span>
+            <Sprite frame={NAP_FRAME} flip={true} />
+          </div>
+        )}
       </div>
+      {state.owned.plaque && (
+        <p className="mt-2 text-center text-[11px]" style={{ color: "var(--faint)" }}>
+          「{state.owned.plaque}」
+        </p>
+      )}
 
       <div className="mt-4 flex items-baseline gap-4 flex-wrap text-[12px]">
         <button onClick={water} className="tui-btn text-[12px]" style={{ color: "var(--green)" }}>
@@ -366,6 +452,17 @@ export function Bonsai() {
             [gather {petalsReady} petal{petalsReady === 1 ? "" : "s"}]
           </button>
         )}
+        {(state.petals > 0 || blooming) && (
+          <button
+            onClick={() => {
+              setShopOpen((v) => !v);
+              setPlaqueDraft(null);
+            }}
+            className="tui-btn text-[12px]"
+          >
+            [shop]
+          </button>
+        )}
         <span
           className="text-[12px] lowercase min-h-[1em]"
           style={{ color: "var(--soft)" }}
@@ -374,6 +471,79 @@ export function Bonsai() {
           {message ?? (state.water <= 0 ? "the soil is dry. the tree waits." : "")}
         </span>
       </div>
+
+      {shopOpen && (
+        <div className="mt-5 text-[12px] lowercase flex flex-col gap-1.5">
+          <div className="flex items-center gap-2" style={{ color: "var(--soft)" }}>
+            <span style={{ color: "var(--green)" }}>❯</span>
+            <span>petal shop · you have {state.petals}</span>
+          </div>
+
+          {state.owned.plaque ? (
+            <span style={{ color: "var(--faint)" }}>name plaque · engraved</span>
+          ) : plaqueDraft !== null ? (
+            <span className="flex items-baseline gap-2">
+              <input
+                value={plaqueDraft}
+                onChange={(e) => setPlaqueDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") engrave();
+                  if (e.key === "Escape") setPlaqueDraft(null);
+                }}
+                maxLength={16}
+                autoFocus
+                placeholder="name the tree"
+                className="px-2 py-0.5 text-[12px] outline-none w-[150px]"
+                style={{
+                  background: "transparent",
+                  border: "1px solid var(--line)",
+                  color: "var(--ink)",
+                  fontFamily: "inherit",
+                }}
+                aria-label="tree name"
+              />
+              <button onClick={engrave} className="tui-btn text-[12px]" style={{ color: "var(--green)" }}>
+                [engrave]
+              </button>
+              <button onClick={() => setPlaqueDraft(null)} className="tui-btn text-[12px]">
+                [x]
+              </button>
+            </span>
+          ) : (
+            <button
+              onClick={() => setPlaqueDraft("")}
+              className="tui-btn text-left text-[12px]"
+              style={{ color: "var(--soft)" }}
+            >
+              [name plaque · {PRICES.plaque} petals] — give the tree a name
+            </button>
+          )}
+
+          {state.owned.glaze ? (
+            <span style={{ color: "var(--faint)" }}>clay glaze · applied</span>
+          ) : (
+            <button
+              onClick={() => spend(PRICES.glaze, { glaze: true }, "the pot wears clay now.")}
+              className="tui-btn text-left text-[12px]"
+              style={{ color: "var(--soft)" }}
+            >
+              [clay glaze · {PRICES.glaze} petals] — reglaze the pot
+            </button>
+          )}
+
+          {state.owned.lantern ? (
+            <span style={{ color: "var(--faint)" }}>stone lantern · placed</span>
+          ) : (
+            <button
+              onClick={() => spend(PRICES.lantern, { lantern: true }, "a lantern. the evenings improve.")}
+              className="tui-btn text-left text-[12px]"
+              style={{ color: "var(--soft)" }}
+            >
+              [stone lantern · {PRICES.lantern} petals] — for the garden&apos;s edge
+            </button>
+          )}
+        </div>
+      )}
 
       <p className="mt-6 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
         it grows in real time, watered or not-watered. no two trees branch alike.

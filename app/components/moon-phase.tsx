@@ -55,8 +55,8 @@ export function MoonPhase() {
     <span title={`${name} · ${Math.round(illum * 100)}% · as seen from sydney`}>
       <svg
         viewBox={`0 0 ${SIZE} ${SIZE}`}
-        width="14"
-        height="14"
+        width="17"
+        height="17"
         style={{ display: "block", shapeRendering: "crispEdges" }}
         aria-label={name}
         role="img"
