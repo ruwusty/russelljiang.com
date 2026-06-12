@@ -188,6 +188,25 @@ body.phosphor::after {
   }
 }
 
+/* petals from a patient tree */
+@keyframes petal-fall {
+  from {
+    top: -16px;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+@keyframes petal-sway {
+  from {
+    transform: translateX(-9px) rotate(-25deg);
+  }
+  to {
+    transform: translateX(9px) rotate(20deg);
+  }
+}
+
 /* a cat, passing through */
 @keyframes cat-walk {
   from {

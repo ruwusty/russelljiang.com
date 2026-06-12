@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Kaomoji } from "./kaomoji";
+import { MoonPhase } from "./moon-phase";
 import { useSiteAuth } from "./site-auth";
 
 const ROUTES: Record<string, string> = {
@@ -15,6 +16,7 @@ const ROUTES: Record<string, string> = {
   presets: "/presets",
   vim: "/vim",
   bonsai: "/bonsai",
+  garden: "/garden",
   projects: "/projects",
 };
 
@@ -24,7 +26,7 @@ const EXTERNAL: Record<string, string> = {
 };
 
 const HELP_LINES: [string, string][] = [
-  ["go <page>", "home · writing · guestbook · vim · bonsai · projects · plan · presets · linkedin · email"],
+  ["go <page>", "home · writing · guestbook · vim · bonsai · garden · projects · plan · presets · linkedin · email"],
   ["vim", "motion practice trial"],
   ["theme [dark|light]", "switch theme"],
   ["login / logout", "関係者以外立入禁止"],
@@ -318,7 +320,8 @@ export function CommandBar({ sections }: { sections: number }) {
         )}
       </span>
       {!(message && !open) && (
-        <span className="shrink-0 text-right flex items-baseline gap-2" style={{ color: "var(--faint)" }}>
+        <span className="shrink-0 text-right flex items-center gap-2" style={{ color: "var(--faint)" }}>
+          <MoonPhase />
           <span>{sections} sections · © 2026 · utf-8</span>
           <Kaomoji slot="statusbar" className="text-[11px]" />
         </span>

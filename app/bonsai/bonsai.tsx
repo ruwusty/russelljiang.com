@@ -33,6 +33,17 @@ interface BonsaiState {
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
+// sydney seasons
+type Season = "summer" | "autumn" | "winter" | "spring";
+
+function currentSeason(): Season {
+  const m = new Date().getMonth(); // 0-11
+  if (m === 11 || m <= 1) return "summer";
+  if (m <= 4) return "autumn";
+  if (m <= 7) return "winter";
+  return "spring";
+}
+
 function freshState(now: number): BonsaiState {
   return {
     seed: Math.floor(Math.random() * 0xffffffff),
@@ -163,7 +174,7 @@ const FOLIAGE_OFFSETS: [number, number][] = [
   [-1, -2],
 ];
 
-function TreeSvg({ state }: { state: BonsaiState }) {
+function TreeSvg({ state, season }: { state: BonsaiState; season: Season }) {
   const tree = useMemo(() => generateTree(state.seed), [state.seed]);
 
   const cells = useMemo(() => {
@@ -197,22 +208,33 @@ function TreeSvg({ state }: { state: BonsaiState }) {
       if (c.order <= frac) put(c.x, c.y, "var(--ink)");
     }
 
-    // foliage once sapling, fuller with age
+    // foliage once sapling, fuller with age, dressed for the season
     if (g >= 24) {
-      const radius = g >= 168 ? FOLIAGE_OFFSETS.length : g >= 72 ? 11 : 6;
-      const bloomFrac = clamp((g - BLOOM_H) / 168, 0, 1);
+      const baseRadius = g >= 168 ? FOLIAGE_OFFSETS.length : g >= 72 ? 11 : 6;
+      const radius =
+        season === "winter" ? Math.max(3, Math.floor(baseRadius / 2)) : baseRadius;
+      const bloomBase = clamp((g - BLOOM_H) / 168, 0, 1);
+      // the season sets the intensity: spring riots, winter barely holds on
+      const seasonMul = { spring: 1.6, summer: 1, autumn: 0.4, winter: 0.35 }[season];
+      const bloomFrac = Math.min(1, bloomBase * seasonMul);
       const rng = mulberry32(state.seed ^ 0x9e3779b9);
       for (const tip of tree.tips) {
         if (tip.order > frac) continue;
         for (const [dx, dy] of FOLIAGE_OFFSETS.slice(0, radius)) {
-          const blossom = g >= BLOOM_H && rng() < bloomFrac * 0.45;
-          put(tip.x + dx, tip.y + dy, blossom ? "var(--accent)" : "var(--green)");
+          const roll = rng();
+          const blossom = g >= BLOOM_H && roll < bloomFrac * 0.45;
+          const turned = season === "autumn" && roll < 0.5;
+          put(
+            tip.x + dx,
+            tip.y + dy,
+            blossom ? "var(--accent)" : turned ? "var(--accent)" : "var(--green)"
+          );
         }
       }
     }
 
     return map;
-  }, [tree, state.growthH, state.seed]);
+  }, [tree, state.growthH, state.seed, season]);
 
   return (
     <svg
@@ -307,6 +329,7 @@ export function Bonsai() {
   const ageDays = Math.floor((Date.now() - state.plantedAt) / 86_400_000);
   const blooming = state.growthH >= BLOOM_H;
   const petalsReady = Math.floor(state.petalsReady);
+  const season = currentSeason();
 
   return (
     <div>
@@ -316,6 +339,7 @@ export function Bonsai() {
           <span style={{ color: "var(--soft)" }}>
             {ageDays}d · {stageName(state.growthH)}
           </span>
+          <span style={{ color: "var(--faint)" }}>· {season}</span>
         </span>
         <Bar label="water" value={state.water} />
         {(blooming || state.petals > 0) && (
@@ -330,7 +354,7 @@ export function Bonsai() {
         className="relative mt-8 flex justify-center pb-0"
         style={{ borderBottom: "1px solid var(--line)" }}
       >
-        <TreeSvg state={state} />
+        <TreeSvg state={state} season={season} />
       </div>
 
       <div className="mt-4 flex items-baseline gap-4 flex-wrap text-[12px]">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CatCameo } from "./cat-cameo";
 import { CommandBar } from "./command-bar";
 import { Kaomoji } from "./kaomoji";
+import { PetalDrift } from "./petal-drift";
 import { RmTheater } from "./rm-theater";
 import { Sidebar } from "./sidebar";
 import { StatusStrip } from "./status-strip";
@@ -86,6 +87,7 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
           <CommandBar sections={toc.length} />
 
           <CatCameo />
+          <PetalDrift />
           <RmTheater />
         </div>
       </div>
