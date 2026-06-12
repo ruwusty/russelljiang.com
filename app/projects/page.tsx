@@ -27,8 +27,8 @@ const projects: Project[] = [
     index: "01",
     name: "sydney scholars",
     claim:
-      "a tutoring platform for sydney students. i work on the systems side: the admin and tutor portals — session workflows, lesson planning, incident and safety logging — plus a rag pipeline that grounds the ai tutor in class reference material, with privacy guardrails on what it's allowed to see.",
-    role: "systems — admin/tutor portal, rag pipeline (ingestion, retrieval, evals)",
+      "a tutoring platform for sydney students. i build the internal stuff: admin and tutor portals, session workflows, lesson planning, incident logging. also the rag pipeline that feeds the ai tutor its class material without letting it see anything it shouldn't.",
+    role: "systems. admin/tutor portals, rag pipeline (ingestion, retrieval, evals)",
     stack: "React · TypeScript · Supabase (Postgres, edge functions)",
     links: [{ label: "sydneyscholars.com", href: "https://sydneyscholars.com" }],
   },
@@ -37,7 +37,7 @@ const projects: Project[] = [
     index: "02",
     name: "this site",
     claim:
-      "a personal site that became its own cms. every piece of content — bio, plan, presets, the currently line, even the kaomoji — is editable on-site, stored in vercel blob. plus a vim command mode, a guestbook, and a vim motion-practice minigame with leaderboards.",
+      "my corner of the internet. it slowly turned into its own cms, so everything on here (bio, plan, presets, the currently line, even the kaomoji) gets edited on the site itself. there&apos;s also a vim command mode, a guestbook, a motion practice minigame, and a bonsai tree somewhere in here.",
     role: "everything, with a pair programmer",
     stack: "Next.js 15 · React 19 · Tailwind · Vercel Blob",
     links: [
