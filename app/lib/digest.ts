@@ -303,6 +303,8 @@ function dedupeAndFreshen(items: RawItem[]): RawItem[] {
 
 const GEMINI_MODEL = process.env.GEMINI_MODEL ?? "gemini-3.5-flash";
 
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
 const SYSTEM_PROMPT = `You are a highly selective tech news curator for a computer science and data science student interested in AI, applied machine learning, quantum computing, and developer tools. Your job is to filter a raw list of news items down to the 10-12 most significant and actionable items from the past 24 hours. Prioritise: new model releases, new capabilities, applied AI breakthroughs, quantum computing developments, significant open source releases, and genuinely important developer tool updates. Deprioritise and exclude: funding rounds unless transformative, company drama or gossip, crypto/blockchain, opinion pieces with no new information, pure academic theory with no near-term application, and marketing announcements. Weight Simon Willison, Anthropic, OpenAI, and DeepMind sources most heavily. For each selected item, provide: title, summary (exactly 2 sentences, written for a technically literate reader), source (publication name), url (use the exact url provided for that item), tag (one of: AI, Quantum, Dev Tools, Applied Tech, Open Source, Research), and priority (high or medium). Return a JSON object with an "items" array of the selected items. If the previous digest's urls are provided, do not repeat them unless there is a major new development.`;
 
 // gemini structured-output schema (openapi subset — uppercase type names)
@@ -347,60 +349,86 @@ async function curate(items: RawItem[], excludeUrls: string[]): Promise<DigestIt
       ? `\n\nThese urls were in the previous digest; exclude them unless there is a major new development:\n${JSON.stringify(excludeUrls)}`
       : "");
 
-  let res: Response;
-  try {
-    res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
-      {
-        method: "POST",
-        headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          contents: [{ role: "user", parts: [{ text: userContent }] }],
-          generationConfig: {
-            responseMimeType: "application/json",
-            responseSchema: RESPONSE_SCHEMA,
-            temperature: 0.4,
-            maxOutputTokens: 4096,
-            // this is an extraction task, not a reasoning one — skip thinking
-            // so the model answers in seconds instead of burning the budget.
-            thinkingConfig: { thinkingBudget: 0 },
-          },
-        }),
-        signal: AbortSignal.timeout(45_000),
+  const requestBody = JSON.stringify({
+    systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+    contents: [{ role: "user", parts: [{ text: userContent }] }],
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: RESPONSE_SCHEMA,
+      temperature: 0.4,
+      maxOutputTokens: 4096,
+      // extraction task, not reasoning — skip thinking so it answers fast
+      thinkingConfig: { thinkingBudget: 0 },
+    },
+  });
+
+  // the free tier 503s under load. retry, then fall back to lighter models
+  // (which usually have spare capacity). bounded by a wall-clock deadline so
+  // the whole thing fits inside the function's 60s budget.
+  const models = [...new Set([GEMINI_MODEL, "gemini-3.1-flash-lite", "gemini-2.5-flash"])];
+  const deadline = Date.now() + 46_000;
+  let lastError = "no attempt made";
+
+  for (const model of models) {
+    for (let attempt = 1; attempt <= 2 && Date.now() < deadline; attempt++) {
+      let res: Response;
+      try {
+        res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+          {
+            method: "POST",
+            headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
+            body: requestBody,
+            signal: AbortSignal.timeout(18_000),
+          }
+        );
+      } catch (e) {
+        lastError =
+          e instanceof Error && (e.name === "TimeoutError" || e.name === "AbortError")
+            ? `${model}: timed out`
+            : `${model}: ${e instanceof Error ? e.message : String(e)}`;
+        console.warn(`[digest] gemini ${lastError} — next model`);
+        break; // network / timeout — try the next model
       }
-    );
-  } catch (e) {
-    if (e instanceof Error && (e.name === "TimeoutError" || e.name === "AbortError")) {
-      throw new Error(`gemini request timed out (45s) sending ${payload.length} items`);
+
+      if (res.ok) {
+        const data = (await res.json()) as {
+          candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+        };
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!text) throw new Error("gemini returned no content (possible safety block)");
+        let parsed: unknown;
+        try {
+          parsed = JSON.parse(text);
+        } catch {
+          throw new Error("gemini returned invalid json");
+        }
+        const raw = (parsed as { items?: unknown })?.items;
+        if (!Array.isArray(raw)) throw new Error("gemini returned no digest items");
+        console.log(`[digest] gemini ok via ${model}`);
+        return raw
+          .map(coerceItem)
+          .filter((x): x is DigestItem => x !== null)
+          .slice(0, 12);
+      }
+
+      const detail = (await res.text().catch(() => "")).slice(0, 200);
+      lastError = `${model} ${res.status}: ${detail.replace(/\s+/g, " ").trim()}`;
+      // request / auth problems are the same for every model — don't retry
+      if (res.status === 400 || res.status === 401 || res.status === 403) {
+        throw new Error(`gemini ${res.status}: ${detail.slice(0, 300)}`);
+      }
+      const transient = res.status === 429 || res.status === 500 || res.status === 503;
+      console.warn(`[digest] gemini ${lastError} — ${transient && attempt < 2 ? "retrying" : "next model"}`);
+      if (transient && attempt < 2) {
+        await sleep(1500);
+        continue;
+      }
+      break; // 404 (unknown model) or retries exhausted — next model
     }
-    throw new Error(`gemini request failed: ${e instanceof Error ? e.message : String(e)}`);
   }
 
-  if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    throw new Error(`gemini ${res.status}: ${detail.slice(0, 300)}`);
-  }
-
-  const data = (await res.json()) as {
-    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-  };
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error("gemini returned no content");
-
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    throw new Error("gemini returned invalid json");
-  }
-  const raw = (parsed as { items?: unknown })?.items;
-  if (!Array.isArray(raw)) throw new Error("gemini returned no digest items");
-
-  return raw
-    .map(coerceItem)
-    .filter((x): x is DigestItem => x !== null)
-    .slice(0, 12);
+  throw new Error(`gemini unavailable after retries: ${lastError}`);
 }
 
 function coerceItem(value: unknown): DigestItem | null {
