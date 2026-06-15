@@ -26,12 +26,18 @@ const FEEDS: Feed[] = [
   // via simon willison / hn / tldr, where the "weight anthropic" rule applies.
   { name: "Simon Willison", url: "https://simonwillison.net/atom/everything", cap: 15 },
   { name: "OpenAI", url: "https://openai.com/news/rss.xml", cap: 10 },
-  { name: "Google DeepMind", url: "https://deepmind.google/blog/rss.xml", cap: 10 },
-  { name: "Hugging Face", url: "https://huggingface.co/blog/feed.xml", cap: 10 },
-  // research — firehoses, capped hard; the prompt filters applied-over-theory
-  { name: "arXiv cs.AI", url: "https://arxiv.org/rss/cs.AI", cap: 10 },
-  { name: "arXiv cs.LG", url: "https://arxiv.org/rss/cs.LG", cap: 10 },
-  { name: "arXiv quant-ph", url: "https://arxiv.org/rss/quant-ph", cap: 10 },
+  { name: "Google DeepMind", url: "https://deepmind.google/blog/rss.xml", cap: 8 },
+  { name: "Google Research", url: "https://research.google/blog/rss/", cap: 8 },
+  { name: "Hugging Face", url: "https://huggingface.co/blog/feed.xml", cap: 8 },
+  // engineering + ml blogs — the bloggy stuff. bursty (often 0 fresh/day),
+  // but high signal when they post.
+  { name: "Sebastian Raschka", url: "https://magazine.sebastianraschka.com/feed", cap: 6 },
+  { name: "Cloudflare", url: "https://blog.cloudflare.com/rss/", cap: 8 },
+  { name: "Julia Evans", url: "https://jvns.ca/atom.xml", cap: 6 },
+  { name: "antirez", url: "http://antirez.com/rss", cap: 6 },
+  // research — capped tight. cs.AI dropped (overlaps cs.LG, skews theoretical).
+  { name: "arXiv cs.LG", url: "https://arxiv.org/rss/cs.LG", cap: 6 },
+  { name: "arXiv quant-ph", url: "https://arxiv.org/rss/quant-ph", cap: 6 },
   // science / broad tech
   { name: "Quanta Magazine", url: "https://www.quantamagazine.org/feed", cap: 10 },
   { name: "Ars Technica", url: "https://feeds.arstechnica.com/arstechnica/index", cap: 12 },
@@ -305,7 +311,7 @@ const GEMINI_MODEL = process.env.GEMINI_MODEL ?? "gemini-3.5-flash";
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
-const SYSTEM_PROMPT = `You are a highly selective tech news curator for a computer science and data science student interested in AI, applied machine learning, quantum computing, and developer tools. Your job is to filter a raw list of news items down to the 10-12 most significant and actionable items from the past 24 hours. Prioritise: new model releases, new capabilities, applied AI breakthroughs, quantum computing developments, significant open source releases, and genuinely important developer tool updates. Deprioritise and exclude: funding rounds unless transformative, company drama or gossip, crypto/blockchain, opinion pieces with no new information, pure academic theory with no near-term application, and marketing announcements. Weight Simon Willison, Anthropic, OpenAI, and DeepMind sources most heavily. For each selected item, provide: title, summary (exactly 2 sentences, written for a technically literate reader), source (publication name), url (use the exact url provided for that item), tag (one of: AI, Quantum, Dev Tools, Applied Tech, Open Source, Research), and priority (high or medium). Return a JSON object with an "items" array of the selected items. If the previous digest's urls are provided, do not repeat them unless there is a major new development.`;
+const SYSTEM_PROMPT = `You are a highly selective tech news curator for a computer science and data science student interested in AI, applied machine learning, quantum computing, and developer tools. Your job is to filter a raw list of news items down to the 10-12 most significant and actionable items from the past 24 hours. Prioritise: new model releases, new capabilities, applied AI breakthroughs, quantum computing developments, significant open source releases, and genuinely important developer tool updates. Deprioritise and exclude: funding rounds unless transformative, company drama or gossip, crypto/blockchain, opinion pieces with no new information, pure academic theory with no near-term application, and marketing announcements. Weight Simon Willison, Anthropic, OpenAI, and DeepMind sources most heavily. Aim for a varied mix that favours blog posts, project releases, and applied news; include at most 2-3 items tagged Research (raw arxiv papers), and only the most clearly applied or genuinely significant ones — never let arxiv dominate the digest. For each selected item, provide: title, summary (exactly 2 sentences, written for a technically literate reader), source (publication name), url (use the exact url provided for that item), tag (one of: AI, Quantum, Dev Tools, Applied Tech, Open Source, Research), and priority (high or medium). Return a JSON object with an "items" array of the selected items. If the previous digest's urls are provided, do not repeat them unless there is a major new development.`;
 
 // gemini structured-output schema (openapi subset — uppercase type names)
 const RESPONSE_SCHEMA = {

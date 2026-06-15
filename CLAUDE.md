@@ -45,7 +45,8 @@ before changing anything visual or touching content.
 - public-write endpoints (guestbook, vim-scores) have honeypots, per-ip
   cooldowns (hashed ips, never raw), length caps, validation. keep all of
   these when touching them.
-- daily digest: `app/lib/digest.ts` fetches ~12 rss/atom/hn sources, dedups,
+- daily digest: `app/lib/digest.ts` fetches ~16 rss/atom/hn sources (ai labs,
+  eng/ml blogs, capped arxiv, aggregators), dedups,
   caps, then calls the gemini api (`gemini-3.5-flash` free tier, structured
   json output) to pick ~12 items — swapping providers is localized to the
   `curate()` function. cron `app/api/cron/digest` runs `0 20 * * *` (6–7am
