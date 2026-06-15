@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { runDigest, sydneyDateString } from "../../../lib/digest";
+import { digestErrorMessage, runDigest, sydneyDateString } from "../../../lib/digest";
 import { writeDigest } from "../../../lib/digest-store";
 
 export const runtime = "nodejs";
@@ -22,7 +22,8 @@ export async function GET(req: Request) {
     await writeDigest(digest, sydneyDateString());
     return NextResponse.json({ ok: true, items: digest.itemCount, sources: digest.sourceCount });
   } catch (error: unknown) {
-    console.error("digest cron failed:", error);
-    return NextResponse.json({ error: "digest generation failed" }, { status: 500 });
+    const detail = digestErrorMessage(error);
+    console.error("[digest] cron failed:", detail);
+    return NextResponse.json({ error: "digest generation failed", detail }, { status: 500 });
   }
 }

@@ -411,6 +411,7 @@ function coerceItem(value: unknown): DigestItem | null {
 // ── orchestration ────────────────────────────────────────────────────────────
 
 export async function runDigest(): Promise<Digest> {
+  const t0 = Date.now();
   const results = await Promise.allSettled([
     ...FEEDS.map((f) => fetchFeed(f)),
     fetchHackerNews(),
@@ -418,18 +419,24 @@ export async function runDigest(): Promise<Digest> {
 
   const raw: RawItem[] = [];
   let sourceCount = 0;
+  const counts: string[] = [];
   results.forEach((r, i) => {
     const label = i < FEEDS.length ? FEEDS[i].name : "Hacker News";
     if (r.status === "fulfilled") {
       if (r.value.length > 0) sourceCount++;
       raw.push(...r.value);
+      counts.push(`${label}=${r.value.length}`);
     } else {
-      console.error(`digest: source failed (${label}):`, r.reason);
+      const reason = r.reason instanceof Error ? r.reason.message : String(r.reason);
+      counts.push(`${label}=FAIL(${reason})`);
+      console.error(`[digest] source failed: ${label}: ${reason}`);
     }
   });
+  console.log(`[digest] fetched ${raw.length} raw items from ${sourceCount} sources in ${Date.now() - t0}ms | ${counts.join(" ")}`);
 
   const fresh = dedupeAndFreshen(raw);
-  if (fresh.length === 0) throw new Error("no fresh items from any source");
+  console.log(`[digest] ${fresh.length} fresh items after dedup + ${FRESH_WINDOW_MS / 3.6e6}h window`);
+  if (fresh.length === 0) throw new Error("no fresh items from any source (all feeds may be unreachable)");
 
   // avoid repeating yesterday's picks
   let excludeUrls: string[] = [];
@@ -438,7 +445,9 @@ export async function runDigest(): Promise<Digest> {
     if (prev) excludeUrls = prev.items.map((it) => it.url).slice(0, 30);
   } catch {}
 
+  console.log(`[digest] calling gemini (${GEMINI_MODEL}) with ${fresh.length} items, excluding ${excludeUrls.length} prior urls`);
   const items = await curate(fresh, excludeUrls);
+  console.log(`[digest] gemini returned ${items.length} curated items in ${Date.now() - t0}ms total`);
   if (items.length === 0) throw new Error("curation returned zero items");
 
   return {
@@ -447,6 +456,11 @@ export async function runDigest(): Promise<Digest> {
     itemCount: items.length,
     sourceCount,
   };
+}
+
+export function digestErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  return String(error);
 }
 
 // ── sydney time helpers (shared by routes + page) ────────────────────────────

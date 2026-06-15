@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { runDigest, sydneyDateString } from "../../../../lib/digest";
+import { digestErrorMessage, runDigest, sydneyDateString } from "../../../../lib/digest";
 import { writeDigest } from "../../../../lib/digest-store";
 import { passwordOk } from "../../../_lib/auth";
 
@@ -28,7 +28,8 @@ export async function POST(req: Request) {
       generatedAt: digest.generatedAt,
     });
   } catch (error: unknown) {
-    console.error("manual digest failed:", error);
-    return NextResponse.json({ error: "digest generation failed" }, { status: 500 });
+    const detail = digestErrorMessage(error);
+    console.error("[digest] manual run failed:", detail);
+    return NextResponse.json({ error: "digest generation failed", detail }, { status: 500 });
   }
 }

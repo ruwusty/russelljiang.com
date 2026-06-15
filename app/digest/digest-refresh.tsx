@@ -28,7 +28,13 @@ export function DigestRefresh() {
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
         setState("error");
-        setNote(typeof json.error === "string" ? json.error : "failed");
+        setNote(
+          typeof json.detail === "string"
+            ? json.detail
+            : typeof json.error === "string"
+              ? json.error
+              : "failed"
+        );
         return;
       }
       setState("done");
@@ -41,19 +47,19 @@ export function DigestRefresh() {
   };
 
   return (
-    <div className="mt-6 flex items-baseline gap-3 text-[12px]">
+    <div className="mt-6 flex items-baseline gap-3 flex-wrap text-[12px]">
       <button
         onClick={run}
         disabled={state === "running"}
-        className="tui-btn text-[12px]"
+        className="tui-btn shrink-0 text-[12px]"
         style={{ color: "var(--green)" }}
       >
         {state === "running" ? "[refreshing… ~30s]" : "[refresh digest]"}
       </button>
       {note && (
         <span
-          className="text-[11px] lowercase"
-          style={{ color: state === "error" ? "var(--accent)" : "var(--faint)" }}
+          className="text-[11px] lowercase break-words"
+          style={{ color: state === "error" ? "var(--accent)" : "var(--faint)", maxWidth: "100%" }}
         >
           {note}
         </span>
