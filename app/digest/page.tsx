@@ -6,7 +6,7 @@ import { DigestRefresh } from "./digest-refresh";
 
 export const metadata: Metadata = {
   title: "daily digest — russell jiang",
-  description: "A daily AI-curated digest of tech news and research, filtered by Claude.",
+  description: "A daily AI-curated digest of tech news and research, filtered by Gemini.",
 };
 
 // re-read the blob at most twice an hour; a manual trigger shows up promptly,
@@ -106,7 +106,7 @@ export default async function DigestPage() {
         {stamp ? stamp.date : "loading…"}
       </p>
       <p className="mt-1 text-[12px] lowercase" style={{ color: "var(--faint)" }}>
-        curated daily from across the web, filtered and summarised by claude.
+        curated daily from across the web, filtered and summarised by gemini.
       </p>
 
       <DigestRefresh />
@@ -157,7 +157,7 @@ export default async function DigestPage() {
 
           <p className="mt-12 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
             last updated: {stamp?.time} {stamp?.zone.toLowerCase()} · {digest.itemCount} items ·
-            curated by claude
+            curated by gemini
           </p>
         </>
       )}

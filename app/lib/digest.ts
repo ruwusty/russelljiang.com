@@ -297,39 +297,42 @@ function dedupeAndFreshen(items: RawItem[]): RawItem[] {
   return out.slice(0, MAX_ITEMS_TO_MODEL);
 }
 
-// ── claude curation (fetch + forced tool use for guaranteed valid json) ──────
+// ── gemini curation (free tier; structured json output for valid json) ───────
+// the whole llm integration is this one function + the schema below, so
+// switching providers (e.g. back to anthropic) is a localized change.
 
-const SYSTEM_PROMPT = `You are a highly selective tech news curator for a computer science and data science student interested in AI, applied machine learning, quantum computing, and developer tools. Your job is to filter a raw list of news items down to the 10-12 most significant and actionable items from the past 24 hours. Prioritise: new model releases, new capabilities, applied AI breakthroughs, quantum computing developments, significant open source releases, and genuinely important developer tool updates. Deprioritise and exclude: funding rounds unless transformative, company drama or gossip, crypto/blockchain, opinion pieces with no new information, pure academic theory with no near-term application, and marketing announcements. Weight Simon Willison, Anthropic, OpenAI, and DeepMind sources most heavily. For each selected item, provide: title, summary (exactly 2 sentences, written for a technically literate reader), source (publication name), url (use the exact url provided for that item), tag (one of: AI, Quantum, Dev Tools, Applied Tech, Open Source, Research), and priority (high or medium). Call the emit_digest tool exactly once with your selected items. If the previous digest's urls are provided, do not repeat them unless there is a major new development.`;
+const GEMINI_MODEL = process.env.GEMINI_MODEL ?? "gemini-3.5-flash";
 
-const EMIT_TOOL = {
-  name: "emit_digest",
-  description: "Return the curated digest items.",
-  input_schema: {
-    type: "object" as const,
-    properties: {
+const SYSTEM_PROMPT = `You are a highly selective tech news curator for a computer science and data science student interested in AI, applied machine learning, quantum computing, and developer tools. Your job is to filter a raw list of news items down to the 10-12 most significant and actionable items from the past 24 hours. Prioritise: new model releases, new capabilities, applied AI breakthroughs, quantum computing developments, significant open source releases, and genuinely important developer tool updates. Deprioritise and exclude: funding rounds unless transformative, company drama or gossip, crypto/blockchain, opinion pieces with no new information, pure academic theory with no near-term application, and marketing announcements. Weight Simon Willison, Anthropic, OpenAI, and DeepMind sources most heavily. For each selected item, provide: title, summary (exactly 2 sentences, written for a technically literate reader), source (publication name), url (use the exact url provided for that item), tag (one of: AI, Quantum, Dev Tools, Applied Tech, Open Source, Research), and priority (high or medium). Return a JSON object with an "items" array of the selected items. If the previous digest's urls are provided, do not repeat them unless there is a major new development.`;
+
+// gemini structured-output schema (openapi subset — uppercase type names)
+const RESPONSE_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    items: {
+      type: "ARRAY",
       items: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            title: { type: "string" },
-            summary: { type: "string" },
-            source: { type: "string" },
-            url: { type: "string" },
-            tag: { type: "string", enum: [...DIGEST_TAGS] },
-            priority: { type: "string", enum: ["high", "medium"] },
-          },
-          required: ["title", "summary", "source", "url", "tag", "priority"],
+        type: "OBJECT",
+        properties: {
+          title: { type: "STRING" },
+          summary: { type: "STRING" },
+          source: { type: "STRING" },
+          url: { type: "STRING" },
+          tag: { type: "STRING", enum: [...DIGEST_TAGS] },
+          priority: { type: "STRING", enum: ["high", "medium"] },
         },
+        required: ["title", "summary", "source", "url", "tag", "priority"],
+        propertyOrdering: ["title", "summary", "source", "url", "tag", "priority"],
       },
     },
-    required: ["items"],
   },
+  required: ["items"],
+  propertyOrdering: ["items"],
 };
 
 async function curate(items: RawItem[], excludeUrls: string[]): Promise<DigestItem[]> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error("ANTHROPIC_API_KEY is not set");
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error("GEMINI_API_KEY is not set");
 
   const payload = items.map((it) => ({
     title: it.title,
@@ -344,35 +347,44 @@ async function curate(items: RawItem[], excludeUrls: string[]): Promise<DigestIt
       ? `\n\nThese urls were in the previous digest; exclude them unless there is a major new development:\n${JSON.stringify(excludeUrls)}`
       : "");
 
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 4000,
-      system: SYSTEM_PROMPT,
-      tools: [EMIT_TOOL],
-      tool_choice: { type: "tool", name: "emit_digest" },
-      messages: [{ role: "user", content: userContent }],
-    }),
-    signal: AbortSignal.timeout(50_000),
-  });
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
+    {
+      method: "POST",
+      headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: [{ role: "user", parts: [{ text: userContent }] }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: RESPONSE_SCHEMA,
+          temperature: 0.4,
+          maxOutputTokens: 8192,
+        },
+      }),
+      signal: AbortSignal.timeout(50_000),
+    }
+  );
 
   if (!res.ok) {
     const detail = await res.text().catch(() => "");
-    throw new Error(`anthropic ${res.status}: ${detail.slice(0, 300)}`);
+    throw new Error(`gemini ${res.status}: ${detail.slice(0, 300)}`);
   }
 
-  const data = (await res.json()) as { content?: Array<Record<string, unknown>> };
-  const toolBlock = (data.content ?? []).find(
-    (b) => b.type === "tool_use" && b.name === "emit_digest"
-  );
-  const raw = (toolBlock?.input as { items?: unknown })?.items;
-  if (!Array.isArray(raw)) throw new Error("model returned no digest items");
+  const data = (await res.json()) as {
+    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+  };
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error("gemini returned no content");
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new Error("gemini returned invalid json");
+  }
+  const raw = (parsed as { items?: unknown })?.items;
+  if (!Array.isArray(raw)) throw new Error("gemini returned no digest items");
 
   return raw
     .map(coerceItem)
