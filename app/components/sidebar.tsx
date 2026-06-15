@@ -14,6 +14,7 @@ interface NavItem {
 const items: NavItem[] = [
   { label: "overview", href: "/" },
   { label: "writing", href: "/writing" },
+  { label: "digest", href: "/digest" },
   { label: "guestbook", href: "/guestbook" },
   { label: "vim", href: "/vim" },
   { label: "bonsai", href: "/bonsai" },

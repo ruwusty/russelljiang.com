@@ -45,12 +45,19 @@ before changing anything visual or touching content.
 - public-write endpoints (guestbook, vim-scores) have honeypots, per-ip
   cooldowns (hashed ips, never raw), length caps, validation. keep all of
   these when touching them.
+- daily digest: `app/lib/digest.ts` fetches ~13 rss/atom/hn sources, dedups,
+  caps, then calls the anthropic api (`claude-sonnet-4-6`, fetch + forced
+  tool use for valid json) to pick ~12 items. cron `app/api/cron/digest`
+  runs `0 20 * * *` (6–7am sydney, dst-safe) protected by `CRON_SECRET`;
+  manual run via POST `app/api/cron/digest/trigger` with `x-trigger-secret`
+  (env `DIGEST_TRIGGER_SECRET`). output stored in blob `digest/latest.json`
+  + dated archive; `/digest` reads it. env `ANTHROPIC_API_KEY` required.
 
 ## routes
 
-public: `/` `/writing` `/writing/vibe-coding-wont-save-you` `/guestbook`
-`/vim` `/bonsai` `/projects`. unlisted + noindex: `/plan` `/presets`,
-`/404` (the tamagotchi cat). nav lives in
+public: `/` `/writing` `/writing/vibe-coding-wont-save-you` `/digest`
+`/guestbook` `/vim` `/bonsai` `/projects`. unlisted + noindex: `/plan`
+`/presets`, `/404` (the tamagotchi cat). nav lives in
 `app/components/sidebar.tsx` (j/k + enter navigation); command mode in
 `app/components/command-bar.tsx` (`:` key) — new pages should be added to
 both, plus the `:help` page list.
