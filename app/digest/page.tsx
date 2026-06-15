@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DocsShell, type TocItem } from "../components/docs-shell";
 import { TAG_ORDER, type DigestItem, type DigestTag } from "../lib/digest-types";
 import { readLatestDigest } from "../lib/digest-store";
+import { DigestRefresh } from "./digest-refresh";
 
 export const metadata: Metadata = {
   title: "daily digest — russell jiang",
@@ -107,6 +108,8 @@ export default async function DigestPage() {
       <p className="mt-1 text-[12px] lowercase" style={{ color: "var(--faint)" }}>
         curated daily from across the web, filtered and summarised by claude.
       </p>
+
+      <DigestRefresh />
 
       <div className="hrule my-8" />
 
