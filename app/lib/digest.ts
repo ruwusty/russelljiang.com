@@ -29,9 +29,9 @@ const FEEDS: Feed[] = [
   { name: "Google DeepMind", url: "https://deepmind.google/blog/rss.xml", cap: 10 },
   { name: "Hugging Face", url: "https://huggingface.co/blog/feed.xml", cap: 10 },
   // research — firehoses, capped hard; the prompt filters applied-over-theory
-  { name: "arXiv cs.AI", url: "https://arxiv.org/rss/cs.AI", cap: 15 },
-  { name: "arXiv cs.LG", url: "https://arxiv.org/rss/cs.LG", cap: 15 },
-  { name: "arXiv quant-ph", url: "https://arxiv.org/rss/quant-ph", cap: 15 },
+  { name: "arXiv cs.AI", url: "https://arxiv.org/rss/cs.AI", cap: 10 },
+  { name: "arXiv cs.LG", url: "https://arxiv.org/rss/cs.LG", cap: 10 },
+  { name: "arXiv quant-ph", url: "https://arxiv.org/rss/quant-ph", cap: 10 },
   // science / broad tech
   { name: "Quanta Magazine", url: "https://www.quantamagazine.org/feed", cap: 10 },
   { name: "Ars Technica", url: "https://feeds.arstechnica.com/arstechnica/index", cap: 12 },
@@ -78,7 +78,7 @@ const HN_KEYWORDS = [
 
 const FETCH_TIMEOUT_MS = 8000;
 const FRESH_WINDOW_MS = 30 * 60 * 60 * 1000; // 30h — daily, with slack for gaps
-const MAX_ITEMS_TO_MODEL = 220;
+const MAX_ITEMS_TO_MODEL = 90;
 const DESC_MAX = 300;
 const USER_AGENT = "russelljiang.com digest (+https://russelljiang.com)";
 
@@ -347,24 +347,35 @@ async function curate(items: RawItem[], excludeUrls: string[]): Promise<DigestIt
       ? `\n\nThese urls were in the previous digest; exclude them unless there is a major new development:\n${JSON.stringify(excludeUrls)}`
       : "");
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
-    {
-      method: "POST",
-      headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [{ role: "user", parts: [{ text: userContent }] }],
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: RESPONSE_SCHEMA,
-          temperature: 0.4,
-          maxOutputTokens: 8192,
-        },
-      }),
-      signal: AbortSignal.timeout(50_000),
+  let res: Response;
+  try {
+    res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
+      {
+        method: "POST",
+        headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents: [{ role: "user", parts: [{ text: userContent }] }],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: RESPONSE_SCHEMA,
+            temperature: 0.4,
+            maxOutputTokens: 4096,
+            // this is an extraction task, not a reasoning one — skip thinking
+            // so the model answers in seconds instead of burning the budget.
+            thinkingConfig: { thinkingBudget: 0 },
+          },
+        }),
+        signal: AbortSignal.timeout(45_000),
+      }
+    );
+  } catch (e) {
+    if (e instanceof Error && (e.name === "TimeoutError" || e.name === "AbortError")) {
+      throw new Error(`gemini request timed out (45s) sending ${payload.length} items`);
     }
-  );
+    throw new Error(`gemini request failed: ${e instanceof Error ? e.message : String(e)}`);
+  }
 
   if (!res.ok) {
     const detail = await res.text().catch(() => "");
