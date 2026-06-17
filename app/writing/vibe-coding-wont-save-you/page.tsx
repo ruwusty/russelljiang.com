@@ -117,7 +117,7 @@ export default function VibeCodingPost() {
       <div className="hrule my-8" />
 
       <P>
-        Vibe coding is a great way to make sure that nobody understands what is going on. It might
+        Vibe coding is a great way to make sure nobody understands what is going on. It might
         fly under the radar for frontend — but in data science, that&apos;s a liability.
       </P>
 
@@ -313,8 +313,8 @@ export default function VibeCodingPost() {
       <P>
         Causal inference is increasingly being flagged as a highly sought-after skill <Ref n={3} />{" "}
         — not because the tooling changed, but because autonomous systems need someone who can
-        reason about whether a correlation actually means anything. The models are getting smarter.
-        That means the problems you&apos;re being asked to solve are getting harder, the stakes are
+        reason about whether a correlation actually means anything. The problems you&apos;re being
+        asked to solve are getting harder, the stakes are
         higher, and the gap between someone who can implement and someone who can reason is getting
         wider.
       </P>
