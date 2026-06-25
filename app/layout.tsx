@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "russell jiang",
     description:
-      "Data Science student at UNSW Sydney. One-on-one tutor across all subjects including Science Olympiad prep. AmusA musician.",
+      "Data Science student at UNSW Sydney. AmusA musician.",
     url: "https://russelljiang.com",
     siteName: "russell jiang",
     locale: "en_AU",
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "russell jiang",
     description:
-      "Data Science student at UNSW Sydney. One-on-one tutor across all subjects including Science Olympiad prep. AmusA musician.",
+      "Data Science student at UNSW Sydney. AmusA musician.",
   },
   robots: { index: true, follow: true },
 };
