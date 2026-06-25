@@ -276,7 +276,7 @@ export default function SameShapePost() {
       </P>
       <Equation>ΔG = ΔH − TΔS</Equation>
       <P>
-        three letters and a minus sign. ΔH is enthalpy, the system’s pull toward low energy, the
+        ΔH is enthalpy, the system’s pull toward low energy, the
         part of nature that wants to settle and rest and let go of heat. ΔS is entropy, the pull
         toward disorder, the part that wants to spread out and explore and never sit still. and T is
         temperature, which sets how much the second pull matters against the first. a system settles
