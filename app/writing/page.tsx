@@ -17,7 +17,7 @@ const posts: Post[] = [
     description:
       "A meditation on pattern recognition, and what physics might have to say about how to live.",
     date: "2026-06-25",
-    tags: ["maths", "physics"],
+    tags: ["maths", "physics", "philosophy"],
     published: "personal",
     href: "/writing/the-same-shape-everywhere",
   },
