@@ -58,8 +58,9 @@ before changing anything visual or touching content.
 
 ## routes
 
-public: `/` `/writing` `/writing/vibe-coding-wont-save-you` `/digest`
-`/guestbook` `/vim` `/bonsai` `/projects`. unlisted + noindex: `/plan`
+public: `/` `/writing` `/writing/vibe-coding-wont-save-you`
+`/writing/the-same-shape-everywhere` `/digest` `/guestbook` `/vim` `/bonsai`
+`/projects`. unlisted + noindex: `/plan`
 `/presets`, `/404` (the tamagotchi cat). nav lives in
 `app/components/sidebar.tsx` (j/k + enter navigation); command mode in
 `app/components/command-bar.tsx` (`:` key) — new pages should be added to

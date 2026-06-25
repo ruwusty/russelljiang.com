@@ -15,6 +15,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: "https://russelljiang.com/writing/the-same-shape-everywhere",
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.6,
+    },
+    {
       url: "https://russelljiang.com/writing/vibe-coding-wont-save-you",
       lastModified: new Date(),
       changeFrequency: "yearly",

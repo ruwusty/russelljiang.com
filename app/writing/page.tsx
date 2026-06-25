@@ -13,6 +13,15 @@ interface Post {
 
 const posts: Post[] = [
   {
+    title: "The Same Shape Everywhere",
+    description:
+      "A meditation on pattern recognition, and what physics might have to say about how to live.",
+    date: "2026-06-25",
+    tags: ["maths", "physics"],
+    published: "personal",
+    href: "/writing/the-same-shape-everywhere",
+  },
+  {
     title: "Vibe Coding Won't Save You",
     description: "Why fundamentals still matter in the age of agentic AI.",
     date: "2026-04-12",
