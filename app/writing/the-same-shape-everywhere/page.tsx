@@ -347,7 +347,7 @@ export default function SameShapePost() {
         <Strong>
           the still path is the balanced one, not the empty one. find where the forces cancel. that
           is the equilibrium, and it is the one thing in all of this you actually have to go looking
-          for yourself. ■
+          for yourself ■
         </Strong>
       </P>
 
