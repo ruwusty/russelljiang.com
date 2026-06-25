@@ -350,6 +350,13 @@ export default function SameShapePost() {
           for yourself. ■
         </Strong>
       </P>
+
+      <p
+        className="mt-14 pt-4 text-[11px] lowercase italic leading-[1.7]"
+        style={{ borderTop: "1px solid var(--line)", color: "var(--faint)" }}
+      >
+        a dialogue distillate: my thoughts, drafted with claude.
+      </p>
     </DocsShell>
   );
 }
