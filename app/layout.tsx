@@ -21,7 +21,7 @@ const jsonLd = {
     name: "UNSW Sydney",
   },
   description:
-    "First-year Data Science student at UNSW Sydney. One-on-one tutor across STEM and beyond. AmusA musician.",
+    "First-year Data Science student at UNSW Sydney. AmusA musician.",
   knowsAbout: [
     "Data Science",
     "Machine Learning",
@@ -37,12 +37,11 @@ const jsonLd = {
 export const metadata: Metadata = {
   title: "russell jiang",
   description:
-    "Data Science student at UNSW Sydney. One-on-one tutor across STEM and beyond. AmusA musician.",
+    "Data Science student at UNSW Sydney. AmusA musician.",
   keywords: [
     "Russell Jiang",
     "UNSW",
     "Data Science",
-    "tutor",
     "STEM",
     "AmusA",
     "Sydney",
