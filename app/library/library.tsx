@@ -14,11 +14,14 @@ interface Book {
   note?: string;
 }
 
-const SECTIONS: { status: Status; index: string; label: string; empty: string }[] = [
-  { status: "reading", index: "01", label: "currently reading", empty: "nothing open. suspicious." },
-  { status: "to-read", index: "02", label: "the queue", empty: "the queue is empty. it won't last." },
-  { status: "read", index: "03", label: "read", empty: "nothing finished yet. the queue is long." },
-];
+const STATUS_LABEL: Record<Status, string> = {
+  reading: "currently reading",
+  "to-read": "in the queue",
+  read: "read",
+};
+
+// one shelf: reading first, then the queue, then finished
+const STATUS_RANK: Record<Status, number> = { reading: 0, "to-read": 1, read: 2 };
 
 // first-run seed + outage fallback only — the blob is the source of truth.
 // edit on the site while logged in, not here.
@@ -314,25 +317,17 @@ export function Library() {
         </div>
       )}
 
-      {SECTIONS.map(({ status, index, label, empty }) => {
-        const shelf = books.filter((b) => b.status === status);
+      {(() => {
+        const shelf = [...books].sort(
+          (a, b) => STATUS_RANK[a.status] - STATUS_RANK[b.status]
+        );
         const selected = shelf.find((b) => b.id === selectedId) ?? null;
         return (
-          <section key={status} id={status} className="mt-12 first:mt-0">
-            <h2
-              className="text-[13px] lowercase tracking-[0.15em]"
-              style={{ color: "var(--ink)" }}
-            >
-              <span style={{ color: "var(--faint)" }}>{index}</span> {label}
-            </h2>
-
+          <section id="shelf" className="mt-2">
             {shelf.length === 0 ? (
-              <div
-                className="mt-4 pb-2"
-                style={{ borderBottom: "1px solid var(--line)" }}
-              >
+              <div className="pb-2" style={{ borderBottom: "1px solid var(--line)" }}>
                 <p className="text-[12px] lowercase" style={{ color: "var(--faint)" }}>
-                  {empty}
+                  the shelf is empty. it won&apos;t last.
                 </p>
               </div>
             ) : (
@@ -367,6 +362,9 @@ export function Library() {
                       [{selected.tag}]
                     </span>
                   )}
+                  <span className="text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+                    · {STATUS_LABEL[selected.status]}
+                  </span>
                   {password && (
                     <button
                       onClick={() => openEdit(selected)}
@@ -389,10 +387,10 @@ export function Library() {
             )}
           </section>
         );
-      })}
+      })()}
 
       <p className="mt-10 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
-        click a spine to pull it off the shelf.
+        click a spine to pull it off the shelf. the ribbon marks what&apos;s open right now.
       </p>
     </div>
   );

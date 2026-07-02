@@ -7,11 +7,7 @@ export const metadata: Metadata = {
   description: "A curated shelf: what I'm reading, what's queued, what's done.",
 };
 
-const toc = [
-  { label: "Reading", href: "#reading" },
-  { label: "The queue", href: "#to-read" },
-  { label: "Read", href: "#read" },
-];
+const toc = [{ label: "The shelf", href: "#shelf" }];
 
 export default function LibraryPage() {
   return (
