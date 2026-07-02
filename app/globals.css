@@ -157,6 +157,30 @@ button:focus-visible,
   }
 }
 
+/* library spines: the third sanctioned animation — books want to be touched */
+.spine {
+  transition: transform 130ms ease;
+}
+
+.spine:hover {
+  transform: translateY(-5px);
+}
+
+.spine[data-pulled="true"] {
+  transform: translateY(-9px);
+}
+
+.spine[data-drop-target="true"] {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spine {
+    transition: none;
+  }
+}
+
 /* mdx essays: section headings auto-number themselves (01, 02, …) */
 .essay {
   counter-reset: essay-section;

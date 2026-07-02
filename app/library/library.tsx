@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSiteAuth } from "../components/site-auth";
 
 type Status = "reading" | "to-read" | "read";
@@ -19,9 +19,6 @@ const STATUS_LABEL: Record<Status, string> = {
   "to-read": "in the queue",
   read: "read",
 };
-
-// one shelf: reading first, then the queue, then finished
-const STATUS_RANK: Record<Status, number> = { reading: 0, "to-read": 1, read: 2 };
 
 // first-run seed + outage fallback only — the blob is the source of truth.
 // edit on the site while logged in, not here.
@@ -68,11 +65,21 @@ function hashString(s: string): number {
 function Spine({
   book,
   selected,
+  dropTarget,
   onClick,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  onDragEnd,
 }: {
   book: Book;
   selected: boolean;
+  dropTarget: boolean;
   onClick: () => void;
+  onDragStart: () => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDrop: (e: React.DragEvent) => void;
+  onDragEnd: () => void;
 }) {
   const h = hashString(book.title);
   const height = 100 + (h % 5) * 11; // 100–144
@@ -82,14 +89,19 @@ function Spine({
   return (
     <button
       onClick={onClick}
-      className="relative shrink-0 overflow-hidden"
+      draggable
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      onDragEnd={onDragEnd}
+      className="spine relative shrink-0 overflow-hidden"
+      data-pulled={selected ? "true" : "false"}
+      data-drop-target={dropTarget ? "true" : "false"}
       style={{
         height,
         width,
         background: color,
         border: selected ? "1px solid var(--ink)" : "1px solid var(--line)",
-        // a pulled book sits proud of the shelf; instant, no animation
-        transform: selected ? "translateY(-8px)" : undefined,
         cursor: "pointer",
         padding: 0,
       }}
@@ -147,6 +159,29 @@ export function Library() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "error">("idle");
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [dropId, setDropId] = useState<string | null>(null);
+  const dragIdRef = useRef<string | null>(null);
+
+  // anyone can rearrange the shelf (it's satisfying); only the owner's
+  // arrangement persists — visitors' fidgeting resets on reload.
+  const reorder = (targetId: string | null) => {
+    const moving_id = dragIdRef.current;
+    dragIdRef.current = null;
+    setDragId(null);
+    setDropId(null);
+    if (!moving_id || moving_id === targetId) return;
+    const moving = books.find((b) => b.id === moving_id);
+    if (!moving) return;
+    const rest = books.filter((b) => b.id !== moving_id);
+    const at = targetId ? rest.findIndex((b) => b.id === targetId) : rest.length;
+    const next = [...rest.slice(0, at < 0 ? rest.length : at), moving, ...rest.slice(at < 0 ? rest.length : at)];
+    if (password) {
+      persist(next);
+    } else {
+      setBooks(next);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -318,9 +353,7 @@ export function Library() {
       )}
 
       {(() => {
-        const shelf = [...books].sort(
-          (a, b) => STATUS_RANK[a.status] - STATUS_RANK[b.status]
-        );
+        const shelf = books;
         const selected = shelf.find((b) => b.id === selectedId) ?? null;
         return (
           <section id="shelf" className="mt-2">
@@ -334,15 +367,40 @@ export function Library() {
               <div
                 className="mt-8 flex flex-wrap items-end gap-[6px] px-1"
                 style={{ borderBottom: "1px solid var(--line)" }}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  reorder(null); // dropped on the shelf itself: move to the end
+                }}
               >
                 {shelf.map((book) => (
                   <Spine
                     key={book.id}
                     book={book}
                     selected={book.id === selectedId}
+                    dropTarget={dropId === book.id && dragId !== book.id}
                     onClick={() =>
                       setSelectedId((cur) => (cur === book.id ? null : book.id))
                     }
+                    onDragStart={() => {
+                      dragIdRef.current = book.id;
+                      setDragId(book.id);
+                    }}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setDropId(book.id);
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      reorder(book.id);
+                    }}
+                    onDragEnd={() => {
+                      dragIdRef.current = null;
+                      setDragId(null);
+                      setDropId(null);
+                    }}
                   />
                 ))}
               </div>
@@ -390,7 +448,8 @@ export function Library() {
       })()}
 
       <p className="mt-10 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
-        click a spine to pull it off the shelf. the ribbon marks what&apos;s open right now.
+        click a spine to pull it off the shelf. drag to rearrange, it soothes.
+        the ribbon marks what&apos;s open right now.
       </p>
     </div>
   );

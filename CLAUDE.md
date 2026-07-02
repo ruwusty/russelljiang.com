@@ -18,9 +18,9 @@ before changing anything visual or touching content.
 - layout: single column inside the bordered "terminal pane" in
   `app/components/docs-shell.tsx`. 1px solid borders only, used sparingly.
   a 44px × 1px `.hrule` under each page heading. generous whitespace.
-- animations: ONLY the blinking cursor (`.cursor-block`) and the currently
-  typewriter; everything else is instant colour changes. always respect
-  `prefers-reduced-motion`.
+- animations: ONLY the blinking cursor (`.cursor-block`), the currently
+  typewriter, and the library spine hover-lift (`.spine`); everything else is
+  instant colour changes. always respect `prefers-reduced-motion`.
 - kaomoji appear only through the `<Kaomoji>` slot component
   (`app/components/kaomoji.tsx`) — never hardcode new ones into pages.
 
