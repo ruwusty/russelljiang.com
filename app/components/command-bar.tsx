@@ -11,6 +11,7 @@ const ROUTES: Record<string, string> = {
   overview: "/",
   writing: "/writing",
   digest: "/digest",
+  library: "/library",
   guestbook: "/guestbook",
   plan: "/plan",
   presets: "/presets",
@@ -25,7 +26,7 @@ const EXTERNAL: Record<string, string> = {
 };
 
 const HELP_LINES: [string, string][] = [
-  ["go <page>", "home · writing · digest · guestbook · vim · bonsai · projects · plan · presets · linkedin · email"],
+  ["go <page>", "home · writing · digest · library · guestbook · vim · bonsai · projects · plan · presets · linkedin · email"],
   ["vim", "motion practice trial"],
   ["theme [dark|light]", "switch theme"],
   ["tea [min]", "a timer, for tea"],
@@ -224,6 +225,9 @@ export function CommandBar({ sections }: { sections: number }) {
         break;
       case "digest":
         router.push("/digest");
+        break;
+      case "library":
+        router.push("/library");
         break;
       case "vim":
         router.push("/vim");

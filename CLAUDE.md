@@ -35,7 +35,8 @@ before changing anything visual or touching content.
   (sessionStorage `site_pw`, broadcasts changes via window event so all
   components unlock together). one password for everything.
 - **the blob is the source of truth.** hardcoded defaults in components
-  (DEFAULT_ITEMS, DEFAULT_HOME, DEFAULT_COURSES, DEFAULT_PRESETS) are
+  (DEFAULT_ITEMS, DEFAULT_HOME, DEFAULT_COURSES, DEFAULT_PRESETS,
+  DEFAULT_BOOKS) are
   first-run seeds and outage fallbacks only — to change live content, edit
   on the site while logged in, or PUT to the api. do not edit the defaults
   expecting the site to change.
@@ -59,8 +60,8 @@ before changing anything visual or touching content.
 ## routes
 
 public: `/` `/writing` `/writing/vibe-coding-wont-save-you`
-`/writing/the-same-shape-everywhere` `/digest` `/guestbook` `/vim` `/bonsai`
-`/projects`. unlisted + noindex: `/plan`
+`/writing/the-same-shape-everywhere` `/digest` `/library` `/guestbook` `/vim`
+`/bonsai` `/projects`. unlisted + noindex: `/plan`
 `/presets`, `/404` (the tamagotchi cat). nav lives in
 `app/components/sidebar.tsx` (j/k + enter navigation); command mode in
 `app/components/command-bar.tsx` (`:` key) — new pages should be added to

@@ -14,6 +14,7 @@ const ENDPOINTS = [
   ["presets", "/api/presets"],
   ["guestbook", "/api/guestbook"],
   ["vim-leaderboard", "/api/vim-scores"],
+  ["library", "/api/library"],
 ];
 
 mkdirSync("backups", { recursive: true });
