@@ -1,0 +1,15 @@
+/* team */
+  human: russell jiang
+  location: sydney, australia
+  role: data science student, unsw. clarinettist. gym enjoyer.
+
+/* site */
+  stack: next.js · react · tailwind · vercel blob
+  aesthetic: tui x japanese minimal
+  type: jetbrains mono, a mincho serif for headings
+  animations: a blinking cursor, a typewriter, and one restless cat
+
+/* colophon */
+  built with a pair programmer.
+  robots get robots.txt. you get this.
+  the cat at /404 is friendly. the bonsai is patient. sign the guestbook.
