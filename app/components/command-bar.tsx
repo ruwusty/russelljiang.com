@@ -18,6 +18,7 @@ const ROUTES: Record<string, string> = {
   vim: "/vim",
   bonsai: "/bonsai",
   projects: "/projects",
+  stats: "/stats",
 };
 
 const EXTERNAL: Record<string, string> = {
@@ -228,6 +229,9 @@ export function CommandBar({ sections }: { sections: number }) {
         break;
       case "library":
         router.push("/library");
+        break;
+      case "stats":
+        router.push("/stats");
         break;
       case "vim":
         router.push("/vim");
