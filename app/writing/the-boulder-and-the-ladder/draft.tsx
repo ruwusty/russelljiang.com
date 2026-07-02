@@ -118,14 +118,14 @@ function Essay() {
       <P>
         a win didn&apos;t feel like “yes, i did something great.” it felt like “thank god i
         didn&apos;t lose.” and a loss wasn&apos;t neutral. it was a slide into tilt, especially in
-        team games where your fate is half in someone else&apos;s hands. so the emotional math
+        team games where your fate is half in someone else&apos;s hands. so the emotional arithmetic
         worked out to this: best case, you feel the absence of a bad thing. worst case, you feel a
         bad thing. there&apos;s no real upside in the structure. only the avoidance of downside.
       </P>
       <P>
         once you see it that way it&apos;s kind of bleak. you&apos;re grinding for relief. you push
         the rank up, someone pushes it back down, and the ladder doesn&apos;t care that you were
-        ever on it. it&apos;s sisyphus with a leaderboard. the boulder rolls back down and the
+        ever on it. it&apos;s Sisyphus with a leaderboard. the boulder rolls back down and the
         boulder has never once thought about you.
       </P>
       <P>
@@ -197,7 +197,7 @@ function Essay() {
         that&apos;s genuinely useful, not a phase to be ashamed of. but it&apos;s a starting area.
         at some point a lot of people age out of it and migrate, almost without noticing, to hobbies
         where the progress is cumulative and yours: lifting, climbing, an instrument, a craft. the
-        boulder and the barbell are just the next zone. the rpg keeps going, the leveling just gets
+        boulder and the barbell are just the next zone. the rpg keeps going, the levelling just gets
         more real.
       </P>
       <P>

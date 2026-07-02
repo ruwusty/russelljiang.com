@@ -61,11 +61,19 @@ before changing anything visual or touching content.
 
 public: `/` `/writing` `/writing/vibe-coding-wont-save-you`
 `/writing/the-same-shape-everywhere` `/digest` `/library` `/guestbook` `/vim`
-`/bonsai` `/projects`. unlisted + noindex: `/plan`
-`/presets`, `/404` (the tamagotchi cat). nav lives in
+`/bonsai` `/projects`. unlisted + noindex: `/plan` `/presets`, `/stats`
+(`:stats`), `/404` (the tamagotchi cat), and gated drafts under `/writing/*`.
+nav lives in
 `app/components/sidebar.tsx` (j/k + enter navigation); command mode in
 `app/components/command-bar.tsx` (`:` key) — new pages should be added to
 both, plus the `:help` page list.
+
+## writing
+
+new essays use the mdx pipeline — **read `docs/WRITING.md`** for the two-file
+pattern (`content.mdx` + `page.tsx` with `EssayLayout`), the wiring checklist
+(index, sitemap, CLAUDE.md), and the voice/typography rules. the two oldest
+essays are hand-rolled jsx; leave them.
 
 ## scripts
 
