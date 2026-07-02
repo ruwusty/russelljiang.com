@@ -157,6 +157,20 @@ button:focus-visible,
   }
 }
 
+/* mdx essays: section headings auto-number themselves (01, 02, …) */
+.essay {
+  counter-reset: essay-section;
+}
+
+.essay .essay-h2 {
+  counter-increment: essay-section;
+}
+
+.essay .essay-h2::before {
+  content: counter(essay-section, decimal-leading-zero) " ";
+  color: var(--faint);
+}
+
 /* konami: phosphor mode (the one sanctioned rule-break — it's a cheat code) */
 body.phosphor {
   --bg: #0c110c;
