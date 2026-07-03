@@ -54,6 +54,35 @@ body {
   color: var(--ink);
 }
 
+/* the text caret is a terminal's caret */
+input,
+textarea {
+  caret-color: var(--green);
+}
+
+/* scrollbars in the house palette */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--soft);
+}
+
 /* display type: site title + page headings only */
 .display {
   font-family: var(--font-display);
@@ -68,6 +97,16 @@ body {
   height: 1px;
   background: var(--ink);
   border: none;
+}
+
+/* section command rows: a hairline trailing off to the right margin.
+   apply only to flex rows — the rule fills the leftover space. */
+.trail::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  margin-left: 6px;
 }
 
 /* plain links: instant colour shift to accent, no underline */
@@ -196,6 +235,20 @@ button:focus-visible,
 .spine[data-drop-target="true"] {
   outline: 1px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* one book always leans. pulling it off the shelf straightens it. */
+.spine[data-lean="true"] {
+  transform: rotate(3.5deg);
+  transform-origin: bottom center;
+}
+
+.spine[data-lean="true"]:hover {
+  transform: translateY(-5px) rotate(3.5deg);
+}
+
+.spine[data-lean="true"][data-pulled="true"] {
+  transform: translateY(-9px) rotate(0deg);
 }
 
 @media (prefers-reduced-motion: reduce) {

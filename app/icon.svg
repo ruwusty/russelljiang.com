@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .bg { fill: #faf8f3; }
+    .cur { fill: #6f8f6a; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #16140f; }
+    }
+  </style>
+  <rect class="bg" width="32" height="32"/>
+  <rect class="cur" x="11" y="8" width="10" height="17"/>
+</svg>

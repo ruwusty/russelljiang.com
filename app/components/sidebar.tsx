@@ -77,7 +77,7 @@ export function Sidebar() {
 
   return (
     <nav className="mt-10 text-[13px]" aria-label="site navigation">
-      <div className="flex items-center gap-2 text-[12px]">
+      <div className="trail flex items-center gap-2 text-[12px]">
         <span style={{ color: "var(--green)" }}>❯</span>
         <span style={{ color: "var(--soft)" }}>ls ~/site</span>
       </div>
