@@ -102,7 +102,7 @@ export function Stats() {
 
   const row = (label: string, value: string | null) => (
     <div className="contents" key={label}>
-      <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
+      <dt className="text-[12px]" style={{ color: "var(--soft)" }}>
         {label}
       </dt>
       <dd style={{ color: value ? "var(--soft)" : "var(--faint)" }}>{value ?? "…"}</dd>
@@ -111,7 +111,7 @@ export function Stats() {
 
   return (
     <div id="numbers">
-      <div className="flex items-center gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
+      <div className="trail flex items-center gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
         <span style={{ color: "var(--green)" }}>❯</span>
         <span>cat /proc/site</span>
       </div>
@@ -153,7 +153,7 @@ export function Stats() {
         {row("analytics", "none. this page is the analytics")}
       </dl>
 
-      <p className="mt-8 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="mt-8 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
         the bonsai is not listed. your tree lives in your browser, not my database.
       </p>
     </div>

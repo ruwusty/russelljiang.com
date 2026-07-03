@@ -452,12 +452,12 @@ export function VimTrial() {
             [{d}]
           </button>
         ))}
-        <span className="text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+        <span className="text-[11px] lowercase" style={{ color: "var(--soft)" }}>
           {config.blurb}
         </span>
       </div>
 
-      <div className="mt-2 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+      <div className="mt-2 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
         the highlighted block is the target — see the guide below if you&apos;re new
       </div>
 
@@ -570,7 +570,7 @@ export function VimTrial() {
 
       {/* leaderboards */}
       <div className="mt-10">
-        <div className="flex items-baseline gap-3 flex-wrap text-[12px]" style={{ color: "var(--soft)" }}>
+        <div className="trail flex items-baseline gap-3 flex-wrap text-[12px]" style={{ color: "var(--soft)" }}>
           <span style={{ color: "var(--green)" }}>❯</span>
           <span>leaderboard · {difficulty}</span>
           <button
@@ -592,11 +592,11 @@ export function VimTrial() {
         <div className="mt-3 flex flex-col gap-1 text-[12px]">
           {boardView === "global" ? (
             boards === null ? (
-              <span className="text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+              <span className="text-[11px] lowercase" style={{ color: "var(--soft)" }}>
                 loading…
               </span>
             ) : globalRows.length === 0 ? (
-              <span className="text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+              <span className="text-[11px] lowercase" style={{ color: "var(--soft)" }}>
                 nobody has posted a {difficulty} run yet. be the first.
               </span>
             ) : (
@@ -631,7 +631,7 @@ export function VimTrial() {
               ))
             )
           ) : personal.length === 0 ? (
-            <span className="text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+            <span className="text-[11px] lowercase" style={{ color: "var(--soft)" }}>
               no {difficulty} runs on this device yet.
             </span>
           ) : (
@@ -643,7 +643,7 @@ export function VimTrial() {
                 <span style={{ color: "var(--ink)" }}>
                   {run.time.toFixed(1)}s · {run.keys} keys
                 </span>
-                <span className="ml-auto shrink-0 text-[11px]" style={{ color: "var(--faint)" }}>
+                <span className="ml-auto shrink-0 text-[11px]" style={{ color: "var(--soft)" }}>
                   {run.ts.slice(0, 10)}
                 </span>
               </div>

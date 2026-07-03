@@ -63,7 +63,7 @@ function Bar({ label, value }: { label: string; value: number }) {
   const filled = Math.round((value / 100) * 5);
   return (
     <span className="flex items-baseline gap-2">
-      <span className="w-[5ch]" style={{ color: "var(--faint)" }}>
+      <span className="w-[5ch]" style={{ color: "var(--soft)" }}>
         {label}
       </span>
       <span style={{ color: "var(--soft)" }}>
@@ -152,7 +152,7 @@ export function CatPet() {
 
   if (!pet) {
     return (
-      <p className="text-[12px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="text-[12px] lowercase" style={{ color: "var(--soft)" }}>
         looking for the cat…
       </p>
     );
@@ -210,7 +210,7 @@ export function CatPet() {
         <Bar label="fed" value={100 - pet.hunger} />
         <Bar label="mood" value={pet.mood} />
         <span className="flex items-baseline gap-2">
-          <span style={{ color: "var(--faint)" }}>bond</span>
+          <span style={{ color: "var(--soft)" }}>bond</span>
           <span style={{ color: "var(--soft)" }}>lv {bondLevel}</span>
         </span>
       </div>
@@ -258,7 +258,7 @@ export function CatPet() {
         </span>
       </div>
 
-      <p className="mt-6 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="mt-6 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
         it lives in your browser. it remembers whether you visit.
       </p>
     </div>

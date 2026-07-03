@@ -57,7 +57,38 @@ export function CommandBar({ sections }: { sections: number }) {
   const [helpOpen, setHelpOpen] = useState(false);
   const [teaUntil, setTeaUntil] = useState<number | null>(null);
   const [, forceTick] = useState(0);
+  const [ruler, setRuler] = useState("all");
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // vim's ruler: where you are in the buffer
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const el = document.documentElement;
+      const max = el.scrollHeight - el.clientHeight;
+      if (max <= 0) {
+        setRuler("all");
+      } else if (window.scrollY <= 2) {
+        setRuler("top");
+      } else if (window.scrollY >= max - 2) {
+        setRuler("bot");
+      } else {
+        setRuler(`${Math.round((window.scrollY / max) * 100)}%`);
+      }
+    };
+    const queue = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("resize", queue, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", queue);
+      window.removeEventListener("resize", queue);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
   const msgTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -302,7 +333,7 @@ export function CommandBar({ sections }: { sections: number }) {
               </span>
             ))}
           </div>
-          <div className="mt-2" style={{ color: "var(--faint)" }}>
+          <div className="mt-2" style={{ color: "var(--soft)" }}>
             esc or click to close
           </div>
         </div>
@@ -377,7 +408,7 @@ export function CommandBar({ sections }: { sections: number }) {
                 {String(Math.max(0, Math.ceil(((teaUntil - Date.now()) % 60000) / 1000)) % 60).padStart(2, "0")}
               </span>
             )}
-            <span className="hidden sm:inline truncate" style={{ color: "var(--faint)" }}>
+            <span className="hidden sm:inline truncate" style={{ color: "var(--soft)" }}>
               j/k move · enter open · : for cmd
             </span>
           </span>
@@ -385,8 +416,11 @@ export function CommandBar({ sections }: { sections: number }) {
       </span>
       {/* the input needs the width more than the trivia does */}
       {!open && !message && (
-        <span className="shrink-0 text-right flex items-center gap-2" style={{ color: "var(--faint)" }}>
-          <span>{sections} sections · © 2026 · utf-8</span>
+        <span className="shrink-0 text-right flex items-center gap-2" style={{ color: "var(--soft)" }}>
+          <span>
+            {sections} sections · © 2026 · utf-8 ·{" "}
+            <span className="inline-block min-w-[3ch] text-left">{ruler}</span>
+          </span>
           <Kaomoji slot="statusbar" className="text-[11px]" />
         </span>
       )}

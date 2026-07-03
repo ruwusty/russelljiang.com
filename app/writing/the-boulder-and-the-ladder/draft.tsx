@@ -49,7 +49,7 @@ function Gate() {
       <p className="text-[13px] leading-[1.9] lowercase" style={{ color: "var(--soft)" }}>
         permission denied. this one&apos;s still a draft.
       </p>
-      <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
         if you&apos;re russell,{" "}
         <button
           onClick={() => setShowLogin((v) => !v)}
@@ -71,7 +71,7 @@ export function BoulderDraft() {
   // first paint (and ssr) renders the gate, never the essay
   if (!ready) {
     return (
-      <p className="text-[12px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="text-[12px] lowercase" style={{ color: "var(--soft)" }}>
         …
       </p>
     );
@@ -85,7 +85,7 @@ function Essay() {
     <>
       <div
         className="mb-8 px-3 py-2 text-[11px] lowercase"
-        style={{ border: "1px solid var(--line)", color: "var(--faint)" }}
+        style={{ border: "1px solid var(--line)", color: "var(--soft)" }}
       >
         <span style={{ color: "var(--accent)" }}>draft</span> — unpublished. only you can see this
         while logged in.
@@ -94,7 +94,7 @@ function Essay() {
       <h1 className="display text-[24px] leading-[1.5]" style={{ color: "var(--ink)" }}>
         the boulder and the ladder
       </h1>
-      <p className="mt-1 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="mt-1 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
         2026-06-29 · russell jiang
       </p>
 
@@ -264,7 +264,7 @@ function Essay() {
 
       <p
         className="mt-14 pt-4 text-[11px] lowercase italic leading-[1.7]"
-        style={{ borderTop: "1px solid var(--line)", color: "var(--faint)" }}
+        style={{ borderTop: "1px solid var(--line)", color: "var(--soft)" }}
       >
         a dialogue distillate: my thoughts, drafted with claude.
       </p>

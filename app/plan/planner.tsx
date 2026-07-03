@@ -386,7 +386,7 @@ export function ProgramPlanner() {
 
   if (!mounted) {
     return (
-      <p className="text-[12px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="text-[12px] lowercase" style={{ color: "var(--soft)" }}>
         loading plan…
       </p>
     );
@@ -437,7 +437,7 @@ export function ProgramPlanner() {
             {label}
           </span>
         ))}
-        <span className="ml-auto hidden sm:inline" style={{ color: "var(--faint)" }}>
+        <span className="ml-auto hidden sm:inline" style={{ color: "var(--soft)" }}>
           drag courses between terms
         </span>
       </div>
@@ -466,7 +466,7 @@ export function ProgramPlanner() {
                 >
                   <div className="flex justify-between text-[11px] lowercase mb-2" style={{ color: "var(--soft)" }}>
                     <span>{termLabel}</span>
-                    <span style={{ color: "var(--faint)" }}>{termCourses.length * 6} uoc</span>
+                    <span style={{ color: "var(--soft)" }}>{termCourses.length * 6} uoc</span>
                   </div>
                   {termCourses.map((c) => (
                     <div
@@ -499,7 +499,7 @@ export function ProgramPlanner() {
                   <button
                     onClick={() => openAdd(termKey)}
                     className="tui-btn block text-left text-[11px] mt-1"
-                    style={{ color: "var(--faint)" }}
+                    style={{ color: "var(--soft)" }}
                   >
                     + add course
                   </button>
@@ -512,7 +512,7 @@ export function ProgramPlanner() {
 
       <p
         className="text-[11px] text-center mt-8 lowercase"
-        style={{ color: syncState === "error" ? "var(--accent)" : "var(--faint)" }}
+        style={{ color: syncState === "error" ? "var(--accent)" : "var(--soft)" }}
         aria-live="polite"
       >
         {!authReady
@@ -635,7 +635,7 @@ function Counter({ label, value, ok }: { label: string; value: number; ok?: bool
       >
         {value}
       </span>
-      <span style={{ color: "var(--faint)" }}>{label}</span>
+      <span style={{ color: "var(--soft)" }}>{label}</span>
     </span>
   );
 }

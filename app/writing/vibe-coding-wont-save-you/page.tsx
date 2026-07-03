@@ -93,7 +93,7 @@ function Figure({
         }}
       />
       {caption && (
-        <figcaption className="mt-2 text-[11px] leading-[1.7]" style={{ color: "var(--faint)" }}>
+        <figcaption className="mt-2 text-[11px] leading-[1.7]" style={{ color: "var(--soft)" }}>
           {caption}
         </figcaption>
       )}
@@ -110,7 +110,7 @@ export default function VibeCodingPost() {
       <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
         why fundamentals still matter in the age of agentic ai.
       </p>
-      <p className="mt-1 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="mt-1 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
         2026-04-12 · maithili gulati &amp; russell jiang · first published with datasoc
       </p>
 
@@ -260,7 +260,7 @@ export default function VibeCodingPost() {
       >
         &quot;if your AI model has a 1% error rate and you plan over 5,000 steps, that 1% compounds
         like compound interest&quot;
-        <span className="block mt-1 text-[11px]" style={{ color: "var(--faint)" }}>
+        <span className="block mt-1 text-[11px]" style={{ color: "var(--soft)" }}>
           — deepmind ceo demis hassabis <Ref n={8} />
         </span>
       </blockquote>

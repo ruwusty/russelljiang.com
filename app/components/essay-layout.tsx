@@ -30,7 +30,7 @@ export function EssayLayout({
           {subtitle}
         </p>
       )}
-      <p className="mt-1 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="mt-1 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
         {date} · {byline}
       </p>
 
@@ -41,7 +41,7 @@ export function EssayLayout({
       {colophon && (
         <p
           className="mt-14 pt-4 text-[11px] lowercase italic leading-[1.7]"
-          style={{ borderTop: "1px solid var(--line)", color: "var(--faint)" }}
+          style={{ borderTop: "1px solid var(--line)", color: "var(--soft)" }}
         >
           {colophon}
         </p>

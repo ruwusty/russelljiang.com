@@ -160,7 +160,7 @@ export function Kaomoji({ slot, fallback = "", className, style }: KaomojiProps)
           [x]
         </button>
         {saving && (
-          <span className="text-[10px]" style={{ color: "var(--faint)" }}>
+          <span className="text-[10px]" style={{ color: "var(--soft)" }}>
             …
           </span>
         )}

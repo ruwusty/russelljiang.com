@@ -59,7 +59,7 @@ export function DigestRefresh() {
       {note && (
         <span
           className="text-[11px] lowercase break-words"
-          style={{ color: state === "error" ? "var(--accent)" : "var(--faint)", maxWidth: "100%" }}
+          style={{ color: state === "error" ? "var(--accent)" : "var(--soft)", maxWidth: "100%" }}
         >
           {note}
         </span>

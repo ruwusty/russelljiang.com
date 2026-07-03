@@ -300,7 +300,7 @@ function Bar({ label, value }: { label: string; value: number }) {
   const filled = Math.round((value / 100) * 5);
   return (
     <span className="flex items-baseline gap-2">
-      <span style={{ color: "var(--faint)" }}>{label}</span>
+      <span style={{ color: "var(--soft)" }}>{label}</span>
       <span style={{ color: "var(--soft)" }}>
         {"█".repeat(filled)}
         <span style={{ color: "var(--line)" }}>{"░".repeat(5 - filled)}</span>
@@ -356,7 +356,7 @@ export function Bonsai() {
 
   if (!state) {
     return (
-      <p className="text-[12px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="text-[12px] lowercase" style={{ color: "var(--soft)" }}>
         finding the pot…
       </p>
     );
@@ -405,16 +405,16 @@ export function Bonsai() {
     <div>
       <div className="flex items-baseline gap-6 flex-wrap text-[12px]">
         <span className="flex items-baseline gap-2">
-          <span style={{ color: "var(--faint)" }}>age</span>
+          <span style={{ color: "var(--soft)" }}>age</span>
           <span style={{ color: "var(--soft)" }}>
             {ageDays}d · {stageName(state.growthH)}
           </span>
-          <span style={{ color: "var(--faint)" }}>· {season}</span>
+          <span style={{ color: "var(--soft)" }}>· {season}</span>
         </span>
         <Bar label="water" value={state.water} />
         {(blooming || state.petals > 0) && (
           <span className="flex items-baseline gap-2">
-            <span style={{ color: "var(--faint)" }}>petals</span>
+            <span style={{ color: "var(--soft)" }}>petals</span>
             <span style={{ color: "var(--soft)" }}>{state.petals}</span>
           </span>
         )}
@@ -480,7 +480,7 @@ export function Bonsai() {
           </div>
 
           {state.owned.plaque ? (
-            <span style={{ color: "var(--faint)" }}>name plaque · engraved</span>
+            <span style={{ color: "var(--soft)" }}>name plaque · engraved</span>
           ) : plaqueDraft !== null ? (
             <span className="flex items-baseline gap-2">
               <input
@@ -520,7 +520,7 @@ export function Bonsai() {
           )}
 
           {state.owned.glaze ? (
-            <span style={{ color: "var(--faint)" }}>clay glaze · applied</span>
+            <span style={{ color: "var(--soft)" }}>clay glaze · applied</span>
           ) : (
             <button
               onClick={() => spend(PRICES.glaze, { glaze: true }, "the pot wears clay now.")}
@@ -532,7 +532,7 @@ export function Bonsai() {
           )}
 
           {state.owned.lantern ? (
-            <span style={{ color: "var(--faint)" }}>stone lantern · placed</span>
+            <span style={{ color: "var(--soft)" }}>stone lantern · placed</span>
           ) : (
             <button
               onClick={() => spend(PRICES.lantern, { lantern: true }, "a lantern. the evenings improve.")}
@@ -545,7 +545,7 @@ export function Bonsai() {
         </div>
       )}
 
-      <p className="mt-6 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="mt-6 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
         it grows in real time, watered or not-watered. no two trees branch alike.
         come back tomorrow.
       </p>

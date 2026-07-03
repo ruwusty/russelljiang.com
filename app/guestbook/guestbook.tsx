@@ -38,6 +38,13 @@ function nameColor(name: string): string {
   return NAME_COLORS[hash % NAME_COLORS.length];
 }
 
+// entries fade with age like an old log — slowly, and never below legible
+function ageOpacity(ts: string): number {
+  const days = (Date.now() - new Date(ts).getTime()) / 86_400_000;
+  if (!Number.isFinite(days) || days < 0) return 1;
+  return Math.max(0.65, 1 - days / 240);
+}
+
 export function Guestbook() {
   const [entries, setEntries] = useState<Entry[] | null>(null);
   const [name, setName] = useState("");
@@ -159,7 +166,7 @@ export function Guestbook() {
           aria-hidden="true"
           style={{ display: "none" }}
         />
-        <div className="flex items-baseline justify-between text-[11px]" style={{ color: "var(--faint)" }}>
+        <div className="flex items-baseline justify-between text-[11px]" style={{ color: "var(--soft)" }}>
           <span aria-live="polite">
             {error ? <span style={{ color: "var(--accent)" }}>{error}</span> : "be nice. 140 chars."}
           </span>
@@ -171,24 +178,28 @@ export function Guestbook() {
 
       {/* entries */}
       <div id="entries" className="mt-12">
-        <div className="flex items-center gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
+        <div className="trail flex items-center gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
           <span style={{ color: "var(--green)" }}>❯</span>
           <span>cat guestbook.log</span>
         </div>
 
         <div className="mt-4 flex flex-col gap-2 text-[13px]">
           {entries === null ? (
-            <span className="text-[12px] lowercase" style={{ color: "var(--faint)" }}>
+            <span className="text-[12px] lowercase" style={{ color: "var(--soft)" }}>
               loading…
             </span>
           ) : entries.length === 0 ? (
-            <span className="text-[12px] lowercase" style={{ color: "var(--faint)" }}>
+            <span className="text-[12px] lowercase" style={{ color: "var(--soft)" }}>
               the log is empty. be the first.
             </span>
           ) : (
             entries.map((entry) => (
-              <div key={entry.id} className="group flex items-baseline gap-2 leading-[1.7]">
-                <span className="shrink-0 text-[11px]" style={{ color: "var(--faint)" }}>
+              <div
+                key={entry.id}
+                className="group flex items-baseline gap-2 leading-[1.7]"
+                style={{ opacity: ageOpacity(entry.ts) }}
+              >
+                <span className="shrink-0 text-[11px]" style={{ color: "var(--soft)" }}>
                   [{entry.ts.slice(0, 10)}]
                 </span>
                 <span className="min-w-0">

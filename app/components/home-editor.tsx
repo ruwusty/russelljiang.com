@@ -118,7 +118,7 @@ export function HomeEditor({ initial }: { initial: HomeContent }) {
         />
         <span
           className="flex items-baseline gap-3 text-[11px] lowercase"
-          style={{ color: "var(--faint)" }}
+          style={{ color: "var(--soft)" }}
         >
           <button onClick={save} className="tui-btn text-[11px]" style={{ color: "var(--green)" }}>
             {saveState === "saving" ? "[saving…]" : "[save]"}
@@ -169,7 +169,7 @@ export function HomeEditor({ initial }: { initial: HomeContent }) {
         >
           {content.background.map((row) => (
             <div key={row.label} className="contents">
-              <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
+              <dt className="text-[12px]" style={{ color: "var(--soft)" }}>
                 {row.label}
               </dt>
               <dd>{row.value}</dd>

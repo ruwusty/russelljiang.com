@@ -81,15 +81,15 @@ export default function ProjectsPage() {
             className="mt-4 text-[13px] grid grid-cols-[70px_1fr] gap-y-1"
             style={{ color: "var(--soft)" }}
           >
-            <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
+            <dt className="text-[12px]" style={{ color: "var(--soft)" }}>
               role
             </dt>
             <dd className="lowercase">{project.role}</dd>
-            <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
+            <dt className="text-[12px]" style={{ color: "var(--soft)" }}>
               stack
             </dt>
             <dd>{project.stack}</dd>
-            <dt className="text-[12px]" style={{ color: "var(--faint)" }}>
+            <dt className="text-[12px]" style={{ color: "var(--soft)" }}>
               links
             </dt>
             <dd className="flex items-baseline gap-3">

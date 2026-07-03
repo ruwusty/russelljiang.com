@@ -185,12 +185,12 @@ function ChainBlock({
 
   return (
     <div className="grid gap-2" style={{ gridTemplateColumns: "60px 1fr", alignItems: "start" }}>
-      <span className="text-[10px] lowercase tracking-[0.1em] pt-0.5" style={{ color: "var(--faint)" }}>
+      <span className="text-[10px] lowercase tracking-[0.1em] pt-0.5" style={{ color: "var(--soft)" }}>
         {block.label}
       </span>
       <div className={block.pickup ? "flex items-baseline flex-wrap gap-x-2.5 gap-y-0.5" : "flex flex-col gap-0.5"}>
         {block.off ? (
-          <span className="text-[11px]" style={{ color: "var(--faint)" }}>
+          <span className="text-[11px]" style={{ color: "var(--soft)" }}>
             off
           </span>
         ) : (
@@ -397,7 +397,7 @@ export function PresetsGrid() {
         )}
         <span
           className="ml-auto lowercase text-[11px]"
-          style={{ color: syncState === "error" ? "var(--accent)" : "var(--faint)" }}
+          style={{ color: syncState === "error" ? "var(--accent)" : "var(--soft)" }}
           aria-live="polite"
         >
           {!mounted || !authReady

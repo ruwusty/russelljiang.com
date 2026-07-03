@@ -22,7 +22,7 @@ export default function NotFound() {
 
       <div className="hrule my-8" />
 
-      <div className="flex items-baseline gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
+      <div className="trail flex items-center gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
         <span style={{ color: "var(--green)" }}>❯</span>
         <span>cat ./this-page</span>
       </div>
@@ -34,7 +34,7 @@ export default function NotFound() {
 
       <LostCat />
 
-      <p className="mt-4 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="mt-4 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
         j/k to navigate, enter to open · or :go home ·{" "}
         <a href="/404" className="site-link">
           the cat lives at /404, if you want to visit properly

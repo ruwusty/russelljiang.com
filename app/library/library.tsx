@@ -66,6 +66,7 @@ function Spine({
   book,
   selected,
   dropTarget,
+  lean,
   onClick,
   onDragStart,
   onDragOver,
@@ -75,6 +76,7 @@ function Spine({
   book: Book;
   selected: boolean;
   dropTarget: boolean;
+  lean: boolean;
   onClick: () => void;
   onDragStart: () => void;
   onDragOver: (e: React.DragEvent) => void;
@@ -97,6 +99,7 @@ function Spine({
       className="spine relative shrink-0 overflow-hidden"
       data-pulled={selected ? "true" : "false"}
       data-drop-target={dropTarget ? "true" : "false"}
+      data-lean={lean ? "true" : "false"}
       style={{
         height,
         width,
@@ -286,7 +289,7 @@ export function Library() {
           )}
           <span
             className="text-[11px] lowercase"
-            style={{ color: saveState === "error" ? "var(--accent)" : "var(--faint)" }}
+            style={{ color: saveState === "error" ? "var(--accent)" : "var(--soft)" }}
             aria-live="polite"
           >
             {saveState === "saving" ? "saving…" : saveState === "error" ? "save failed — try again" : ""}
@@ -374,11 +377,13 @@ export function Library() {
       {(() => {
         const shelf = books;
         const selected = shelf.find((b) => b.id === selectedId) ?? null;
+        // one book always leans; which one depends on the arrangement
+        const leanIndex = shelf.length > 1 ? hashString(shelf.map((b) => b.id).join()) % shelf.length : -1;
         return (
           <section id="shelf" className="mt-2">
             {shelf.length === 0 ? (
               <div className="pb-2" style={{ borderBottom: "1px solid var(--line)" }}>
-                <p className="text-[12px] lowercase" style={{ color: "var(--faint)" }}>
+                <p className="text-[12px] lowercase" style={{ color: "var(--soft)" }}>
                   the shelf is empty. it won&apos;t last.
                 </p>
               </div>
@@ -392,12 +397,13 @@ export function Library() {
                   reorder(null); // dropped on the shelf itself: move to the end
                 }}
               >
-                {shelf.map((book) => (
+                {shelf.map((book, i) => (
                   <Spine
                     key={book.id}
                     book={book}
                     selected={book.id === selectedId}
                     dropTarget={dropId === book.id && dragId !== book.id}
+                    lean={i === leanIndex}
                     onClick={() =>
                       setSelectedId((cur) => (cur === book.id ? null : book.id))
                     }
@@ -435,11 +441,11 @@ export function Library() {
                     · {selected.author}
                   </span>
                   {selected.tag && (
-                    <span className="text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+                    <span className="text-[11px] lowercase" style={{ color: "var(--soft)" }}>
                       [{selected.tag}]
                     </span>
                   )}
-                  <span className="text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+                  <span className="text-[11px] lowercase" style={{ color: "var(--soft)" }}>
                     · {STATUS_LABEL[selected.status]}
                   </span>
                   <button
@@ -469,7 +475,7 @@ export function Library() {
                 {selected.note && (
                   <p
                     className="mt-1 text-[12px] leading-[1.8] lowercase"
-                    style={{ color: "var(--soft)" }}
+                    style={{ color: "var(--ink)" }}
                   >
                     {selected.note}
                   </p>
@@ -480,7 +486,7 @@ export function Library() {
         );
       })()}
 
-      <p className="mt-10 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="mt-10 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
         click a spine to pull it off the shelf. drag to rearrange, it soothes.
         the ribbon marks what&apos;s open right now.
       </p>

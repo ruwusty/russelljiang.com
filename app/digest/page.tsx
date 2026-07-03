@@ -68,7 +68,7 @@ function Item({ item }: { item: DigestItem }) {
       </p>
       <div
         className="mt-1.5 pl-5 flex items-baseline gap-2 text-[11px] lowercase"
-        style={{ color: "var(--faint)" }}
+        style={{ color: "var(--soft)" }}
       >
         <span>[{item.tag.toLowerCase()}]</span>
         <span>·</span>
@@ -105,7 +105,7 @@ export default async function DigestPage() {
       <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
         {stamp ? stamp.date : "loading…"}
       </p>
-      <p className="mt-1 text-[12px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="mt-1 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
         curated daily from across the web, filtered and summarised by gemini.
       </p>
 
@@ -117,7 +117,7 @@ export default async function DigestPage() {
         <p className="text-[13px] leading-[1.9] lowercase" style={{ color: "var(--soft)" }}>
           the first digest lands tomorrow morning, around 6–7am sydney time.
           <br />
-          <span style={{ color: "var(--faint)" }}>
+          <span style={{ color: "var(--soft)" }}>
             it reads ai labs, arxiv, hacker news, and a handful of good feeds,
             then keeps the dozen things worth knowing.
           </span>
@@ -125,7 +125,7 @@ export default async function DigestPage() {
       ) : (
         <>
           {!today && (
-            <p className="mb-8 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+            <p className="mb-8 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
               ❯ note: today&apos;s run hasn&apos;t landed yet — showing the last digest.
             </p>
           )}
@@ -155,7 +155,7 @@ export default async function DigestPage() {
             );
           })}
 
-          <p className="mt-12 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+          <p className="mt-12 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
             last updated: {stamp?.time} {stamp?.zone.toLowerCase()} · {digest.itemCount} items ·
             curated by gemini
           </p>

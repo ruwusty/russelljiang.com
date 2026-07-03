@@ -257,7 +257,7 @@ export function Currently() {
             }}
             aria-label="currently items, one per line"
           />
-          <span className="flex items-baseline gap-3 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+          <span className="flex items-baseline gap-3 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
             <button onClick={save} className="tui-btn text-[11px]" style={{ color: "var(--green)" }}>
               {saveState === "saving" ? "[saving…]" : "[save]"}
             </button>

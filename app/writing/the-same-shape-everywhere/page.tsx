@@ -79,7 +79,7 @@ export default function SameShapePost() {
       <p className="mt-2 text-[12px] lowercase italic" style={{ color: "var(--soft)" }}>
         a meditation on pattern recognition, and what physics might have to say about how to live
       </p>
-      <p className="mt-1 text-[11px] lowercase" style={{ color: "var(--faint)" }}>
+      <p className="mt-1 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
         2026-06-25 · russell jiang
       </p>
 
@@ -353,7 +353,7 @@ export default function SameShapePost() {
 
       <p
         className="mt-14 pt-4 text-[11px] lowercase italic leading-[1.7]"
-        style={{ borderTop: "1px solid var(--line)", color: "var(--faint)" }}
+        style={{ borderTop: "1px solid var(--line)", color: "var(--soft)" }}
       >
         a dialogue distillate: my thoughts, drafted with claude.
       </p>

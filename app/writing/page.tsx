@@ -68,7 +68,7 @@ export default function WritingIndex() {
                 </h2>
                 <span
                   className="shrink-0 text-[11px]"
-                  style={{ color: "var(--faint)" }}
+                  style={{ color: "var(--soft)" }}
                 >
                   {post.date}
                 </span>
@@ -81,7 +81,7 @@ export default function WritingIndex() {
               </p>
               <div
                 className="mt-1.5 pl-5 flex items-baseline gap-2 text-[11px] lowercase"
-                style={{ color: "var(--faint)" }}
+                style={{ color: "var(--soft)" }}
               >
                 <span>{post.published}</span>
                 <span>·</span>
