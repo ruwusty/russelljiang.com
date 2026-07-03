@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { digestErrorMessage, runDigest, sydneyDateString } from "../../../lib/digest";
 import { writeDigest } from "../../../lib/digest-store";
+import { secretOk } from "../../_lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,7 +11,7 @@ export const maxDuration = 60;
 // require it when set so nobody can trigger the (paid) job by hitting the url.
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
-  if (secret && req.headers.get("authorization") !== `Bearer ${secret}`) {
+  if (secret && !secretOk(req.headers.get("authorization"), `Bearer ${secret}`)) {
     return NextResponse.json({ error: "unauthorised" }, { status: 401 });
   }
   if (!secret) {

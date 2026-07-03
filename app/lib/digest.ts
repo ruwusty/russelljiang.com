@@ -372,11 +372,16 @@ async function curate(items: RawItem[], excludeUrls: string[]): Promise<DigestIt
   // (which usually have spare capacity). bounded by a wall-clock deadline so
   // the whole thing fits inside the function's 60s budget.
   const models = [...new Set([GEMINI_MODEL, "gemini-3.1-flash-lite", "gemini-2.5-flash"])];
-  const deadline = Date.now() + 46_000;
+  // hard wall-clock budget: feed fetching + this loop + the blob write must
+  // all fit inside the route's 60s maxDuration, so each attempt's timeout
+  // shrinks as the deadline approaches instead of blowing past it.
+  const deadline = Date.now() + 40_000;
   let lastError = "no attempt made";
 
   for (const model of models) {
-    for (let attempt = 1; attempt <= 2 && Date.now() < deadline; attempt++) {
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      const remaining = deadline - Date.now();
+      if (remaining < 4_000) break;
       let res: Response;
       try {
         res = await fetch(
@@ -385,7 +390,7 @@ async function curate(items: RawItem[], excludeUrls: string[]): Promise<DigestIt
             method: "POST",
             headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
             body: requestBody,
-            signal: AbortSignal.timeout(18_000),
+            signal: AbortSignal.timeout(Math.min(18_000, remaining - 1_000)),
           }
         );
       } catch (e) {
@@ -425,8 +430,9 @@ async function curate(items: RawItem[], excludeUrls: string[]): Promise<DigestIt
         throw new Error(`gemini ${res.status}: ${detail.slice(0, 300)}`);
       }
       const transient = res.status === 429 || res.status === 500 || res.status === 503;
-      console.warn(`[digest] gemini ${lastError} — ${transient && attempt < 2 ? "retrying" : "next model"}`);
-      if (transient && attempt < 2) {
+      const canRetry = transient && attempt < 2 && Date.now() + 6_000 < deadline;
+      console.warn(`[digest] gemini ${lastError} — ${canRetry ? "retrying" : "next model"}`);
+      if (canRetry) {
         await sleep(1500);
         continue;
       }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { digestErrorMessage, runDigest, sydneyDateString } from "../../../../lib/digest";
 import { writeDigest } from "../../../../lib/digest-store";
-import { passwordOk } from "../../../_lib/auth";
+import { passwordOk, secretOk } from "../../../_lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,8 +11,10 @@ export const maxDuration = 60;
 // password (for the owner-only [refresh] button, which reuses the login
 // session — so no digest secret ever reaches the browser).
 export async function POST(req: Request) {
-  const secret = process.env.DIGEST_TRIGGER_SECRET;
-  const okSecret = Boolean(secret) && req.headers.get("x-trigger-secret") === secret;
+  const okSecret = secretOk(
+    req.headers.get("x-trigger-secret"),
+    process.env.DIGEST_TRIGGER_SECRET
+  );
   const okPassword = passwordOk(req.headers.get("x-site-password"));
   if (!okSecret && !okPassword) {
     return NextResponse.json({ error: "unauthorised" }, { status: 401 });

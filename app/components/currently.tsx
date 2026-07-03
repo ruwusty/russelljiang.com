@@ -99,6 +99,9 @@ export function Currently() {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const [saveState, setSaveState] = useState<SaveState>("idle");
+  // gate [edit] until the blob load settles, or an early save would
+  // overwrite the real list with DEFAULT_ITEMS
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -122,6 +125,7 @@ export function Currently() {
       setIndex(0);
       setText("");
       setPhase("typing");
+      setLoaded(true);
     };
     load();
     return () => {
@@ -226,7 +230,7 @@ export function Currently() {
           ❯
         </span>
         <span className="shrink-0">currently</span>
-        {password && !editing && (
+        {password && loaded && !editing && (
           <button onClick={openEditor} className="tui-btn text-[11px] shrink-0">
             [edit]
           </button>

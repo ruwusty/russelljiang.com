@@ -159,6 +159,9 @@ export function Library() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "error">("idle");
+  // owner editing is gated until the blob load settles — otherwise an early
+  // drag or save would persist DEFAULT_BOOKS over the real shelf
+  const [loaded, setLoaded] = useState(false);
   const [dragId, setDragId] = useState<string | null>(null);
   const [dropId, setDropId] = useState<string | null>(null);
   const dragIdRef = useRef<string | null>(null);
@@ -176,7 +179,22 @@ export function Library() {
     const rest = books.filter((b) => b.id !== moving_id);
     const at = targetId ? rest.findIndex((b) => b.id === targetId) : rest.length;
     const next = [...rest.slice(0, at < 0 ? rest.length : at), moving, ...rest.slice(at < 0 ? rest.length : at)];
-    if (password) {
+    if (password && loaded) {
+      persist(next);
+    } else {
+      setBooks(next);
+    }
+  };
+
+  // keyboard/touch fallback for drag: nudge a book one slot along the shelf
+  const moveBy = (id: string, delta: -1 | 1) => {
+    const from = books.findIndex((b) => b.id === id);
+    const to = from + delta;
+    if (from < 0 || to < 0 || to >= books.length) return;
+    const next = [...books];
+    next[from] = books[to];
+    next[to] = books[from];
+    if (password && loaded) {
       persist(next);
     } else {
       setBooks(next);
@@ -191,6 +209,7 @@ export function Library() {
         const json = await res.json();
         if (!cancelled && Array.isArray(json.books)) setBooks(json.books);
       } catch {}
+      if (!cancelled) setLoaded(true);
     };
     load();
     return () => {
@@ -199,7 +218,7 @@ export function Library() {
   }, []);
 
   const persist = async (next: Book[]) => {
-    if (!password) return;
+    if (!password || !loaded) return;
     setBooks(next);
     setSaveState("saving");
     try {
@@ -258,7 +277,7 @@ export function Library() {
 
   return (
     <div>
-      {password && (
+      {password && loaded && (
         <div className="mb-2 flex items-baseline gap-4 text-[12px]">
           {!draft && (
             <button onClick={openAdd} className="tui-btn text-[12px]" style={{ color: "var(--green)" }}>
@@ -423,7 +442,21 @@ export function Library() {
                   <span className="text-[11px] lowercase" style={{ color: "var(--faint)" }}>
                     · {STATUS_LABEL[selected.status]}
                   </span>
-                  {password && (
+                  <button
+                    onClick={() => moveBy(selected.id, -1)}
+                    className="tui-btn text-[11px]"
+                    aria-label={`move ${selected.title} left`}
+                  >
+                    [←]
+                  </button>
+                  <button
+                    onClick={() => moveBy(selected.id, 1)}
+                    className="tui-btn text-[11px]"
+                    aria-label={`move ${selected.title} right`}
+                  >
+                    [→]
+                  </button>
+                  {password && loaded && (
                     <button
                       onClick={() => openEdit(selected)}
                       className="tui-btn text-[11px]"
