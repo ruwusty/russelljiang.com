@@ -117,7 +117,7 @@ export function Stats() {
       </div>
 
       <dl
-        className="mt-4 text-[13px] grid grid-cols-[160px_1fr] gap-y-1 lowercase"
+        className="mt-4 text-[13px] grid grid-cols-[110px_1fr] sm:grid-cols-[160px_1fr] gap-y-1 lowercase break-words"
         style={{ color: "var(--soft)" }}
       >
         {row(

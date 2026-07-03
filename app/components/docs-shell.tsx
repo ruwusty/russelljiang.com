@@ -23,6 +23,9 @@ interface DocsShellProps {
 export function DocsShell({ crumb, toc, children }: DocsShellProps) {
   return (
     <div className="relative min-h-screen flex flex-col">
+      <a href="#content" className="skip-link">
+        skip to content
+      </a>
       <span className="vertical-jp" aria-hidden="true">
         余白の美
         <span className="jp-tip">the beauty of negative space</span>
@@ -82,7 +85,7 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
               <StatusStrip />
             </header>
 
-            <main className="mt-14 flex-1">{children}</main>
+            <main id="content" className="mt-14 flex-1">{children}</main>
           </div>
 
           {/* statusbar */}

@@ -160,7 +160,9 @@ export function Guestbook() {
           style={{ display: "none" }}
         />
         <div className="flex items-baseline justify-between text-[11px]" style={{ color: "var(--faint)" }}>
-          <span>{error ? <span style={{ color: "var(--accent)" }}>{error}</span> : "be nice. 140 chars."}</span>
+          <span aria-live="polite">
+            {error ? <span style={{ color: "var(--accent)" }}>{error}</span> : "be nice. 140 chars."}
+          </span>
           <span>
             {message.length}/{MESSAGE_MAX}
           </span>
@@ -197,7 +199,7 @@ export function Guestbook() {
                 {password && (
                   <button
                     onClick={() => remove(entry.id)}
-                    className="tui-btn text-[11px] ml-auto opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+                    className="tui-btn text-[11px] ml-auto opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100"
                     style={{ color: "var(--accent)" }}
                     aria-label={`remove entry by ${entry.name}`}
                   >

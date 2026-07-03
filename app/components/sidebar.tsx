@@ -52,6 +52,12 @@ export function Sidebar() {
       } else if (event.key === "k") {
         setSelected((s) => (s <= 0 ? navigable.length - 1 : s - 1));
       } else if (event.key === "Enter") {
+        // if real dom focus is on a link/button, let the browser handle it —
+        // otherwise tab-focus + enter would navigate to the hidden j/k
+        // selection instead of the focused element
+        if (event.target instanceof HTMLElement && event.target.closest("a, button")) {
+          return;
+        }
         setSelected((s) => {
           const item = navigable[s];
           if (item) {
@@ -112,11 +118,11 @@ export function Sidebar() {
                   ? { target: "_blank", rel: "noopener noreferrer" }
                   : {})}
               >
-                <span className="text-[11px]" style={{ color: "var(--faint)" }}>
+                <span className="text-[11px]" style={{ color: "var(--faint)" }} aria-hidden="true">
                   {index}
                 </span>
-                <span className="marker">▸</span>
-                <span className="marker-hover">▹</span>
+                <span className="marker" aria-hidden="true">▸</span>
+                <span className="marker-hover" aria-hidden="true">▹</span>
                 <span
                   className="tui-label"
                   style={{ color: active ? "var(--ink)" : "var(--soft)" }}

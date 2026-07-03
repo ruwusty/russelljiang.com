@@ -238,6 +238,7 @@ export function ProgramPlanner() {
   const [formCode, setFormCode] = useState("");
   const [formName, setFormName] = useState("");
   const [formType, setFormType] = useState<CourseType>("core");
+  const [formTerm, setFormTerm] = useState(TERMS[0].key);
   const dragIdRef = useRef<number | null>(null);
   const nextIdRef = useRef(25);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -310,6 +311,7 @@ export function ProgramPlanner() {
     setFormCode(c.code === "???" ? "" : c.code);
     setFormName(c.name);
     setFormType(c.type);
+    setFormTerm(c.term);
     setModal({ mode: "edit", id });
   };
 
@@ -325,7 +327,11 @@ export function ProgramPlanner() {
     const code = formCode.trim() || "???";
     const name = formName.trim() || "Unnamed";
     if (modal.mode === "edit" && modal.id !== undefined) {
-      updateCourses(courses.map((c) => (c.id === modal.id ? { ...c, code, name, type: formType } : c)));
+      updateCourses(
+        courses.map((c) =>
+          c.id === modal.id ? { ...c, code, name, type: formType, term: formTerm } : c
+        )
+      );
     } else if (modal.mode === "add" && modal.term) {
       const id = nextIdRef.current++;
       updateCourses([...courses, { id, term: modal.term, code, name, type: formType }]);
@@ -479,7 +485,7 @@ export function ProgramPlanner() {
                           </span>
                           <button
                             onClick={() => openEdit(c.id)}
-                            className="tui-btn text-[11px] opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+                            className="tui-btn text-[11px] opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100"
                           >
                             [e]
                           </button>
@@ -576,6 +582,25 @@ export function ProgramPlanner() {
                 <option value="gened">gen ed</option>
               </select>
             </div>
+            {modal.mode === "edit" && (
+              <div className="mb-3">
+                <label className="block text-[11px] lowercase mb-1" style={{ color: "var(--soft)" }}>
+                  term
+                </label>
+                <select
+                  value={formTerm}
+                  onChange={(e) => setFormTerm(e.target.value)}
+                  className="w-full px-2.5 py-1.5 text-[13px] outline-none"
+                  style={inputStyle}
+                >
+                  {TERMS.map((t) => (
+                    <option key={t.key} value={t.key}>
+                      {t.label.toLowerCase()}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div className="flex justify-between gap-3 mt-5 text-[12px]">
               {modal.mode === "edit" ? (
                 <button onClick={deleteFromModal} className="tui-btn" style={{ color: "var(--accent)" }}>

@@ -104,7 +104,9 @@ export function LoginRow({ login, onClose }: LoginRowProps) {
       <button onClick={submit} className="tui-btn text-[12px]">
         [enter]
       </button>
-      {error && <span style={{ color: "var(--accent)" }}>{error}</span>}
+      <span aria-live="polite" style={{ color: "var(--accent)" }}>
+        {error}
+      </span>
     </div>
   );
 }

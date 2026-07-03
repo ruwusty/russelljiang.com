@@ -461,6 +461,13 @@ export function VimTrial() {
         the highlighted block is the target — see the guide below if you&apos;re new
       </div>
 
+      <div
+        className="mt-2 text-[11px] lowercase hidden [@media(pointer:coarse)]:block"
+        style={{ color: "var(--accent)" }}
+      >
+        this one needs a real keyboard. hjkl don&apos;t live on touchscreens.
+      </div>
+
       <pre
         className="mt-5 p-4 overflow-x-auto text-[12px] leading-[1.85]"
         style={{ border: "1px solid var(--line)", color: "var(--soft)" }}
@@ -499,15 +506,19 @@ export function VimTrial() {
       <div
         className="mt-3 flex items-baseline justify-between gap-4 flex-wrap text-[11px] lowercase"
         style={{ color: "var(--soft)" }}
-        aria-live="polite"
       >
         <span className="flex items-baseline gap-3">
-          {done ? (
-            <span>
-              done — <span style={{ color: "var(--green)" }}>{finalTime.toFixed(1)}s</span> ·{" "}
-              {keys} keys
-            </span>
-          ) : (
+          {/* only the finish line is announced — a live region on the whole
+              counter would narrate every keystroke */}
+          <span aria-live="polite">
+            {done && (
+              <span>
+                done — <span style={{ color: "var(--green)" }}>{finalTime.toFixed(1)}s</span> ·{" "}
+                {keys} keys
+              </span>
+            )}
+          </span>
+          {!done && (
             <span>
               target {Math.min(hits + 1, config.targets)}/{config.targets} ·{" "}
               {startedAt ? `${elapsed.toFixed(1)}s` : "timer starts on first key"} · {keys} keys
@@ -609,7 +620,7 @@ export function VimTrial() {
                   {password && (
                     <button
                       onClick={() => removeEntry(entry.id)}
-                      className="tui-btn text-[11px] opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+                      className="tui-btn text-[11px] opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100"
                       style={{ color: "var(--accent)" }}
                       aria-label={`remove ${entry.name}'s run`}
                     >

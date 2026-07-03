@@ -383,7 +383,8 @@ export function CommandBar({ sections }: { sections: number }) {
           </span>
         )}
       </span>
-      {!(message && !open) && (
+      {/* the input needs the width more than the trivia does */}
+      {!open && !message && (
         <span className="shrink-0 text-right flex items-center gap-2" style={{ color: "var(--faint)" }}>
           <span>{sections} sections · © 2026 · utf-8</span>
           <Kaomoji slot="statusbar" className="text-[11px]" />

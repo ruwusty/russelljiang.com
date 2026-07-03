@@ -51,6 +51,13 @@ export function RmTheater() {
     const start = () => {
       clearTimers();
       setLines([]);
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        // no scrolling log — jump straight to the punchline
+        setPhase("aftermath");
+        later(() => setPhase("reveal"), 1500);
+        later(() => setPhase("off"), 8000);
+        return;
+      }
       setPhase("deleting");
       DOOMED.forEach((path, i) => {
         later(() => {
@@ -63,9 +70,15 @@ export function RmTheater() {
       later(() => setPhase("off"), doneAt + 9000);
     };
 
+    // escape or enter dismisses the theatre at any point
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" || event.key === "Enter") setPhase("off");
+    };
     window.addEventListener(RM_EVENT, start);
+    window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener(RM_EVENT, start);
+      window.removeEventListener("keydown", onKey);
       clearTimers();
     };
   }, []);
@@ -77,11 +90,10 @@ export function RmTheater() {
       className="absolute inset-0 z-40 px-6 sm:px-10 py-10 overflow-hidden cursor-pointer"
       style={{ background: "var(--bg)" }}
       onClick={() => setPhase("off")}
-      role="alert"
-      aria-label="nothing was actually deleted"
     >
       {phase === "deleting" ? (
-        <div className="text-[12px] leading-[1.8]" style={{ color: "var(--soft)" }}>
+        // rapid-fire scrolling log: purely visual, hidden from assistive tech
+        <div className="text-[12px] leading-[1.8]" style={{ color: "var(--soft)" }} aria-hidden="true">
           {lines.map((line, i) => (
             <div key={`${i}-${line}`}>{line}</div>
           ))}
@@ -91,16 +103,20 @@ export function RmTheater() {
           <div className="display text-[24px]" style={{ color: "var(--ink)" }}>
             what have you done.
           </div>
+          <div role="status" aria-live="polite" className="text-[13px] lowercase" style={{ color: "var(--soft)" }}>
+            {phase === "reveal" && (
+              <>
+                just kidding. backups exist. nothing was deleted.{" "}
+                <span style={{ color: "var(--faint)" }} aria-hidden="true">
+                  ( ˶ˆᗜˆ˵ )
+                </span>
+              </>
+            )}
+          </div>
           {phase === "reveal" && (
-            <>
-              <div className="text-[13px] lowercase" style={{ color: "var(--soft)" }}>
-                just kidding. backups exist.{" "}
-                <span style={{ color: "var(--faint)" }}>( ˶ˆᗜˆ˵ )</span>
-              </div>
-              <button className="tui-btn text-[12px]" style={{ color: "var(--green)" }}>
-                [restore from backup]
-              </button>
-            </>
+            <button className="tui-btn text-[12px]" style={{ color: "var(--green)" }}>
+              [restore from backup]
+            </button>
           )}
         </div>
       )}

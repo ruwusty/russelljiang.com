@@ -87,6 +87,26 @@ button:focus-visible,
   outline-offset: 3px;
 }
 
+/* keyboard users get a fast lane past the nav; invisible until focused */
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 60;
+  padding: 2px 10px;
+  font-size: 12px;
+  text-transform: lowercase;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
 .tui-btn {
   background: none;
   border: none;
@@ -115,16 +135,19 @@ button:focus-visible,
 }
 
 .tui-item:hover .marker,
+.tui-item:focus-visible .marker,
 .tui-item[data-selected="true"] .marker {
   display: none;
 }
 
 .tui-item:hover .marker-hover,
+.tui-item:focus-visible .marker-hover,
 .tui-item[data-selected="true"] .marker-hover {
   display: inline;
 }
 
 .tui-item:hover .tui-label,
+.tui-item:focus-visible .tui-label,
 .tui-item[data-selected="true"] .tui-label {
   color: var(--accent);
 }
