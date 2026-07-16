@@ -13,6 +13,15 @@ interface Post {
 
 const posts: Post[] = [
   {
+    title: "The Boulder and the Ladder",
+    description:
+      "Why ranked stopped feeling good: zero sum ladders, positive sum hobbies, and the slow migration between them.",
+    date: "2026-07-16",
+    tags: ["games", "motivation"],
+    published: "personal",
+    href: "/writing/the-boulder-and-the-ladder",
+  },
+  {
     title: "The Same Shape Everywhere",
     description:
       "A meditation on pattern recognition, and what physics might have to say about how to live.",

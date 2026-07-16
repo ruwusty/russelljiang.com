@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
-import { DocsShell } from "../../components/docs-shell";
-import { BoulderDraft } from "./draft";
+import { EssayLayout } from "../../components/essay-layout";
+import Content from "./content.mdx";
 
-// unpublished draft: noindex, unlisted (not in nav / sitemap / writing index),
-// and the body is gated client-side so it never lands in the server html.
 export const metadata: Metadata = {
-  title: "draft — russell jiang",
-  robots: { index: false, follow: false },
+  title: "the boulder and the ladder — russell jiang",
+  description:
+    "Why ranked stopped feeling good: zero sum ladders, positive sum hobbies, and the slow migration between them.",
 };
 
 export default function Page() {
   return (
-    <DocsShell crumb="writing/draft" toc={[]}>
-      <BoulderDraft />
-    </DocsShell>
+    <EssayLayout
+      title="the boulder and the ladder"
+      subtitle="on quitting ranked, and what the climbing gym knew all along"
+      date="2026-07-16"
+      crumb="writing/the-boulder-and-the-ladder"
+    >
+      <Content />
+    </EssayLayout>
   );
 }

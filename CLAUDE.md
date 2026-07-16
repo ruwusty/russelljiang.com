@@ -60,7 +60,8 @@ before changing anything visual or touching content.
 ## routes
 
 public: `/` `/writing` `/writing/vibe-coding-wont-save-you`
-`/writing/the-same-shape-everywhere` `/digest` `/library` `/guestbook` `/vim`
+`/writing/the-same-shape-everywhere` `/writing/the-boulder-and-the-ladder`
+`/digest` `/library` `/guestbook` `/vim`
 `/bonsai` `/projects`. unlisted + noindex: `/plan` `/presets`, `/stats`
 (`:stats`), `/404` (the tamagotchi cat), and gated drafts under `/writing/*`.
 nav lives in
