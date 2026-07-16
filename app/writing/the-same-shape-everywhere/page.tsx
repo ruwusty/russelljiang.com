@@ -14,7 +14,7 @@ const toc = [
   { label: "Least action", href: "#least-action" },
   { label: "Not laziness", href: "#not-laziness" },
   { label: "Equilibrium", href: "#equilibrium" },
-  { label: "Why it matters", href: "#why" },
+  { label: "The point", href: "#why" },
 ];
 
 function P({ children }: { children: React.ReactNode }) {
@@ -95,8 +95,8 @@ export default function SameShapePost() {
         coefficient actually means anything, and ended with the suspicion that the universe is just
         doing constrained optimisation in every direction at once. nothing in between felt like a
         leap. each step was just the previous idea wearing different clothes. this is an attempt to
-        write down why that happens, and why i think noticing it is the single most valuable thing
-        you can learn to do while learning anything.
+        write down why that happens, and why i think noticing it is the most valuable thing you can
+        learn to do while learning anything.
       </P>
 
       <Part
@@ -121,13 +121,13 @@ export default function SameShapePost() {
       </P>
       <P>
         so the demand elasticity in an economics course, the regression slope in a statistics
-        course, and the correlation coefficient in a probability course are not three facts. they
-        are one fact, projected onto three different walls. the covariance is the object. everything
-        else is a choice of lighting.
+        course, and the correlation coefficient in a probability course are not three facts but one
+        fact, projected onto three different walls. the covariance is the object. everything else is
+        a choice of lighting.
       </P>
       <P>
-        once you see this you cannot unsee it, and you start getting suspicious whenever two things
-        in different subjects have the same shape. usually it means they are the same thing.
+        after that you start getting suspicious whenever two things in different subjects have the
+        same shape. usually it means they are the same thing.
       </P>
 
       <Section id="isomorphism" index="02">
@@ -146,7 +146,7 @@ export default function SameShapePost() {
         every operation matches. they are the same space.
       </P>
       <P>
-        this is not a cute observation. it is why you can solve a question about polynomials being
+        and the observation does actual work. you can solve a question about polynomials being
         linearly dependent by stacking their coefficients into a matrix and asking a computer for
         the null space. the polynomial problem and the vector problem are the same problem. the
         isomorphism is what lets you carry the tools from one world into the other without paying
@@ -185,10 +185,9 @@ export default function SameShapePost() {
       </P>
       <P>
         the skill underneath all of this is pattern recognition, and i have started to think
-        pattern recognition is close to what intelligence actually is. not memorising more, not
-        even reasoning more carefully step by step, but seeing that this new unfamiliar thing is
-        structurally identical to that old familiar thing, and inheriting the whole apparatus in one
-        move.
+        pattern recognition is close to what intelligence actually is. not memorising more, or even
+        reasoning more carefully, but seeing that this new unfamiliar thing is structurally
+        identical to that old familiar thing, and inheriting the whole apparatus in one move.
       </P>
 
       <Section id="least-action" index="04">
@@ -290,9 +289,9 @@ export default function SameShapePost() {
         the negotiated middle, the place where the tension resolves. nothing about it is drift.
       </P>
       <P>
-        equilibrium in general is like this. it is not the place where no forces act on you. it is
-        the place where the forces cancel. and the difference between those two things is the whole
-        difference between a life lived well and a life merely allowed to happen.
+        equilibrium in general is like this: not the place where no forces act on you, but the
+        place where they cancel. the difference between those two is the whole difference between a
+        life lived well and a life merely allowed to happen.
       </P>
       <P>
         the pure go-with-the-flow philosophy has a quiet trap in it. let it happen can slide,
@@ -318,7 +317,7 @@ export default function SameShapePost() {
       </P>
 
       <Section id="why" index="07">
-        why it matters
+        the point
       </Section>
       <P>
         there is a version of going through life the way you can go through a degree: collecting
