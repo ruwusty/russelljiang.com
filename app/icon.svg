@@ -1,11 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <style>
     .bg { fill: #faf8f3; }
+    .frame { fill: none; stroke: #e4dfd1; stroke-width: 2; }
+    .prompt { fill: none; stroke: #3b3a36; stroke-width: 3; }
     .cur { fill: #6f8f6a; }
     @media (prefers-color-scheme: dark) {
       .bg { fill: #16140f; }
+      .frame { stroke: #2b2820; }
+      .prompt { stroke: #d8d2c2; }
     }
   </style>
   <rect class="bg" width="32" height="32"/>
-  <rect class="cur" x="11" y="8" width="10" height="17"/>
+  <rect class="frame" x="1" y="1" width="30" height="30"/>
+  <path class="prompt" d="M9 10 L16 16 L9 22"/>
+  <rect class="cur" x="20" y="10" width="6" height="12"/>
 </svg>
