@@ -81,8 +81,14 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
                 ~/personal/{crumb}
               </div>
 
-              <Sidebar />
-              <StatusStrip />
+              {/* at xl the whole strip hangs in the left margin and sticks
+                  while the pane scrolls; below xl it stays in the flow */}
+              <div className="xl:absolute xl:right-full xl:inset-y-0 xl:mr-9 xl:w-[180px]">
+                <div className="xl:sticky xl:top-10">
+                  <Sidebar />
+                  <StatusStrip />
+                </div>
+              </div>
             </header>
 
             <main id="content" className="mt-14 flex-1">{children}</main>
