@@ -27,8 +27,8 @@ const projects: Project[] = [
     index: "01",
     name: "sydney scholars",
     claim:
-      "a tutoring platform for sydney students. i build the machinery behind it: the admin, tutor, and student portals, the pipeline that turns a trial class into a term enrolment, and luma, the ai tutor, whose rag pipeline reads the class material and nothing it shouldn’t. sixty-four edge functions and counting.",
-    role: "systems. portals, the enrolment lifecycle, luma end to end (ingestion, retrieval, evals)",
+      "a tutoring platform for sydney students. i build the machinery behind it: the admin, tutor, and student portals, the pipeline that turns a trial class into a term enrolment, and an ai tutor whose rag pipeline reads the class material and nothing it shouldn’t.",
+    role: "systems. portals, the enrolment lifecycle, the ai tutor end to end (ingestion, retrieval, evals)",
     stack: "React · TypeScript · Supabase (Postgres, edge functions)",
     links: [{ label: "sydneyscholars.com", href: "https://sydneyscholars.com" }],
   },
