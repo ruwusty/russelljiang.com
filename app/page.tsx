@@ -14,7 +14,7 @@ export default async function Home() {
   const content = await readHomeContent();
 
   return (
-    <DocsShell crumb="introduction" toc={toc}>
+    <DocsShell crumb="overview" toc={toc}>
       <h1
         id="introduction"
         className="display text-[26px] leading-[1.4]"
