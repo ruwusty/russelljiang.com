@@ -1,6 +1,6 @@
 {
   "content": {
-    "bio": "data science student at UNSW, first year. i tutor students across STEM, train heavy and brief, and play clarinet and tenor sax. i built this site to have somewhere to put the rest.",
+    "bio": "data science student at UNSW, first year. i tutor students across STEM, lift two hard sets at a time, and play clarinet and tenor sax. i built this site to have somewhere to put the rest.",
     "background": [
       {
         "label": "degree",
@@ -8,7 +8,7 @@
       },
       {
         "label": "editor",
-        "value": "VS Code, with recurring nvim ambitions"
+        "value": "nvim, still clueless"
       },
       {
         "label": "instruments",
