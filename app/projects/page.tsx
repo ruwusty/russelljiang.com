@@ -27,7 +27,7 @@ const projects: Project[] = [
     index: "01",
     name: "sydney scholars",
     claim:
-      "a tutoring platform for sydney students. i build the internal stuff: admin and tutor portals, session workflows, lesson planning, incident logging. also the rag pipeline that feeds the ai tutor its class material without letting it see anything it shouldn't.",
+      "a tutoring platform for sydney students. i build the machinery behind it: the portals admins and tutors live in all day, the session and lesson-planning workflows, and a rag pipeline that feeds the ai tutor its class material and nothing it shouldn’t see.",
     role: "systems. admin/tutor portals, rag pipeline (ingestion, retrieval, evals)",
     stack: "React · TypeScript · Supabase (Postgres, edge functions)",
     links: [{ label: "sydneyscholars.com", href: "https://sydneyscholars.com" }],
@@ -37,7 +37,7 @@ const projects: Project[] = [
     index: "02",
     name: "this site",
     claim:
-      "my corner of the internet. it slowly turned into its own cms, so everything on here (bio, plan, presets, the currently line, even the kaomoji) gets edited on the site itself. there&apos;s also a vim command mode, a guestbook, a motion practice minigame, and a bonsai tree somewhere in here.",
+      "my corner of the internet, which slowly turned into its own cms. the bio, the shelf, the study plan, even the kaomoji get edited live on the site; the repo just keeps the fallbacks. there’s also a vim command mode, a motion trial with a leaderboard, a guestbook, and a bonsai tree in here somewhere.",
     role: "everything, with a pair programmer",
     stack: "Next.js 15 · React 19 · Tailwind · Vercel Blob",
     links: [
