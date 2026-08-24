@@ -236,7 +236,7 @@ export function Currently() {
           </button>
         )}
         <span
-          className="truncate xl:w-full xl:whitespace-normal xl:line-clamp-2"
+          className="truncate xl:w-full xl:whitespace-normal xl:line-clamp-3"
           style={{ color: "var(--ink)" }}
           aria-hidden="true"
         >
