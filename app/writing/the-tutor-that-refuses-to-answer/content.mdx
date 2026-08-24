@@ -1,0 +1,49 @@
+i tutor for a living. i’m the tech lead at a tutoring company. and the learning system i built for myself has one unbreakable rule: it is not allowed to give me answers.
+
+that sounds like a bit, so let me earn it.
+
+## the trap
+
+there’s a randomised trial i think about a lot. high school students were given unfettered gpt-4 to help with maths practice, and they did worse than the students who got nothing at all. not “no better than”. worse. another study sat people down with an llm, had them write answers, and found they couldn’t quote their own writing moments after producing it. the words passed through them without leaving a residue.
+
+the failure mode isn’t that the model is wrong. the model is mostly right, which is exactly the trap. the failure mode is that the model does the cognitive work, and learning is the one domain where outsourcing the work destroys the product. you can outsource the cooking and still eat the meal. you cannot outsource the chewing.
+
+i see the human version of this at work every week. the students who struggle most are almost never the ones short on resources. they’re the ones who reach for the worked solution fastest, who feel the little spike of discomfort that means learning is about to happen and read it as a signal that something has gone wrong. an ai assistant, used naively, is that reflex with infinite patience and a subscription fee.
+
+## the prize
+
+and yet the dream of the ai tutor is not stupid. it’s chasing one of the most tantalising results in education research. bloom’s 2-sigma problem: the average student working one-on-one with a tutor ends up outperforming roughly 98% of a conventional classroom. two standard deviations of improvement, known since the 80s, mostly unclaimed, because tutors don’t scale.
+
+i get to see why the effect is real. the entire job of tutoring is finding the exact line where this one student’s understanding diverges and meeting them there. not the syllabus’s edge, theirs. a classroom of thirty can’t do that for anyone. a machine that has read everything and never gets tired could, in principle, do it for everyone.
+
+so the prize is real and the default implementation poisons it. that’s the interesting kind of problem.
+
+## what the science says
+
+the research here is clearer than i expected when i started reading. retrieval practice, testing yourself instead of re-reading, is about the most robust result cognitive psychology has: it beats re-reading for facts, for concepts, for problem-solving, and the retrieval itself is the active ingredient. spacing is the other pillar: reviews spread over expanding intervals beat the same reviews crammed together, every time anyone measures. and bjork’s “desirable difficulties” ties the room together: effective learning feels worse in the moment. the techniques that feel productive, highlighting, re-reading, watching someone else explain, are the ones that do roughly nothing.
+
+the line that organises all of it for me: **struggle belongs in the material, not the logistics.** planning, sourcing, scheduling, verifying: logistics, and a machine should absorb every gram of it. the thinking is the material. the machine must never touch it.
+
+## the system that refuses
+
+so i built proxima. it lives in my obsidian vault, which is the part that matters most: the vault is a persistent model of what i understand, so the system compounds instead of starting from a blank probe every session.
+
+next to the notes sits a log of edges: every confusion i volunteer and every check i fail, written down as the concept, the wrong belief, the correction, the date. it’s a diary of being wrong, and it’s the single highest-signal document i own.
+
+on top of that, two modes. spar is an adversary: it brings problems, i attempt them cold, and only after i’ve committed to an answer does it push back. teach is for genuinely new material: it plans a path from what i know to where i’m going, shows me the plan, then walks it one reasoning step at a time and doesn’t advance until the current step survives a check.
+
+underneath, a ladder. an edge comes back for a rematch about five days after i log it. hold it and the next rematch is two weeks out. then six. hold it three times and it retires as durable. fail and the ladder resets. there are no flashcards and no plugin; the schedule is just a reading of the diary.
+
+and over everything, the one law: i generate first. the system doesn’t hand me a finished answer to a question i haven’t attempted. asked directly, it bounces the question back. it’s the single most annoying feature i’ve ever built, and it’s the entire point.
+
+## the name
+
+the pedagogy people call it the zone of proximal development: the ring just past what you can do alone, where teaching actually works. i named the system for it by way of proxima centauri. the nearest star that is still beyond reach. that’s what an edge is, and the system’s whole job is to keep finding mine.
+
+## the n of one
+
+honesty section. proxima has run for real exactly once. one rechecked edge held, though it came back two days early, which by the system’s own rules counts as practice rather than measurement. the sample size is one, the grader is me, and the outer signal, term marks, is noisy and a season away. i’m describing a design i believe in, not results i can prove.
+
+but i notice something when i use it, and i notice it precisely because of the day job. every instinct the system blocks in me is one i watch undermine students every week: reach for the solution, skip the attempt, mistake recognising an answer for being able to produce one. i built a tutor that refuses to answer because i’ve spent years watching what the answering does.
+
+**the machine absorbs the logistics. the struggle stays mine. that isn’t a limitation of the system, that is the system ■**
