@@ -15,6 +15,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: "https://russelljiang.com/writing/the-tutor-that-refuses-to-answer",
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.6,
+    },
+    {
       url: "https://russelljiang.com/writing/the-boulder-and-the-ladder",
       lastModified: new Date(),
       changeFrequency: "yearly",

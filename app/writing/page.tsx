@@ -13,6 +13,15 @@ interface Post {
 
 const posts: Post[] = [
   {
+    title: "The Tutor That Refuses to Answer",
+    description:
+      "On AI tutors, the outsourcing trap, and a learning system whose one unbreakable rule is that the struggle stays mine.",
+    date: "2026-08-24",
+    tags: ["ai", "learning"],
+    published: "personal",
+    href: "/writing/the-tutor-that-refuses-to-answer",
+  },
+  {
     title: "The Boulder and the Ladder",
     description:
       "Why ranked stopped feeling good: zero sum ladders, positive sum hobbies, and the slow migration between them.",
