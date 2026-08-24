@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 const toc = [
   { label: "Sydney Scholars", href: "#sydney-scholars" },
   { label: "This site", href: "#this-site" },
+  { label: "Proxima", href: "#proxima" },
 ];
 
 interface Project {
@@ -44,6 +45,16 @@ const projects: Project[] = [
       { label: "source", href: "https://github.com/ruwusty/russelljiang.com" },
       { label: "you are here", href: "/" },
     ],
+  },
+  {
+    id: "proxima",
+    index: "03",
+    name: "proxima",
+    claim:
+      "an ai learning system living in my obsidian vault, named for the zone of proximal development by way of the nearest star still out of reach. the agent finds the edge of what i understand, teaches one reasoning step at a time, spars instead of lecturing, and logs every confusion, then schedules the rematch weeks later. one law holds it together: i generate first. it never does the thinking for me.",
+    role: "designer, and the n of 1",
+    stack: "claude code · obsidian · plain markdown, on purpose",
+    links: [{ label: "the philosophy", href: "/writing/the-same-shape-everywhere" }],
   },
 ];
 
