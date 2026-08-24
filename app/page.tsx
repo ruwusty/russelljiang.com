@@ -17,7 +17,7 @@ export default async function Home() {
     <DocsShell crumb="overview" toc={toc}>
       <h1
         id="introduction"
-        className="display text-[26px] leading-[1.4]"
+        className="display text-[26px] xl:text-[32px] leading-[1.4]"
         style={{ color: "var(--ink)" }}
       >
         russell jiang
