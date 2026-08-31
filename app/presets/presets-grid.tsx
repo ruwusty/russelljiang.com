@@ -96,7 +96,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "master",
-            "value": "70"
+            "value": "15"
           }
         ]
       },
@@ -224,7 +224,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "master",
-            "value": "70"
+            "value": "15"
           }
         ]
       },
@@ -352,7 +352,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "master",
-            "value": "65"
+            "value": "14"
           }
         ]
       },
@@ -472,7 +472,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "master",
-            "value": "65"
+            "value": "14"
           },
           {
             "label": "bass",
@@ -608,7 +608,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "master",
-            "value": "50"
+            "value": "11"
           },
           {
             "label": "bass",
@@ -760,7 +760,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "master",
-            "value": "60"
+            "value": "13"
           }
         ]
       },
@@ -870,7 +870,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "master",
-            "value": "60"
+            "value": "13"
           },
           {
             "label": "bass",
