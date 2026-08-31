@@ -49,7 +49,6 @@ const DEFAULT_ITEMS = [
   "counting rests, mostly",
   "losing an argument with a tuner",
   "buying reeds instead of practising",
-  "queueing for the library at 8:59",
   "walking to a lecture i could've streamed",
   "refactoring my notes instead of reading them",
   "alt-tabbing with intent",
