@@ -251,10 +251,6 @@
             {
               "label": "level",
               "value": "26"
-            },
-            {
-              "label": "tone",
-              "value": "60"
             }
           ]
         }
@@ -383,10 +379,6 @@
             {
               "label": "level",
               "value": "18"
-            },
-            {
-              "label": "tone",
-              "value": "52"
             }
           ]
         }

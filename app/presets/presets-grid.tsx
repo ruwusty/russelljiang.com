@@ -279,10 +279,6 @@ const DEFAULT_PRESETS: Preset[] = [
           {
             "label": "level",
             "value": "26"
-          },
-          {
-            "label": "tone",
-            "value": "60"
           }
         ]
       }
@@ -411,10 +407,6 @@ const DEFAULT_PRESETS: Preset[] = [
           {
             "label": "level",
             "value": "18"
-          },
-          {
-            "label": "tone",
-            "value": "52"
           }
         ]
       }
