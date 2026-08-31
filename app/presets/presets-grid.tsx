@@ -65,7 +65,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "name": "Rose Comp",
         "dials": [
           {
-            "label": "sens",
+            "label": "sustain",
             "value": "40"
           },
           {
@@ -87,7 +87,7 @@ const DEFAULT_PRESETS: Preset[] = [
             "value": "50"
           },
           {
-            "label": "mid",
+            "label": "middle",
             "value": "55"
           },
           {
@@ -193,7 +193,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "name": "Rose Comp",
         "dials": [
           {
-            "label": "sens",
+            "label": "sustain",
             "value": "40"
           },
           {
@@ -215,7 +215,7 @@ const DEFAULT_PRESETS: Preset[] = [
             "value": "50"
           },
           {
-            "label": "mid",
+            "label": "middle",
             "value": "50"
           },
           {
@@ -287,7 +287,7 @@ const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "03",
     "name": "yorushika lead",
-    "desc": "Morning Drv / Deluxe Rvb",
+    "desc": "Rose Comp / Deluxe Rvb",
     "chain": [
       {
         "label": "guitar",
@@ -321,7 +321,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "name": "Rose Comp",
         "dials": [
           {
-            "label": "sens",
+            "label": "sustain",
             "value": "25"
           },
           {
@@ -343,7 +343,7 @@ const DEFAULT_PRESETS: Preset[] = [
             "value": "45"
           },
           {
-            "label": "mid",
+            "label": "middle",
             "value": "48"
           },
           {
@@ -391,7 +391,7 @@ const DEFAULT_PRESETS: Preset[] = [
             "value": "38"
           },
           {
-            "label": "fdbk",
+            "label": "repeat",
             "value": "30"
           }
         ]
@@ -446,7 +446,7 @@ const DEFAULT_PRESETS: Preset[] = [
       },
       {
         "label": "fx",
-        "name": "Morning Drv",
+        "name": "Morning Drive",
         "dials": [
           {
             "label": "volume",
@@ -490,7 +490,7 @@ const DEFAULT_PRESETS: Preset[] = [
       },
       {
         "label": "ir",
-        "name": "A112",
+        "name": "A212",
         "dials": [
           {
             "label": "level",
@@ -523,7 +523,7 @@ const DEFAULT_PRESETS: Preset[] = [
             "value": "35"
           },
           {
-            "label": "fdbk",
+            "label": "repeat",
             "value": "25"
           }
         ]
@@ -551,7 +551,7 @@ const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "05",
     "name": "bocchi lead",
-    "desc": "Morning Drv / Brit 800",
+    "desc": "Morning Drive / Brit 800",
     "chain": [
       {
         "label": "guitar",
@@ -582,7 +582,7 @@ const DEFAULT_PRESETS: Preset[] = [
       },
       {
         "label": "fx",
-        "name": "Morning Drv",
+        "name": "Morning Drive",
         "dials": [
           {
             "label": "volume",
@@ -663,7 +663,7 @@ const DEFAULT_PRESETS: Preset[] = [
             "value": "42"
           },
           {
-            "label": "fdbk",
+            "label": "repeat",
             "value": "28"
           }
         ]
@@ -722,7 +722,7 @@ const DEFAULT_PRESETS: Preset[] = [
       },
       {
         "label": "fx",
-        "name": "Morning Drv",
+        "name": "Morning Drive",
         "dials": [
           {
             "label": "volume",
@@ -751,7 +751,7 @@ const DEFAULT_PRESETS: Preset[] = [
             "value": "42"
           },
           {
-            "label": "mid",
+            "label": "middle",
             "value": "55"
           },
           {
@@ -847,7 +847,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "name": "Red Dirt",
         "dials": [
           {
-            "label": "volume",
+            "label": "level",
             "value": "60"
           },
           {

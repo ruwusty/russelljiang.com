@@ -37,7 +37,7 @@
           "name": "Rose Comp",
           "dials": [
             {
-              "label": "sens",
+              "label": "sustain",
               "value": "40"
             },
             {
@@ -59,7 +59,7 @@
               "value": "50"
             },
             {
-              "label": "mid",
+              "label": "middle",
               "value": "55"
             },
             {
@@ -165,7 +165,7 @@
           "name": "Rose Comp",
           "dials": [
             {
-              "label": "sens",
+              "label": "sustain",
               "value": "40"
             },
             {
@@ -187,7 +187,7 @@
               "value": "50"
             },
             {
-              "label": "mid",
+              "label": "middle",
               "value": "50"
             },
             {
@@ -259,7 +259,7 @@
     {
       "num": "03",
       "name": "yorushika lead",
-      "desc": "Morning Drv / Deluxe Rvb",
+      "desc": "Rose Comp / Deluxe Rvb",
       "chain": [
         {
           "label": "guitar",
@@ -293,7 +293,7 @@
           "name": "Rose Comp",
           "dials": [
             {
-              "label": "sens",
+              "label": "sustain",
               "value": "25"
             },
             {
@@ -315,7 +315,7 @@
               "value": "45"
             },
             {
-              "label": "mid",
+              "label": "middle",
               "value": "48"
             },
             {
@@ -363,7 +363,7 @@
               "value": "38"
             },
             {
-              "label": "fdbk",
+              "label": "repeat",
               "value": "30"
             }
           ]
@@ -418,7 +418,7 @@
         },
         {
           "label": "fx",
-          "name": "Morning Drv",
+          "name": "Morning Drive",
           "dials": [
             {
               "label": "volume",
@@ -462,7 +462,7 @@
         },
         {
           "label": "ir",
-          "name": "A112",
+          "name": "A212",
           "dials": [
             {
               "label": "level",
@@ -495,7 +495,7 @@
               "value": "35"
             },
             {
-              "label": "fdbk",
+              "label": "repeat",
               "value": "25"
             }
           ]
@@ -523,7 +523,7 @@
     {
       "num": "05",
       "name": "bocchi lead",
-      "desc": "Morning Drv / Brit 800",
+      "desc": "Morning Drive / Brit 800",
       "chain": [
         {
           "label": "guitar",
@@ -554,7 +554,7 @@
         },
         {
           "label": "fx",
-          "name": "Morning Drv",
+          "name": "Morning Drive",
           "dials": [
             {
               "label": "volume",
@@ -635,7 +635,7 @@
               "value": "42"
             },
             {
-              "label": "fdbk",
+              "label": "repeat",
               "value": "28"
             }
           ]
@@ -694,7 +694,7 @@
         },
         {
           "label": "fx",
-          "name": "Morning Drv",
+          "name": "Morning Drive",
           "dials": [
             {
               "label": "volume",
@@ -723,7 +723,7 @@
               "value": "42"
             },
             {
-              "label": "mid",
+              "label": "middle",
               "value": "55"
             },
             {
@@ -819,7 +819,7 @@
           "name": "Red Dirt",
           "dials": [
             {
-              "label": "volume",
+              "label": "level",
               "value": "60"
             },
             {
