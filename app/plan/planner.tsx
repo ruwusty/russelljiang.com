@@ -186,8 +186,8 @@ const DEFAULT_COURSES: Course[] = [
   {
     "id": 20,
     "term": "2-2028",
-    "code": "COMP9418",
-    "name": "Advanced Machine Learning",
+    "code": "???",
+    "name": "Prescribed Elective TBD",
     "type": "prescribed"
   },
   {
