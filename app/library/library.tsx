@@ -84,7 +84,11 @@ function Spine({
   onDragEnd: () => void;
 }) {
   const h = hashString(book.title);
-  const height = 100 + (h % 5) * 11; // 100–144
+  // a spine is at least tall enough for its title (≈6.6px per char at 10px
+  // mono, plus padding), otherwise hash-varied like a real shelf; very long
+  // titles cap out and take the ellipsis
+  const needed = Math.ceil(24 + book.title.length * 6.7);
+  const height = Math.min(188, Math.max(100 + (h % 5) * 11, needed));
   const width = 27 + ((h >> 4) % 4) * 4; // 27–39
   const color = SPINE_COLORS[h % SPINE_COLORS.length];
 
@@ -125,6 +129,7 @@ function Spine({
           writingMode: "vertical-rl",
           maxHeight: height - 14,
           overflow: "hidden",
+          textOverflow: "ellipsis",
           color: "var(--bg)",
           letterSpacing: "0.05em",
           whiteSpace: "nowrap",

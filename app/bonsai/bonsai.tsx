@@ -201,8 +201,9 @@ function TreeSvg({ state, season }: { state: BonsaiState; season: Season }) {
       if (x >= 0 && x < W && y >= 0 && y < H) map.set(`${x},${y}`, color);
     };
 
-    // pot (clay-glazed if you've earned it)
-    const potBody = state.owned.glaze ? "var(--accent)" : "var(--soft)";
+    // pot: unfired and pale until you've earned the glaze, which darkens it.
+    // never accent — a solid slab of clay reads as a brown block on paper
+    const potBody = state.owned.glaze ? "var(--soft)" : "var(--faint)";
     for (let x = 13; x <= 30; x++) put(x, H - 5, "var(--ink)");
     for (let y = H - 4; y <= H - 2; y++) {
       const inset = y - (H - 4);
