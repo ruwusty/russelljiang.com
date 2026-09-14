@@ -269,10 +269,17 @@ function TreeSvg({ state, season }: { state: BonsaiState; season: Season }) {
           const roll = rng();
           const blossom = g >= BLOOM_H && roll < bloomFrac * 0.45;
           const turned = season === "autumn" && roll < 0.5;
+          // blossoms are a paper-tint of the foliage green, never accent —
+          // clay flecks on green read as dead leaves. turned autumn leaves
+          // fade to soft rather than browning.
           put(
             tip.x + dx,
             tip.y + dy,
-            blossom ? "var(--accent)" : turned ? "var(--accent)" : "var(--green)"
+            blossom
+              ? "color-mix(in srgb, var(--green) 40%, var(--bg))"
+              : turned
+                ? "var(--soft)"
+                : "var(--green)"
           );
         }
       }

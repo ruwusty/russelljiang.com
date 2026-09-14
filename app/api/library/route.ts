@@ -23,6 +23,7 @@ function isValidBook(value: unknown): boolean {
   if (typeof o.status !== "string" || !(STATUSES as readonly string[]).includes(o.status)) return false;
   if (o.tag !== undefined && !isShortString(o.tag, 20, true)) return false;
   if (o.note !== undefined && !isShortString(o.note, 200, true)) return false;
+  if (o.spine !== undefined && !isShortString(o.spine, 40, true)) return false;
   return true;
 }
 

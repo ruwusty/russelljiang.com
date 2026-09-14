@@ -12,6 +12,7 @@ interface Book {
   status: Status;
   tag?: string;
   note?: string;
+  spine?: string; // short label for the spine when the title won't fit
 }
 
 const STATUS_LABEL: Record<Status, string> = {
@@ -87,9 +88,10 @@ function Spine({
   // a spine is at least tall enough for its title (≈6.6px per char at 10px
   // mono, plus padding), otherwise hash-varied like a real shelf; very long
   // titles cap out and take the ellipsis
-  const needed = Math.ceil(24 + book.title.length * 6.7);
+  const label = book.spine ?? book.title;
+  const needed = Math.ceil(24 + label.length * 6.7);
   const height = Math.min(188, Math.max(100 + (h % 5) * 11, needed));
-  const width = 27 + ((h >> 4) % 4) * 4; // 27–39
+  const width = 24 + ((h >> 4) % 4) * 3; // 24–33, so a full shelf fits one row
   const color = SPINE_COLORS[h % SPINE_COLORS.length];
 
   return (
@@ -137,7 +139,7 @@ function Spine({
         }}
         aria-hidden="true"
       >
-        {book.title}
+        {label}
       </span>
     </button>
   );
@@ -150,9 +152,18 @@ interface Draft {
   status: Status;
   tag: string;
   note: string;
+  spine: string;
 }
 
-const EMPTY_DRAFT: Draft = { id: null, title: "", author: "", status: "to-read", tag: "", note: "" };
+const EMPTY_DRAFT: Draft = {
+  id: null,
+  title: "",
+  author: "",
+  status: "to-read",
+  tag: "",
+  note: "",
+  spine: "",
+};
 
 const inputStyle = {
   background: "transparent",
@@ -254,6 +265,7 @@ export function Library() {
       status: book.status,
       tag: book.tag ?? "",
       note: book.note ?? "",
+      spine: book.spine ?? "",
     });
 
   const saveDraft = () => {
@@ -268,6 +280,7 @@ export function Library() {
       status: draft.status,
       ...(draft.tag.trim() ? { tag: draft.tag.trim().slice(0, 20) } : {}),
       ...(draft.note.trim() ? { note: draft.note.trim().slice(0, 200) } : {}),
+      ...(draft.spine.trim() ? { spine: draft.spine.trim().slice(0, 40) } : {}),
     };
     const next = draft.id
       ? books.map((b) => (b.id === draft.id ? book : b))
@@ -349,6 +362,14 @@ export function Library() {
               className="px-2 py-1 text-[12px] outline-none w-[140px]"
               style={inputStyle}
               aria-label="tag"
+            />
+            <input
+              value={draft.spine}
+              onChange={(e) => setDraft({ ...draft, spine: e.target.value })}
+              placeholder="spine label (if the title won't fit)"
+              className="px-2 py-1 text-[12px] outline-none w-[220px]"
+              style={inputStyle}
+              aria-label="spine label"
             />
             <input
               value={draft.note}
