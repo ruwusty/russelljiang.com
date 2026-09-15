@@ -168,9 +168,22 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
     setIntro("typing");
     root.dataset.intro = "typing";
 
-    const finish = () => {
+    const finish = (e?: Event) => {
       if (cancelled) return;
       cancelled = true;
+      // the keystroke or click that skipped the intro must not ALSO be
+      // handled by anything else — `j` is the sidebar's next-item binding and
+      // `/` focuses the prompt. capture-phase registration alone does not
+      // prevent that (measured: `j` skipped the intro and moved the sidebar
+      // selection 0 -> 1); the event has to be stopped here, before it
+      // proceeds to the bubble-phase listeners on the same window.
+      if (e) {
+        e.stopPropagation();
+        // keyboard only: a `/` must not also open the browser's quick-find.
+        // a click that skips the intro keeps its default — if it landed on a
+        // sidebar link, navigating is exactly what the visitor asked for.
+        if (e.type === "keydown") e.preventDefault();
+      }
       if (timer) clearTimeout(timer);
       delete root.dataset.intro;
       setValue("");
@@ -193,8 +206,8 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
       timer = setTimeout(step, TYPE_MS + Math.random() * TYPE_JITTER_MS);
     };
 
-    // any key or click skips straight to the content. capture phase, so the
-    // keystroke that skipped the intro does not also fall through to j/k.
+    // any key or click skips straight to the content. capture phase so we run
+    // first; finish() then stops the event so it cannot reach j/k or `/`.
     window.addEventListener("keydown", finish, true);
     window.addEventListener("pointerdown", finish, true);
     timer = setTimeout(step, 180);
