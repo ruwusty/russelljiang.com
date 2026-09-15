@@ -28,7 +28,7 @@ const projects: Project[] = [
     index: "01",
     name: "sydney scholars",
     claim:
-      "a tutoring platform for sydney students, at six-figure-plus revenue and 200 seats a term. i’ve been its sole engineer since march 2026: the admin, tutor, student and parent portals, the pipeline that turns a trial class into a term enrolment, the email and notification machinery, and an ai tutor whose rag pipeline reads the class material and nothing it shouldn’t. it ships with its own eval harness (retrieval, generation, behaviour) and a privacy suite that fails ci before a leak fails a family.",
+      "a tutoring platform for sydney students, at six-figure-plus revenue and 200 seats a term. i’ve been its sole engineer since march 2026: the admin, tutor and student portals, the pipeline that turns a trial class into a term enrolment, the email and notification machinery, and an ai tutor whose rag pipeline reads the class material and nothing it shouldn’t. it ships with its own eval harness (retrieval, generation, behaviour) and a privacy suite that fails ci before a leak fails a family.",
     role: "sole engineer. everything from the schema to the pixels, plus the ai tutor end to end (ingestion, retrieval, evals)",
     stack: "React · TypeScript · Supabase (Postgres, edge functions) · Claude",
     links: [{ label: "sydneyscholars.com", href: "https://sydneyscholars.com" }],
