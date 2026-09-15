@@ -25,9 +25,11 @@ before changing anything visual or touching content.
   currently typewriter, the library spine hover-lift
   (`.spine`), the petals (`petal-fall`/`petal-sway`), the cat cameo
   (`cat-walk`), and the first-visit intro (the prompt types `cat ~/about.md`
-  once, ≤1s, then clears — `command-bar.tsx`). everything else is instant
-  colour changes. always respect `prefers-reduced-motion`. adding a seventh
-  means adding it HERE, or the next reader inherits a rule that lies.
+  once, ≤1s, then clears — `command-bar.tsx`). that is SEVEN. everything else
+  is instant colour changes. always respect `prefers-reduced-motion`. adding
+  an eighth means adding it HERE, or the next reader inherits a rule that
+  lies — which this line already did once, on 15 sep, when the prompt caret
+  became the seventh and the count below it still said six.
 - kaomoji appear only through the `<Kaomoji>` slot component
   (`app/components/kaomoji.tsx`) — never hardcode new ones into pages.
 
