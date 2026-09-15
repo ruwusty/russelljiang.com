@@ -530,7 +530,9 @@ export function Prompt() {
   return (
     <div className="relative mt-2">
       <label
-        className="flex items-baseline gap-2 text-[12px]"
+        // min-h-6 (24px): the tap target floor. the row's natural height at
+        // 12px type is 23px, and the label is what a thumb lands on.
+        className="flex items-baseline gap-2 text-[12px] min-h-6"
         style={{ color: "var(--ink)" }}
       >
         <span style={{ color: "var(--green)" }} aria-hidden="true">

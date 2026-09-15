@@ -59,14 +59,17 @@ export default function Page() {
 `"maithili gulati & russell jiang"`); `colophon={null}` hides the
 "drafted with claude" footnote, or pass a custom string.
 
-## then wire it up (all four, every time)
+## then wire it up (all three, every time)
 
-1. **writing index** — add to `posts` in `app/writing/page.tsx` (newest first):
+1. **the post list** — add to `posts` in `app/lib/posts.ts` (newest first):
    title (Title Case), description, date, tags (2–3 lowercase words), and
    `href: "/writing/my-essay"`. `published: "personal"` unless it ran elsewhere.
-2. **sitemap** — add the url to `app/sitemap.ts` (changeFrequency yearly, 0.6).
-3. **CLAUDE.md** — add the route to the public routes list.
-4. **verify** — `npx tsc --noEmit`, then check the page renders before pushing.
+   this one list feeds the writing index, the sitemap, and the prompt's
+   `grep` — there is nothing to add to `app/writing/page.tsx` or
+   `app/sitemap.ts` any more (moved 15 sep 2026; this step used to point at
+   the index page, and the sitemap used to be a second hand-kept copy).
+2. **CLAUDE.md** — add the route to the public routes list.
+3. **verify** — `npx tsc --noEmit`, then check the page renders before pushing.
 
 ## voice + typography checklist
 

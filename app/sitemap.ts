@@ -1,6 +1,22 @@
 import type { MetadataRoute } from "next";
+import { posts } from "./lib/posts";
+
+const SITE = "https://russelljiang.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  // essays come from app/lib/posts.ts — the same list the writing index and
+  // the prompt's `grep` read — so registering an essay is one edit, not
+  // three. lastModified is the post's own date; it used to be `new Date()`
+  // on every build, which told crawlers every essay changed every deploy.
+  const essays: MetadataRoute.Sitemap = posts
+    .filter((p) => p.href)
+    .map((p) => ({
+      url: `${SITE}${p.href}`,
+      lastModified: new Date(p.date),
+      changeFrequency: "yearly",
+      priority: 0.6,
+    }));
+
   return [
     {
       url: "https://russelljiang.com",
@@ -14,30 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.7,
     },
-    {
-      url: "https://russelljiang.com/writing/the-tutor-that-refuses-to-answer",
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.6,
-    },
-    {
-      url: "https://russelljiang.com/writing/the-boulder-and-the-ladder",
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.6,
-    },
-    {
-      url: "https://russelljiang.com/writing/the-same-shape-everywhere",
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.6,
-    },
-    {
-      url: "https://russelljiang.com/writing/vibe-coding-wont-save-you",
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.6,
-    },
+    ...essays,
     {
       url: "https://russelljiang.com/digest",
       lastModified: new Date(),
