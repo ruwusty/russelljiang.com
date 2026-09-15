@@ -219,6 +219,41 @@ button:focus-visible,
   }
 }
 
+/* the prompt's caret: a cell, not a bar. the character under it is drawn in
+   inverse video and the cell blinks the way a terminal's does — the glyph
+   stays readable in both phases, which is why this is not `.cursor-block`
+   (that one blinks its whole body away; fine for an empty block). a ghost
+   completion under the cell keeps its faint ink in the off phase. */
+.caret-cell {
+  --cell-ink: var(--ink);
+  background: var(--green);
+  color: var(--bg);
+  animation: caret-blink 1.1s steps(1) infinite;
+}
+
+.caret-cell.ghost {
+  --cell-ink: var(--faint);
+}
+
+@keyframes caret-blink {
+  0%,
+  49% {
+    background: var(--green);
+    color: var(--bg);
+  }
+  50%,
+  100% {
+    background: transparent;
+    color: var(--cell-ink);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret-cell {
+    animation: none;
+  }
+}
+
 /* first-visit intro: the home content is in the html (seo) but held invisible
    while the prompt types `cat ~/about.md`, then shown. `visibility`, not
    `display`, so the layout is already settled and nothing jumps when it

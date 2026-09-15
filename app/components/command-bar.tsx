@@ -13,7 +13,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Kaomoji } from "./kaomoji";
 import { useSiteAuth } from "./site-auth";
-import { grepPosts, type Post } from "../lib/posts";
+import { grepPosts, posts, type Post } from "../lib/posts";
 
 // the command line moved from the bottom of the pane to the top (russell, 15
 // sep 2026: "the command bar at the bottom makes it more a side feature").
@@ -21,7 +21,20 @@ import { grepPosts, type Post } from "../lib/posts";
 // of a bordered pane reads as a footer, and a footer is where the eye learns
 // not to look. so: the PROMPT sits under the crumb where the eye lands and is
 // the one input; the STATUS BAR stays at the bottom and carries no input at
-// all — mode, messages, ruler. shell layout, not vim layout.
+// all — mode, ruler. shell layout, not vim layout.
+//
+// a command's output prints directly under the prompt, like stdout, and stays
+// there until the next command, esc, or `clear` (russell, 15 sep: "the output
+// is at the bottom for some reason not where the command line is"). it used
+// to flash in the status bar for five seconds; a shell does not do that.
+//
+// the caret is a CELL, not a line: the character under it in inverse video,
+// blinking. a native <input> can only draw a thin bar, so the value is drawn
+// as text and the real input is stacked invisibly on top — focus, keyboard,
+// ime and screen readers all still talk to the real thing. tab completion is
+// fish-style: the best match is drawn as ghost text after the caret and tab
+// (or → at the end of the line) takes it; the candidates sit on the line
+// below so a visitor who has never seen a shell can read the menu.
 //
 // on first visit to the home page the prompt types `cat ~/about.md`, the
 // content reveals beneath it, and the prompt clears to `❯ █` — the way a
@@ -63,7 +76,34 @@ const HELP_LINES: [string, string][] = [
   ["whoami", "introductions"],
   ["q / wq", "you have to try"],
 ];
-const MESSAGE_MS = 5000;
+
+// tab completion tables. primary names only — aliases (`go`, `dir`, `h`)
+// still run, they just are not suggested.
+const COMMANDS = ["ls", "cat", "grep", "help", "theme", "tea", "whoami", "login", "logout", "vim", "clear"];
+const TARGETS = [...PAGES, ...Object.keys(EXTERNAL)];
+const TAGS = [...new Set(posts.filter((p) => p.href).flatMap((p) => p.tags))].sort();
+const ARGS: Record<string, string[]> = {
+  cat: TARGETS,
+  go: TARGETS,
+  open: TARGETS,
+  cd: TARGETS,
+  theme: ["dark", "light"],
+  grep: TAGS,
+  tea: ["3", "5", "stop"],
+};
+
+/** the candidates for the current line, and the text that would finish it. */
+function complete(value: string): { candidates: string[]; ghost: string } {
+  const v = value.toLowerCase();
+  const sp = v.indexOf(" ");
+  const [pool, prefix] =
+    sp === -1
+      ? [COMMANDS, v]
+      : [ARGS[v.slice(0, sp)] ?? [], v.slice(sp + 1)];
+  const candidates = pool.filter((c) => c.startsWith(prefix));
+  const ghost = candidates[0] && candidates[0] !== prefix ? candidates[0].slice(prefix.length) : "";
+  return { candidates, ghost };
+}
 
 // the intro. one command, typed once, then the prompt clears. timing follows
 // `currently.tsx` so the two typewriters on the site feel like one hand.
@@ -129,16 +169,11 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
   const [ruler, setRuler] = useState("all");
   const [intro, setIntro] = useState<"idle" | "typing" | "done">("idle");
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const msgTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const show = useCallback((text: string, ms: number = MESSAGE_MS) => {
-    setMessage(text);
-    if (msgTimerRef.current) clearTimeout(msgTimerRef.current);
-    msgTimerRef.current = setTimeout(() => setMessage(null), ms);
-  }, []);
+  // output stays put until something replaces or clears it — see the header.
+  const show = useCallback((text: string) => setMessage(text), []);
 
   const focusPrompt = useCallback((prefill?: string) => {
-    setMessage(null);
     setResults(null);
     setMode("cmd");
     if (prefill !== undefined) setValue(prefill);
@@ -266,6 +301,7 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
       if (event.key === "Escape") {
         setHelpOpen(false);
         setResults(null);
+        setMessage(null);
         return;
       }
       if (isTypingTarget(event.target)) return;
@@ -306,7 +342,7 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
     const tick = setInterval(() => {
       if (Date.now() >= teaUntil) {
         setTeaUntil(null);
-        show("the tea is ready ( ˘ω˘ )", 15000);
+        show("the tea is ready ( ˘ω˘ )");
         if (document.hidden) {
           const original = document.title;
           document.title = "( tea is ready ) — russell jiang";
@@ -513,6 +549,7 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
     setValue("");
     setHelpOpen(false);
     setResults(null);
+    setMessage(null);
     inputRef.current?.blur();
   };
 
@@ -535,10 +572,35 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
 export function Prompt() {
   const c = useCommand();
   const typing = c.intro === "typing";
-  // the resting block cursor: the site's one sanctioned blink. shown while
-  // nobody is typing here, so the prompt reads as a prompt and not as an
-  // empty text field. also shown during the intro, in place of the caret.
-  const restingCursor = typing || (!c.focused && c.value === "");
+  const pw = c.mode === "pw";
+  const [caret, setCaret] = useState(0);
+  const sync = (e: React.SyntheticEvent<HTMLInputElement>) =>
+    setCaret(e.currentTarget.selectionStart ?? e.currentTarget.value.length);
+
+  const display = pw ? "•".repeat(c.value.length) : c.value.toLowerCase();
+  // the cell sits at the caret while typing here; at the end otherwise (the
+  // intro, or the resting prompt) so it reads as a prompt, not a text field.
+  const at = c.focused && !typing ? Math.min(caret, display.length) : display.length;
+  const completing = c.focused && !typing && !pw;
+  const { candidates, ghost: rawGhost } = completing ? complete(c.value) : { candidates: [], ghost: "" };
+  // an empty prompt lists the menu; it does not guess. and a caret mid-line
+  // means the visitor is editing, not finishing — no ghost there either.
+  const ghost = c.value !== "" && at === display.length ? rawGhost : "";
+  const withArgs = (cmd: string) => (ARGS[cmd] ? `${cmd} ` : cmd);
+
+  const accept = () => {
+    const next = c.value + ghost;
+    const done = c.value.includes(" ") ? next : withArgs(next);
+    c.setValue(done);
+    setCaret(done.length);
+  };
+  const pick = (candidate: string) => {
+    const sp = c.value.indexOf(" ");
+    const done = sp === -1 ? withArgs(candidate) : `${c.value.slice(0, sp)} ${candidate}`;
+    c.setValue(done);
+    setCaret(done.length);
+    c.focusPrompt();
+  };
 
   return (
     <div className="relative mt-2">
@@ -549,48 +611,90 @@ export function Prompt() {
         style={{ color: "var(--ink)" }}
       >
         <span style={{ color: "var(--green)" }} aria-hidden="true">
-          {c.mode === "pw" ? "password:" : "❯"}
+          {pw ? "password:" : "❯"}
         </span>
-        <span className="sr-only">
-          {c.mode === "pw" ? "password" : "command"}
+        <span className="sr-only">{pw ? "password" : "command"}</span>
+        <span className="relative block min-w-0 flex-1">
+          {/* ponytail: the drawn line does not scroll with the real input,
+              so a command wider than the pane clips. commands are short. */}
+          <span className="block overflow-hidden whitespace-pre" aria-hidden="true">
+            {display.slice(0, at)}
+            <span className={`caret-cell${display[at] === undefined && ghost ? " ghost" : ""}`}>
+              {display[at] ?? ghost[0] ?? " "}
+            </span>
+            {display.slice(at + 1)}
+            {ghost.length > 1 && <span style={{ color: "var(--faint)" }}>{ghost.slice(1)}</span>}
+          </span>
+          <input
+            ref={c.inputRef}
+            type={pw ? "password" : "text"}
+            value={c.value}
+            readOnly={typing}
+            onChange={(e) => {
+              c.setValue(e.target.value);
+              sync(e);
+            }}
+            onSelect={sync}
+            onKeyUp={sync}
+            onFocus={(e) => {
+              c.setFocused(true);
+              sync(e);
+            }}
+            onBlur={() => c.setFocused(false)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                c.submit();
+              } else if (e.key === "Escape") {
+                e.preventDefault();
+                c.cancel();
+              } else if (ghost && (e.key === "Tab" || e.key === "ArrowRight") && !e.shiftKey) {
+                e.preventDefault();
+                accept();
+              }
+            }}
+            // stacked over the drawn line, invisible: the browser still owns
+            // focus, the caret position, the keyboard and the ime.
+            className="absolute inset-0 w-full h-full opacity-0 outline-none text-[12px]"
+            style={{ fontFamily: "inherit", padding: 0, border: "none", background: "transparent" }}
+            aria-label={pw ? "password" : "command — type help for the list, tab to complete"}
+            autoComplete="off"
+            autoCapitalize="none"
+            spellCheck={false}
+          />
         </span>
-        <input
-          ref={c.inputRef}
-          type={c.mode === "pw" ? "password" : "text"}
-          value={c.value}
-          readOnly={typing}
-          onChange={(e) => c.setValue(e.target.value)}
-          onFocus={() => c.setFocused(true)}
-          onBlur={() => c.setFocused(false)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              c.submit();
-            } else if (e.key === "Escape") {
-              e.preventDefault();
-              c.cancel();
-            }
-          }}
-          className={`min-w-0 outline-none text-[12px] ${c.mode === "pw" ? "" : "lowercase"}`}
-          style={{
-            // grows with its content so the resting cursor sits right after
-            // the prompt, not at the far edge of an empty full-width field
-            width: `${Math.max(1, c.value.length + 1)}ch`,
-            maxWidth: "100%",
-            background: "transparent",
-            border: "none",
-            color: "var(--ink)",
-            fontFamily: "inherit",
-            padding: 0,
-            caretColor: typing ? "transparent" : undefined,
-          }}
-          aria-label={c.mode === "pw" ? "password" : "command — type help for the list"}
-          autoComplete="off"
-          autoCapitalize="none"
-          spellCheck={false}
-        />
-        {restingCursor && <span className="cursor-block" aria-hidden="true" />}
       </label>
+
+      {/* stdout. always in the tree so the live region is there before the
+          first message lands — a region added with its content is not read. */}
+      <div className="text-[12px] lowercase whitespace-pre-wrap" aria-live="polite">
+        {c.message}
+      </div>
+
+      {candidates.length > 0 && (
+        <div
+          className="flex flex-wrap gap-x-3 gap-y-0 text-[11px] lowercase"
+          style={{ color: "var(--soft)" }}
+          aria-label="completions"
+        >
+          {candidates.map((cand, i) => (
+            <button
+              key={cand}
+              type="button"
+              className="tui-btn min-h-6"
+              // mousedown, not click: a click would blur the input first and
+              // the row would be gone before the click landed
+              onMouseDown={(e) => {
+                e.preventDefault();
+                pick(cand);
+              }}
+              style={i === 0 && ghost ? { color: "var(--ink)" } : undefined}
+            >
+              {cand}
+            </button>
+          ))}
+        </div>
+      )}
 
       {c.helpOpen && (
         <div
@@ -655,7 +759,8 @@ export function Prompt() {
 
 /* ---------------------------------------------------------- status bar */
 
-/** the bottom line: mode · message · ruler. no input lives here any more. */
+/** the bottom line: mode · hints · ruler. no input, no output — both live
+ *  at the prompt now. */
 export function StatusBar({ sections }: { sections: number }) {
   const c = useCommand();
   const inCommand = c.focused || c.mode === "pw";
@@ -675,33 +780,23 @@ export function StatusBar({ sections }: { sections: number }) {
         >
           {c.mode === "pw" ? "login" : inCommand ? "command" : "normal"}
         </span>
-        {c.message ? (
-          <span className="truncate" style={{ color: "var(--ink)" }} aria-live="polite">
-            {c.message}
-          </span>
-        ) : (
-          <span className="flex items-baseline gap-2 min-w-0">
-            {c.teaUntil !== null && (
-              <span className="shrink-0" style={{ color: "var(--green)" }}>
-                tea {Math.floor((c.teaUntil - Date.now()) / 60000)}:
-                {String(Math.max(0, Math.ceil(((c.teaUntil - Date.now()) % 60000) / 1000)) % 60).padStart(2, "0")}
-              </span>
-            )}
-            <span className="hidden sm:inline truncate" style={{ color: "var(--soft)" }}>
-              j/k move · enter open · : cmd · / grep
-            </span>
+        {c.teaUntil !== null && (
+          <span className="shrink-0" style={{ color: "var(--green)" }}>
+            tea {Math.floor((c.teaUntil - Date.now()) / 60000)}:
+            {String(Math.max(0, Math.ceil(((c.teaUntil - Date.now()) % 60000) / 1000)) % 60).padStart(2, "0")}
           </span>
         )}
-      </span>
-      {!c.message && (
-        <span className="shrink-0 text-right flex items-center gap-2" style={{ color: "var(--soft)" }}>
-          <span>
-            {sections} sections · © 2026 · utf-8 ·{" "}
-            <span className="inline-block min-w-[3ch] text-left">{c.ruler}</span>
-          </span>
-          <Kaomoji slot="statusbar" className="text-[11px]" />
+        <span className="hidden sm:inline truncate" style={{ color: "var(--soft)" }}>
+          j/k move · enter open · : cmd · / grep · tab complete
         </span>
-      )}
+      </span>
+      <span className="shrink-0 text-right flex items-center gap-2" style={{ color: "var(--soft)" }}>
+        <span>
+          {sections} sections · © 2026 · utf-8 ·{" "}
+          <span className="inline-block min-w-[3ch] text-left">{c.ruler}</span>
+        </span>
+        <Kaomoji slot="statusbar" className="text-[11px]" />
+      </span>
     </footer>
   );
 }

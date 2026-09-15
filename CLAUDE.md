@@ -19,8 +19,10 @@ before changing anything visual or touching content.
   `app/components/docs-shell.tsx`. 1px solid borders only, used sparingly.
   a 44px × 1px `.hrule` under each page heading. generous whitespace.
 - animations, the complete list (corrected 15 sep 2026 — this line used to
-  name three while `globals.css` shipped six): the blinking cursor
-  (`.cursor-block`), the currently typewriter, the library spine hover-lift
+  name three while `globals.css` shipped six): the blinking cursors
+  (`.cursor-block` in currently, `.caret-cell` in the prompt — the prompt's
+  is an inverse-video cell so the glyph under it stays readable), the
+  currently typewriter, the library spine hover-lift
   (`.spine`), the petals (`petal-fall`/`petal-sway`), the cat cameo
   (`cat-walk`), and the first-visit intro (the prompt types `cat ~/about.md`
   once, ≤1s, then clears — `command-bar.tsx`). everything else is instant
@@ -74,8 +76,13 @@ nav lives in
 `app/components/sidebar.tsx` (j/k + enter navigation). the command line is
 `app/components/command-bar.tsx`: a `Prompt` under the crumb on every page
 (`:` focuses it, `/` focuses it with `grep ` prefilled) and a `StatusBar` at
-the bottom that carries mode · message · ruler and NO input — the prompt
-moved up top on 15 sep 2026 because a footer reads as a side feature.
+the bottom that carries mode · hints · ruler and NO input and NO output — the
+prompt moved up top on 15 sep 2026 because a footer reads as a side feature,
+and a command's output prints under the prompt like stdout, staying until the
+next command, esc, or `clear`. the caret is a blinking inverse-video cell
+(`.caret-cell`) drawn over a hidden real `<input>`. tab completion is
+fish-style: ghost text after the caret, tab or → accepts, and the candidates
+(`COMMANDS` / `ARGS` in command-bar.tsx) sit on the line below.
 commands: `ls`, `cat <page>` (alias `go`), `grep <term>` (searches
 `app/lib/posts.ts`), plus the older ones. on a first visit to `/` the prompt
 types `cat ~/about.md` and reveals the page — that is the whole onboarding.
