@@ -219,7 +219,17 @@ button:focus-visible,
   }
 }
 
-/* library spines: the third sanctioned animation — books want to be touched */
+/* first-visit intro: the home content is in the html (seo) but held invisible
+   while the prompt types `cat ~/about.md`, then shown. `visibility`, not
+   `display`, so the layout is already settled and nothing jumps when it
+   appears. the attribute is set pre-paint by layout.tsx and cleared by
+   command-bar.tsx; if javascript never runs, it is never set and the content
+   is simply visible. */
+html[data-intro] .intro-content {
+  visibility: hidden;
+}
+
+/* library spines — books want to be touched */
 .spine {
   transition: transform 130ms ease;
 }

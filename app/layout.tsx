@@ -82,6 +82,18 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {/* PRE-PAINT, first visit to `/` only. marks the html so globals.css
+            can hide `.intro-content` before the first frame — a useEffect is
+            too late, since ssr paints the html before react hydrates and the
+            content would flash then vanish. no-op under reduced-motion and on
+            every visit after the first. the attribute is removed by the
+            prompt when its command finishes typing (command-bar.tsx). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{if(location.pathname==='/'&&!localStorage.getItem('rj:intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.dataset.intro='pending'}}catch(e){}})()",
+          }}
+        />
       </head>
       <body className="antialiased">
         <Providers>{children}</Providers>

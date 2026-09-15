@@ -15,20 +15,25 @@ export default async function Home() {
 
   return (
     <DocsShell crumb="overview" toc={toc}>
-      <h1
-        id="introduction"
-        className="display text-[26px] xl:text-[32px] leading-[1.4]"
-        style={{ color: "var(--ink)" }}
-      >
-        russell jiang
-      </h1>
-      <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
-        data science @ unsw · tutor · amusa
-      </p>
+      {/* `.intro-content` is what `cat ~/about.md` prints. it is in the ssr
+          html regardless (seo); on a first visit globals.css hides it for the
+          ~0.9s the prompt takes to type, then it shows. see command-bar.tsx. */}
+      <div className="intro-content">
+        <h1
+          id="introduction"
+          className="display text-[26px] xl:text-[32px] leading-[1.4]"
+          style={{ color: "var(--ink)" }}
+        >
+          russell jiang
+        </h1>
+        <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
+          data science @ unsw · tutor · amusa
+        </p>
 
-      <div className="hrule my-8" />
+        <div className="hrule my-8" />
 
-      <HomeEditor initial={content} />
+        <HomeEditor initial={content} />
+      </div>
     </DocsShell>
   );
 }

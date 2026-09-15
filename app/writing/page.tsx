@@ -2,52 +2,7 @@ import Link from "next/link";
 import { DocsShell } from "../components/docs-shell";
 import { Kaomoji } from "../components/kaomoji";
 
-interface Post {
-  title: string;
-  description: string;
-  date: string;
-  tags: string[];
-  published: string;
-  href?: string;
-}
-
-const posts: Post[] = [
-  {
-    title: "The Tutor That Refuses to Answer",
-    description:
-      "On AI tutors, the outsourcing trap, and a learning system whose one unbreakable rule is that the struggle stays mine.",
-    date: "2026-08-24",
-    tags: ["ai", "learning"],
-    published: "personal",
-    href: "/writing/the-tutor-that-refuses-to-answer",
-  },
-  {
-    title: "The Boulder and the Ladder",
-    description:
-      "Why ranked stopped feeling good: zero sum ladders, positive sum hobbies, and the slow migration between them.",
-    date: "2026-07-16",
-    tags: ["games", "motivation"],
-    published: "personal",
-    href: "/writing/the-boulder-and-the-ladder",
-  },
-  {
-    title: "The Same Shape Everywhere",
-    description:
-      "A meditation on pattern recognition, and what physics might have to say about how to live.",
-    date: "2026-06-25",
-    tags: ["maths", "physics", "philosophy"],
-    published: "personal",
-    href: "/writing/the-same-shape-everywhere",
-  },
-  {
-    title: "Vibe Coding Won't Save You",
-    description: "Why fundamentals still matter in the age of agentic AI.",
-    date: "2026-04-12",
-    tags: ["opinion", "ai"],
-    published: "DataSoc",
-    href: "/writing/vibe-coding-wont-save-you",
-  },
-];
+import { posts } from "../lib/posts";
 
 const toc = [{ label: "All posts", href: "#posts" }];
 

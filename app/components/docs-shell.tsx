@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { CatCameo } from "./cat-cameo";
-import { CommandBar } from "./command-bar";
+import { CommandProvider, Prompt, StatusBar } from "./command-bar";
 import { Kaomoji } from "./kaomoji";
 import { MoonPhase } from "./moon-phase";
 import { PetalDrift } from "./petal-drift";
@@ -22,6 +22,7 @@ interface DocsShellProps {
 
 export function DocsShell({ crumb, toc, children }: DocsShellProps) {
   return (
+    <CommandProvider>
     <div className="relative min-h-screen flex flex-col">
       <a href="#content" className="skip-link">
         skip to content
@@ -80,6 +81,8 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
               <div className="text-[11px] lowercase" style={{ color: "var(--soft)" }}>
                 ~/personal/{crumb}
               </div>
+              {/* the command line, where the eye lands — not in the footer */}
+              <Prompt />
 
               {/* at xl the whole strip hangs in the left margin and sticks
                   while the pane scrolls; below xl it stays in the flow */}
@@ -94,8 +97,8 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
             <main id="content" className="mt-14 flex-1">{children}</main>
           </div>
 
-          {/* statusbar */}
-          <CommandBar sections={toc.length} />
+          {/* statusbar: mode · message · ruler. the input moved up top. */}
+          <StatusBar sections={toc.length} />
 
           <CatCameo />
           <PetalDrift />
@@ -103,5 +106,6 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
         </div>
       </div>
     </div>
+    </CommandProvider>
   );
 }

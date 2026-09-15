@@ -18,9 +18,14 @@ before changing anything visual or touching content.
 - layout: single column inside the bordered "terminal pane" in
   `app/components/docs-shell.tsx`. 1px solid borders only, used sparingly.
   a 44px × 1px `.hrule` under each page heading. generous whitespace.
-- animations: ONLY the blinking cursor (`.cursor-block`), the currently
-  typewriter, and the library spine hover-lift (`.spine`); everything else is
-  instant colour changes. always respect `prefers-reduced-motion`.
+- animations, the complete list (corrected 15 sep 2026 — this line used to
+  name three while `globals.css` shipped six): the blinking cursor
+  (`.cursor-block`), the currently typewriter, the library spine hover-lift
+  (`.spine`), the petals (`petal-fall`/`petal-sway`), the cat cameo
+  (`cat-walk`), and the first-visit intro (the prompt types `cat ~/about.md`
+  once, ≤1s, then clears — `command-bar.tsx`). everything else is instant
+  colour changes. always respect `prefers-reduced-motion`. adding a seventh
+  means adding it HERE, or the next reader inherits a rule that lies.
 - kaomoji appear only through the `<Kaomoji>` slot component
   (`app/components/kaomoji.tsx`) — never hardcode new ones into pages.
 
@@ -66,9 +71,16 @@ public: `/` `/writing` `/writing/vibe-coding-wont-save-you`
 `/bonsai` `/projects`. unlisted + noindex: `/plan` `/presets`, `/stats`
 (`:stats`), `/404` (the tamagotchi cat), and gated drafts under `/writing/*`.
 nav lives in
-`app/components/sidebar.tsx` (j/k + enter navigation); command mode in
-`app/components/command-bar.tsx` (`:` key) — new pages should be added to
-both, plus the `:help` page list.
+`app/components/sidebar.tsx` (j/k + enter navigation). the command line is
+`app/components/command-bar.tsx`: a `Prompt` under the crumb on every page
+(`:` focuses it, `/` focuses it with `grep ` prefilled) and a `StatusBar` at
+the bottom that carries mode · message · ruler and NO input — the prompt
+moved up top on 15 sep 2026 because a footer reads as a side feature.
+commands: `ls`, `cat <page>` (alias `go`), `grep <term>` (searches
+`app/lib/posts.ts`), plus the older ones. on a first visit to `/` the prompt
+types `cat ~/about.md` and reveals the page — that is the whole onboarding.
+new pages go in the sidebar AND `ROUTES` in command-bar.tsx; new essays go in
+`app/lib/posts.ts` (the writing index and `grep` both read it).
 
 ## writing
 
