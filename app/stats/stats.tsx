@@ -1,6 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSiteAuth } from "../components/site-auth";
+
+interface Analytics {
+  total: number;
+  days: { day: string; views: number; uniques: number }[];
+  pages: [string, number][];
+  refs: [string, number][];
+}
 
 interface SiteStats {
   guestbookEntries: number | null;
@@ -29,6 +37,26 @@ function daysAgo(iso: string): string {
 
 export function Stats() {
   const [stats, setStats] = useState<SiteStats | null>(null);
+  const { password } = useSiteAuth();
+  const [hits, setHits] = useState<Analytics | null>(null);
+
+  // the access log, owner-only
+  useEffect(() => {
+    if (!password) {
+      setHits(null);
+      return;
+    }
+    let cancelled = false;
+    fetch("/api/analytics?days=7", { headers: { "x-site-password": password } })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (!cancelled) setHits(json);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [password]);
 
   useEffect(() => {
     let cancelled = false;
@@ -150,8 +178,29 @@ export function Stats() {
         )}
         {row("essays", "2 published · 1 draft behind the login")}
         {row("passwords", "1, for everything")}
-        {row("analytics", "none. this page is the analytics")}
+        {row("analytics", "home-made. no cookies, no ips, owner-only")}
       </dl>
+
+      {password && hits && (
+        <div className="mt-10">
+          <div className="trail flex items-center gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
+            <span style={{ color: "var(--green)" }}>❯</span>
+            <span>tail -n 7 access.log</span>
+          </div>
+          <dl
+            className="mt-4 text-[13px] grid grid-cols-[110px_1fr] sm:grid-cols-[160px_1fr] gap-y-1 lowercase break-words"
+            style={{ color: "var(--soft)" }}
+          >
+            {row("7 days", `${hits.total} views`)}
+            {row(
+              "by day",
+              hits.days.map((d) => `${d.day.slice(5)} ${d.views}/${d.uniques}`).join(" · ") + " (views/people)"
+            )}
+            {row("pages", hits.pages.length ? hits.pages.map(([p, n]) => `${p} ${n}`).join(" · ") : "nothing yet")}
+            {row("referrers", hits.refs.length ? hits.refs.map(([r, n]) => `${r} ${n}`).join(" · ") : "nobody sent anyone")}
+          </dl>
+        </div>
+      )}
 
       <p className="mt-8 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
         the bonsai is not listed. your tree lives in your browser, not my database.

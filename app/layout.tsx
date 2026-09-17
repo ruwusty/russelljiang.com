@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import { Providers } from "./providers";
+import { HitBeacon } from "./components/hit-beacon";
 import "./globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -96,7 +97,10 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <HitBeacon />
+        </Providers>
       </body>
     </html>
   );

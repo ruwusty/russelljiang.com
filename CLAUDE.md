@@ -55,6 +55,16 @@ before changing anything visual or touching content.
 - public-write endpoints (guestbook, vim-scores) have honeypots, per-ip
   cooldowns (hashed ips, never raw), length caps, validation. keep all of
   these when touching them.
+- analytics: home-made, owner-only. `app/components/hit-beacon.tsx` posts
+  `{path, referrer}` to `POST /api/hit` on every route change (production
+  only, skipped while the owner is logged in, bots filtered by user-agent).
+  the route writes ONE EMPTY BLOB PER PAGEVIEW at
+  `hits/<sydney-day>/<hash>,<path>,<referrer-host>.txt` — the data is the
+  pathname, so `GET /api/analytics?days=7` (site password) aggregates with
+  `list()` and never fetches bodies. the hash is sha256(day + ip + ua): one
+  count per visitor per day, unlinkable across days, no raw ip ever stored.
+  rendered on `/stats` when logged in. no cookies. list-based counting is
+  fine to ~10k hits/day; past that, move to a counter store.
 - daily digest: `app/lib/digest.ts` fetches ~16 rss/atom/hn sources (ai labs,
   eng/ml blogs, capped arxiv, aggregators), dedups,
   caps, then calls the gemini api (`gemini-3.5-flash` free tier, structured
