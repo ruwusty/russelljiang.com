@@ -12,6 +12,15 @@ export interface Post {
 
 export const posts: Post[] = [
   {
+    title: "The Wrong Side of the Black Box",
+    description:
+      "On typesafe ai's jev, a model that answers with probabilities instead of prose, and why most AI engineering tooling lives on the wrong side of the black box.",
+    date: "2026-09-17",
+    tags: ["ai", "engineering"],
+    published: "personal",
+    href: "/writing/the-wrong-side-of-the-black-box",
+  },
+  {
     title: "The Tutor That Refuses to Answer",
     description:
       "On AI tutors, the outsourcing trap, and a learning system whose one unbreakable rule is that the struggle stays mine.",

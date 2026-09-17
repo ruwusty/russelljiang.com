@@ -71,6 +71,7 @@ before changing anything visual or touching content.
 public: `/` `/writing` `/writing/vibe-coding-wont-save-you`
 `/writing/the-same-shape-everywhere` `/writing/the-boulder-and-the-ladder`
 `/writing/the-tutor-that-refuses-to-answer`
+`/writing/the-wrong-side-of-the-black-box`
 `/digest` `/library` `/guestbook` `/vim`
 `/bonsai` `/projects`. unlisted + noindex: `/plan` `/presets`, `/stats`
 (`:stats`), `/404` (the tamagotchi cat), and gated drafts under `/writing/*`.

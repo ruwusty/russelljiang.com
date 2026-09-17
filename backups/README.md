@@ -4,4 +4,4 @@ sanitised JSON exports of the site's Vercel Blob content, taken via the public A
 regenerate with `node scripts/backup-blobs.mjs [base-url]`.
 note: vim-leaderboard only contains the top 10 per difficulty (the api view).
 
-last run: 2026-09-14T02:03:49.511Z
+last run: 2026-09-17T03:15:51.559Z

@@ -109,16 +109,16 @@ const DEFAULT_COURSES: Course[] = [
   {
     "id": 9,
     "term": "1-2027",
-    "code": "???",
-    "name": "GenEd TBD",
+    "code": "ARTS2115",
+    "name": "Philosophy of Artificial Intelligence",
     "type": "gened"
   },
   {
     "id": 10,
     "term": "1-2027",
-    "code": "???",
-    "name": "Free elective TBD",
-    "type": "free"
+    "code": "ARTS1690",
+    "name": "The Structure of Language",
+    "type": "gened"
   },
   {
     "id": 11,
@@ -151,16 +151,16 @@ const DEFAULT_COURSES: Course[] = [
   {
     "id": 15,
     "term": "3-2027",
-    "code": "???",
-    "name": "Free elective TBD",
-    "type": "free"
+    "code": "COMP3411",
+    "name": "Artificial Intelligence",
+    "type": "prescribed"
   },
   {
     "id": 16,
-    "term": "3-2027",
-    "code": "???",
-    "name": "Prescribed Elective TBD",
-    "type": "prescribed"
+    "term": "2-2028",
+    "code": "COMP9444",
+    "name": "Neural Networks & Deep Learning",
+    "type": "free"
   },
   {
     "id": 17,
@@ -179,44 +179,44 @@ const DEFAULT_COURSES: Course[] = [
   {
     "id": 19,
     "term": "1-2028",
-    "code": "???",
-    "name": "Prescribed Elective TBD",
-    "type": "prescribed"
+    "code": "COMP6713",
+    "name": "Natural Language Processing",
+    "type": "free"
   },
   {
     "id": 20,
-    "term": "2-2028",
-    "code": "???",
-    "name": "Prescribed Elective TBD",
-    "type": "prescribed"
-  },
-  {
-    "id": 21,
     "term": "2-2028",
     "code": "COMP9313",
     "name": "Big Data Management",
     "type": "core"
   },
   {
-    "id": 22,
+    "id": 21,
     "term": "2-2028",
-    "code": "???",
-    "name": "GenEd TBD",
-    "type": "gened"
+    "code": "COMP9418",
+    "name": "Advanced Machine Learning",
+    "type": "prescribed"
   },
   {
-    "id": 23,
+    "id": 22,
     "term": "3-2028",
     "code": "DATA3001",
     "name": "Data Science in Practice",
     "type": "core"
   },
   {
-    "id": 24,
+    "id": 23,
     "term": "3-2028",
     "code": "ECON3203",
     "name": "Econometric Theory & ML",
     "type": "core"
+  },
+  {
+    "id": 24,
+    "term": "3-2028",
+    "code": "COMP4418",
+    "name": "Knowledge Representation & Reasoning",
+    "type": "prescribed"
   }
 ];
 
