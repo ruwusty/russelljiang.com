@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSiteAuth } from "../components/site-auth";
+import { posts } from "../lib/posts";
 
 interface Analytics {
   total: number;
@@ -177,8 +178,7 @@ export function Stats() {
           "kaomoji",
           stats?.kaomojiSet === null || !stats ? null : `${stats.kaomojiSet} of 5 slots occupied`
         )}
-        {row("essays", "2 published · 1 draft behind the login")}
-        {row("passwords", "1, for everything")}
+        {row("essays", `${posts.filter((p) => p.href).length} published`)}
         {row("analytics", "home-made. no cookies, no ips, owner-only")}
       </dl>
 
