@@ -57,7 +57,7 @@ export default function Page() {
 
 `EssayLayout` props: `byline` overrides "russell jiang" (co-authors:
 `"maithili gulati & russell jiang"`); `colophon={null}` hides the
-"drafted with claude" footnote, or pass a custom string.
+"drafted with fable" footnote, or pass a custom string.
 
 ## then wire it up (all three, every time)
 

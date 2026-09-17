@@ -81,7 +81,7 @@ export function LadderDraft() {
         className="mt-14 pt-4 text-[11px] lowercase italic leading-[1.7]"
         style={{ borderTop: "1px solid var(--line)", color: "var(--soft)" }}
       >
-        a dialogue distillate: my thoughts, drafted with claude.
+        a dialogue distillate: my thoughts, drafted with fable.
       </p>
     </>
   );

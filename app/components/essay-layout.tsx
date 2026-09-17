@@ -17,7 +17,7 @@ export function EssayLayout({
   date,
   byline = "russell jiang",
   crumb,
-  colophon = "a dialogue distillate: my thoughts, drafted with claude.",
+  colophon = "a dialogue distillate: my thoughts, drafted with fable.",
   children,
 }: EssayLayoutProps) {
   return (
