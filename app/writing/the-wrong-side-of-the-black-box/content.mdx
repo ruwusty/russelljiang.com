@@ -1,10 +1,12 @@
-i’m not being dramatic when i say i dreamt about this. i’d spent a whole day fighting a model to give me clean json, went to sleep annoyed, and dreamt of a version that skipped the words entirely and handed me the answer with a number next to it. then i found typesafe ai.
+i dreamt about this before i found it.
+
+i’d spent a whole day fighting an llm for clean json. went to sleep annoyed, dreamt of a model that skipped the words and just handed me the answer with a number next to it. then i found typesafe ai, and that’s what they built.
 
 ex openai researcher diogo almeida built a model called [jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev) that doesn’t talk. you give it a situation and some narrow questions, yes/no, pick one from a list, or rate on a scale, and it hands back an answer plus a probability for each, in under a second, for almost nothing. output tokens are free. they named it after jevons the economist, which is the whole pitch.
 
 ## the wrong side
 
-chat models are great, i use them daily. but we started calling them from code like they’re a function that returns something reliable. they aren’t. they’re trained to write for a human reader. kahneman would call that system two: slow, deliberate, good at showing its working. most of what software wants from a model is system one, a fast read and a number.
+chat models are great, i use them daily. but we started calling them from code like they’re a function that returns something reliable. they aren’t. they’re trained to write for a human reader. kahneman would call that system two: slow, deliberate, good at showing its working. most of what software wants from a model is system one, a fast read and a number. that framing isn’t mine, it’s theirs: the class of models is called system one.
 
 i’m building an internal ai platform and most of my time isn’t spent on the intelligence. it’s spent forcing structure onto a model that doesn’t want to give it. i add a schema, quality drops, so i add validation, then retries, then evals, then a second model to judge the first one. every layer fixes a symptom. none of it touches the actual problem: the thing at the bottom was never built to make decisions inside software.
 
@@ -14,7 +16,7 @@ i’m building an internal ai platform and most of my time isn’t spent on the 
 
 what jev changes is what comes out of the box. from a data science view it’s a classifier: situation in, label and probability out, no labelled dataset, no training run. you can already do zero-shot classification with any llm, but this one was trained to be calibrated and answers many questions in one pass, instead of being asked nicely for json and hoping.
 
-the probability is the part that matters. “probably urgent” buried in a paragraph is something you parse and hope. 0.93 is something you can threshold, combine with other signals, log, and explain later. you still can’t see inside, but you can trust what it hands you enough to build on. the fix moved inside the box, and most of the scaffolding becomes redundant. not a comfortable thought when you’re the one building it.
+the probability is the part that matters. “probably urgent” buried in a paragraph is something you parse and hope. 0.67 is something you can threshold, combine with other signals, log, and explain later. you still can’t see inside, but you can trust what it hands you enough to build on. the fix moved inside the box, and most of the scaffolding becomes redundant. not a comfortable thought when you’re the one building it.
 
 ## the jevons bit
 
