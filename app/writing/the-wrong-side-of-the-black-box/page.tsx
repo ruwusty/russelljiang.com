@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <EssayLayout
       title="the wrong side of the black box"
-      subtitle="what jev gets right about ai in software"
+      subtitle="what typesafe ai gets right about models in software"
       date="2026-09-17"
       crumb="writing/the-wrong-side-of-the-black-box"
     >
