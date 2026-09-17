@@ -18,6 +18,14 @@ what jev changes is what comes out of the box. from a data science view it’s a
 
 the probability is the part that matters. “probably urgent” buried in a paragraph is something you parse and hope. 0.67 is something you can threshold, combine with other signals, log, and explain later. you still can’t see inside, but you can trust what it hands you enough to build on. the fix moved inside the box, and most of the scaffolding becomes redundant. not a comfortable thought when you’re the one building it.
 
+## two systems
+
+typesafe’s own pitch is careful about this. they claim frontier-level intelligence on system one tasks, the instinctive judgement and common sense calls over large bodies of text, and they say plainly that it’s the hardest claim to defend and nobody in the field has a good way to prove it. they also concede the other half: jev is weaker than the big reasoning models at system two work, maths, chess, anything that needs a long chain of thought.
+
+i think that’s the honest shape of it, and it’s also the point. nobody was struggling to get chat models to do system two work. the struggle, the whole cage of validators and retries, comes from shoving a system two model into system one jobs: is this urgent, which category, does this look wrong. a model built for the fast read is not a worse chat model. it’s a different tool for the job we were misusing the other one for.
+
+and the number is how the two fit together. above a threshold the fast answer stands. below it you escalate to the slow model, the one that can reason and explain itself, and you pay its seconds and cents only on the cases that earned them. today the slow model does everything and gets babysat. with a calibrated system one in front, it becomes the specialist you call when the number says to.
+
 ## the jevons bit
 
 once a judgement is that cheap the placement changes too. they say they named it after jevons paradox on purpose: more efficient steam engines made britain burn more coal, not less, because cheap power went places nobody bothered with before. we already put llm calls on the small stuff, routing, flagging, classifying, and they mostly work. they’re also seconds and cents each, each with a safety net, so you can only afford a handful. drop the cost a few hundred times and every branch becomes a place you’d ask. the upside isn’t today’s calls getting cheaper, it’s the hundreds per request nobody makes with the current tool.
