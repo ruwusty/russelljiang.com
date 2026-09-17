@@ -2,19 +2,29 @@ i’m not being dramatic when i say i dreamt about this. i’d spent a whole day
 
 ex openai researcher diogo almeida built a model called [jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev) that doesn’t talk. you give it a situation and some narrow questions, yes/no, pick one from a list, or rate on a scale, and it hands back an answer plus a probability for each, in under a second, for almost nothing. output tokens are free. they named it after jevons the economist, which is the whole pitch.
 
+## the wrong side
+
 chat models are great, i use them daily. but we started calling them from code like they’re a function that returns something reliable. they aren’t. they’re trained to write for a human reader. kahneman would call that system two: slow, deliberate, good at showing its working. most of what software wants from a model is system one, a fast read and a number.
 
 i’m building an internal ai platform and most of my time isn’t spent on the intelligence. it’s spent forcing structure onto a model that doesn’t want to give it. i add a schema, quality drops, so i add validation, then retries, then evals, then a second model to judge the first one. every layer fixes a symptom. none of it touches the actual problem: the thing at the bottom was never built to make decisions inside software.
 
-all that tooling lives on the wrong side of the black box. we can’t see inside, so we build a cage around the outside and catch bad outputs after the fact. that’s why ai automation still needs a babysitter.
+**all that tooling lives on the wrong side of the black box.** we can’t see inside, so we build a cage around the outside and catch bad outputs after the fact. that’s why ai automation still needs a babysitter.
+
+## a number, not a paragraph
 
 what jev changes is what comes out of the box. from a data science view it’s a classifier: situation in, label and probability out, no labelled dataset, no training run. you can already do zero-shot classification with any llm, but this one was trained to be calibrated and answers many questions in one pass, instead of being asked nicely for json and hoping.
 
 the probability is the part that matters. “probably urgent” buried in a paragraph is something you parse and hope. 0.93 is something you can threshold, combine with other signals, log, and explain later. you still can’t see inside, but you can trust what it hands you enough to build on. the fix moved inside the box, and most of the scaffolding becomes redundant. not a comfortable thought when you’re the one building it.
 
-once a judgement is that cheap the placement changes too, which is the jevons bit. they say they named it after jevons paradox on purpose: more efficient steam engines made britain burn more coal, not less, because cheap power went places nobody bothered with before. we already put llm calls on the small stuff, routing, flagging, classifying, and they mostly work. they’re also seconds and cents each, each with a safety net, so you can only afford a handful. drop the cost a few hundred times and every branch becomes a place you’d ask. the upside isn’t today’s calls getting cheaper, it’s the hundreds per request nobody makes with the current tool.
+## the jevons bit
 
-caveats: it’s waitlisted, the architecture isn’t published, the headline benchmarks are their own, and the one outside test so far found it fast and cheap but a bit less accurate than a frontier model. “can’t hallucinate” means it can’t return a malformed answer, not that it’s never wrong.
+once a judgement is that cheap the placement changes too. they say they named it after jevons paradox on purpose: more efficient steam engines made britain burn more coal, not less, because cheap power went places nobody bothered with before. we already put llm calls on the small stuff, routing, flagging, classifying, and they mostly work. they’re also seconds and cents each, each with a safety net, so you can only afford a handful. drop the cost a few hundred times and every branch becomes a place you’d ask. the upside isn’t today’s calls getting cheaper, it’s the hundreds per request nobody makes with the current tool.
+
+## caveats
+
+it’s waitlisted, the architecture isn’t published, the headline benchmarks are their own, and the one outside test so far found it fast and cheap but a bit less accurate than a frontier model. “can’t hallucinate” means it can’t return a malformed answer, not that it’s never wrong.
+
+## a timestamp
 
 mostly posting this so there’s a timestamp. if this is what ai in software ends up looking like, i want it on record that it made sense to me in september 2026.
 
