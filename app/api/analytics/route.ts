@@ -33,6 +33,7 @@ export async function GET(req: Request) {
   const byDay: DayStats[] = [];
   const pages = new Map<string, number>();
   const refs = new Map<string, number>();
+  const sources = new Map<string, number>();
 
   for (let i = 0; i < days; i++) {
     const day = sydneyDayOffset(i);
@@ -43,17 +44,21 @@ export async function GET(req: Request) {
     for (let page = 0; page < MAX_PAGES_PER_DAY; page++) {
       const res = await list({ prefix, limit: 1000, cursor });
       for (const blob of res.blobs) {
-        // hits/<day>/<hash>,<path>,<ref>-<random>.txt
+        // hits/<day>/<hash>,<path>,<ref>,<source>-<random>.txt
+        // (the first day's blobs have no source field, so the suffix sits on ref)
         const name = blob.pathname.slice(prefix.length).replace(/\.txt$/, "");
-        const [hash, encPath, encRefWithSuffix = ""] = name.split(",");
-        if (!hash || encPath === undefined) continue;
-        const encRef = encRefWithSuffix.slice(0, Math.max(0, encRefWithSuffix.lastIndexOf("-")));
+        const parts = name.split(",");
+        if (parts.length < 3 || !parts[0]) continue;
+        const last = parts[parts.length - 1];
+        parts[parts.length - 1] = last.slice(0, Math.max(0, last.lastIndexOf("-")));
+        const [hash, encPath, encRef, source = ""] = parts;
         views++;
         seen.add(hash);
         const path = decodeURIComponent(encPath);
         pages.set(path, (pages.get(path) ?? 0) + 1);
         const ref = decodeURIComponent(encRef);
         if (ref) refs.set(ref, (refs.get(ref) ?? 0) + 1);
+        if (source) sources.set(source, (sources.get(source) ?? 0) + 1);
       }
       if (!res.hasMore || !res.cursor) break;
       cursor = res.cursor;
@@ -66,5 +71,6 @@ export async function GET(req: Request) {
     days: byDay,
     pages: top(pages, 8),
     refs: top(refs, 8),
+    sources: top(sources, 8),
   });
 }

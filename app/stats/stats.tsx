@@ -8,6 +8,7 @@ interface Analytics {
   days: { day: string; views: number; uniques: number }[];
   pages: [string, number][];
   refs: [string, number][];
+  sources: [string, number][];
 }
 
 interface SiteStats {
@@ -198,6 +199,7 @@ export function Stats() {
             )}
             {row("pages", hits.pages.length ? hits.pages.map(([p, n]) => `${p} ${n}`).join(" · ") : "nothing yet")}
             {row("referrers", hits.refs.length ? hits.refs.map(([r, n]) => `${r} ${n}`).join(" · ") : "nobody sent anyone")}
+            {row("?ref=", hits.sources.length ? hits.sources.map(([s, n]) => `${s} ${n}`).join(" · ") : "no tagged links yet")}
           </dl>
         </div>
       )}

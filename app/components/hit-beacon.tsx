@@ -16,7 +16,10 @@ export function HitBeacon() {
     try {
       if (sessionStorage.getItem("site_pw")) return;
     } catch {}
-    const body = JSON.stringify({ p: pathname, r: referrerSent ? "" : document.referrer });
+    // ?ref=linkedin on a shared link survives in-app browsers that strip the referrer
+    const params = new URLSearchParams(location.search);
+    const source = referrerSent ? "" : (params.get("ref") ?? params.get("utm_source") ?? "");
+    const body = JSON.stringify({ p: pathname, r: referrerSent ? "" : document.referrer, s: source });
     referrerSent = true;
     const blob = new Blob([body], { type: "application/json" });
     if (!navigator.sendBeacon?.("/api/hit", blob)) {

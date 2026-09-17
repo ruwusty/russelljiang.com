@@ -28,7 +28,7 @@ export async function POST(req: Request) {
   const ua = req.headers.get("user-agent") ?? "";
   if (!ua || BOT.test(ua)) return new NextResponse(null, { status: 204 });
 
-  let body: { p?: unknown; r?: unknown };
+  let body: { p?: unknown; r?: unknown; s?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -49,7 +49,9 @@ export async function POST(req: Request) {
   if (recent.size > 5_000) recent.clear();
 
   const ref = refHost(body.r, req.headers.get("host")?.replace(/^www\./, "") ?? null);
-  const name = `hits/${day}/${hash},${encodeURIComponent(path)},${encodeURIComponent(ref)}.txt`;
+  const source =
+    typeof body.s === "string" && /^[a-z0-9_-]{1,24}$/i.test(body.s) ? body.s.toLowerCase() : "";
+  const name = `hits/${day}/${hash},${encodeURIComponent(path)},${encodeURIComponent(ref)},${source}.txt`;
   try {
     await put(name, "1", { access: "public", addRandomSuffix: true, contentType: "text/plain" });
   } catch (error: unknown) {

@@ -59,7 +59,7 @@ before changing anything visual or touching content.
   `{path, referrer}` to `POST /api/hit` on every route change (production
   only, skipped while the owner is logged in, bots filtered by user-agent).
   the route writes ONE EMPTY BLOB PER PAGEVIEW at
-  `hits/<sydney-day>/<hash>,<path>,<referrer-host>.txt` — the data is the
+  `hits/<sydney-day>/<hash>,<path>,<referrer-host>,<?ref= tag>.txt` — the data is the
   pathname, so `GET /api/analytics?days=7` (site password) aggregates with
   `list()` and never fetches bodies. the hash is sha256(day + ip + ua): one
   count per visitor per day, unlinkable across days, no raw ip ever stored.
