@@ -58,7 +58,19 @@ const DEFAULT_ITEMS = [
   "progressive overload, statistically significant",
   "failing the last rep on purpose",
   "recovering (this counts as training)",
-  "bulking on pho"
+  "bulking on pho",
+  "proving it for n+1",
+  "taking limits, mostly of patience",
+  "row reducing my week",
+  "assuming a rational agent (not me)",
+  "thinking on the margin, spending off it",
+  "drawing the boxplot before the conclusion",
+  "95% confident, lower coverage",
+  "looking for the nash equilibrium of the group chat",
+  "backward inducting my way out of plans",
+  "segfaulting with intent",
+  "freeing memory i never malloc'd",
+  "make: *** [sleep] error 1"
 ];
 
 function shuffled<T>(arr: readonly T[]): T[] {
