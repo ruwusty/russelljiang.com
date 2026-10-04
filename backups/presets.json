@@ -3,651 +3,11 @@
     {
       "num": "01",
       "name": "clean",
-      "desc": "general clean, dry",
-      "chain": [
-        {
-          "label": "guitar",
-          "pickup": "neck",
-          "dials": [
-            {
-              "label": "vol",
-              "value": "10"
-            },
-            {
-              "label": "tone",
-              "value": "8"
-            }
-          ]
-        },
-        {
-          "label": "gate",
-          "dials": [
-            {
-              "label": "sens",
-              "value": "30"
-            },
-            {
-              "label": "decay",
-              "value": "40"
-            }
-          ]
-        },
-        {
-          "label": "fx",
-          "name": "Rose Comp",
-          "dials": [
-            {
-              "label": "sustain",
-              "value": "35"
-            },
-            {
-              "label": "level",
-              "value": "55"
-            }
-          ]
-        },
-        {
-          "label": "amp",
-          "name": "Jazz Clean",
-          "dials": [
-            {
-              "label": "gain",
-              "value": "20"
-            },
-            {
-              "label": "master",
-              "value": "15"
-            },
-            {
-              "label": "bass",
-              "value": "50"
-            },
-            {
-              "label": "middle",
-              "value": "55"
-            },
-            {
-              "label": "treble",
-              "value": "55"
-            }
-          ]
-        },
-        {
-          "label": "ir",
-          "name": "JZ120",
-          "dials": [
-            {
-              "label": "level",
-              "value": "0dB"
-            },
-            {
-              "label": "lo cut",
-              "value": "default"
-            },
-            {
-              "label": "hi cut",
-              "value": "default"
-            }
-          ]
-        },
-        {
-          "label": "mod",
-          "off": true
-        },
-        {
-          "label": "delay",
-          "off": true
-        },
-        {
-          "label": "reverb",
-          "name": "Hall",
-          "dials": [
-            {
-              "label": "decay",
-              "value": "30"
-            },
-            {
-              "label": "level",
-              "value": "14"
-            },
-            {
-              "label": "tone",
-              "value": "50"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "num": "02",
-      "name": "clean chorus",
-      "desc": "city pop / shimmer",
+      "desc": "jpop clean / jc-120 natural",
       "chain": [
         {
           "label": "guitar",
           "pickup": "both",
-          "dials": [
-            {
-              "label": "vol",
-              "value": "10"
-            },
-            {
-              "label": "tone",
-              "value": "8"
-            }
-          ]
-        },
-        {
-          "label": "gate",
-          "dials": [
-            {
-              "label": "sens",
-              "value": "30"
-            },
-            {
-              "label": "decay",
-              "value": "40"
-            }
-          ]
-        },
-        {
-          "label": "fx",
-          "name": "Rose Comp",
-          "dials": [
-            {
-              "label": "sustain",
-              "value": "45"
-            },
-            {
-              "label": "level",
-              "value": "55"
-            }
-          ]
-        },
-        {
-          "label": "amp",
-          "name": "Deluxe Rvb",
-          "dials": [
-            {
-              "label": "gain",
-              "value": "18"
-            },
-            {
-              "label": "master",
-              "value": "15"
-            },
-            {
-              "label": "bass",
-              "value": "45"
-            },
-            {
-              "label": "middle",
-              "value": "50"
-            },
-            {
-              "label": "treble",
-              "value": "62"
-            }
-          ]
-        },
-        {
-          "label": "ir",
-          "name": "DR112",
-          "dials": [
-            {
-              "label": "level",
-              "value": "0dB"
-            },
-            {
-              "label": "lo cut",
-              "value": "default"
-            },
-            {
-              "label": "hi cut",
-              "value": "default"
-            }
-          ]
-        },
-        {
-          "label": "mod",
-          "name": "CE-1",
-          "dials": [
-            {
-              "label": "intensity",
-              "value": "50"
-            },
-            {
-              "label": "rate",
-              "value": "30"
-            },
-            {
-              "label": "depth",
-              "value": "45"
-            }
-          ]
-        },
-        {
-          "label": "delay",
-          "name": "Digital",
-          "dials": [
-            {
-              "label": "mix",
-              "value": "15"
-            },
-            {
-              "label": "time",
-              "value": "30"
-            },
-            {
-              "label": "repeat",
-              "value": "20"
-            }
-          ]
-        },
-        {
-          "label": "reverb",
-          "name": "Plate",
-          "dials": [
-            {
-              "label": "decay",
-              "value": "45"
-            },
-            {
-              "label": "level",
-              "value": "24"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "num": "03",
-      "name": "breakup lead",
-      "desc": "yorushika / od into a fender, dry",
-      "chain": [
-        {
-          "label": "guitar",
-          "pickup": "neck",
-          "dials": [
-            {
-              "label": "vol",
-              "value": "10"
-            },
-            {
-              "label": "tone",
-              "value": "7"
-            }
-          ]
-        },
-        {
-          "label": "gate",
-          "dials": [
-            {
-              "label": "sens",
-              "value": "30"
-            },
-            {
-              "label": "decay",
-              "value": "45"
-            }
-          ]
-        },
-        {
-          "label": "fx",
-          "name": "T Screamer",
-          "dials": [
-            {
-              "label": "level",
-              "value": "60"
-            },
-            {
-              "label": "drive",
-              "value": "35"
-            },
-            {
-              "label": "tone",
-              "value": "55"
-            }
-          ]
-        },
-        {
-          "label": "amp",
-          "name": "Deluxe Rvb",
-          "dials": [
-            {
-              "label": "gain",
-              "value": "40"
-            },
-            {
-              "label": "master",
-              "value": "12"
-            },
-            {
-              "label": "bass",
-              "value": "45"
-            },
-            {
-              "label": "middle",
-              "value": "60"
-            },
-            {
-              "label": "treble",
-              "value": "55"
-            }
-          ]
-        },
-        {
-          "label": "ir",
-          "name": "DR112",
-          "dials": [
-            {
-              "label": "level",
-              "value": "0dB"
-            },
-            {
-              "label": "lo cut",
-              "value": "default"
-            },
-            {
-              "label": "hi cut",
-              "value": "9000hz"
-            }
-          ]
-        },
-        {
-          "label": "mod",
-          "off": true
-        },
-        {
-          "label": "delay",
-          "off": true
-        },
-        {
-          "label": "reverb",
-          "name": "Plate",
-          "dials": [
-            {
-              "label": "decay",
-              "value": "30"
-            },
-            {
-              "label": "level",
-              "value": "16"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "num": "04",
-      "name": "crunch rhythm",
-      "desc": "jrock verses. guitar vol 7 for lighter",
-      "chain": [
-        {
-          "label": "guitar",
-          "pickup": "bridge",
-          "dials": [
-            {
-              "label": "vol",
-              "value": "10"
-            },
-            {
-              "label": "tone",
-              "value": "8"
-            }
-          ]
-        },
-        {
-          "label": "gate",
-          "dials": [
-            {
-              "label": "sens",
-              "value": "30"
-            },
-            {
-              "label": "decay",
-              "value": "30"
-            }
-          ]
-        },
-        {
-          "label": "fx",
-          "name": "Morning Drive",
-          "dials": [
-            {
-              "label": "volume",
-              "value": "55"
-            },
-            {
-              "label": "drive",
-              "value": "60"
-            },
-            {
-              "label": "tone",
-              "value": "55"
-            }
-          ]
-        },
-        {
-          "label": "amp",
-          "name": "Deluxe Rvb",
-          "dials": [
-            {
-              "label": "gain",
-              "value": "25"
-            },
-            {
-              "label": "master",
-              "value": "12"
-            },
-            {
-              "label": "bass",
-              "value": "45"
-            },
-            {
-              "label": "middle",
-              "value": "55"
-            },
-            {
-              "label": "treble",
-              "value": "55"
-            }
-          ]
-        },
-        {
-          "label": "ir",
-          "name": "DR112",
-          "dials": [
-            {
-              "label": "level",
-              "value": "0dB"
-            },
-            {
-              "label": "lo cut",
-              "value": "80hz"
-            },
-            {
-              "label": "hi cut",
-              "value": "9000hz"
-            }
-          ]
-        },
-        {
-          "label": "mod",
-          "off": true
-        },
-        {
-          "label": "delay",
-          "off": true
-        },
-        {
-          "label": "reverb",
-          "name": "Room",
-          "dials": [
-            {
-              "label": "decay",
-              "value": "18"
-            },
-            {
-              "label": "level",
-              "value": "10"
-            },
-            {
-              "label": "tone",
-              "value": "48"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "num": "05",
-      "name": "drive lead",
-      "desc": "kessoku solos / boosted brit 800",
-      "chain": [
-        {
-          "label": "guitar",
-          "pickup": "neck",
-          "dials": [
-            {
-              "label": "vol",
-              "value": "10"
-            },
-            {
-              "label": "tone",
-              "value": "7"
-            }
-          ]
-        },
-        {
-          "label": "gate",
-          "dials": [
-            {
-              "label": "sens",
-              "value": "30"
-            },
-            {
-              "label": "decay",
-              "value": "40"
-            }
-          ]
-        },
-        {
-          "label": "fx",
-          "name": "Morning Drive",
-          "dials": [
-            {
-              "label": "volume",
-              "value": "50"
-            },
-            {
-              "label": "drive",
-              "value": "40"
-            },
-            {
-              "label": "tone",
-              "value": "60"
-            }
-          ]
-        },
-        {
-          "label": "amp",
-          "name": "Brit 800",
-          "dials": [
-            {
-              "label": "gain",
-              "value": "55"
-            },
-            {
-              "label": "master",
-              "value": "11"
-            },
-            {
-              "label": "bass",
-              "value": "40"
-            },
-            {
-              "label": "middle",
-              "value": "60"
-            },
-            {
-              "label": "treble",
-              "value": "55"
-            },
-            {
-              "label": "presence",
-              "value": "40"
-            }
-          ]
-        },
-        {
-          "label": "ir",
-          "name": "M1960AV",
-          "dials": [
-            {
-              "label": "level",
-              "value": "0dB"
-            },
-            {
-              "label": "lo cut",
-              "value": "80hz"
-            },
-            {
-              "label": "hi cut",
-              "value": "8500hz"
-            }
-          ]
-        },
-        {
-          "label": "mod",
-          "off": true
-        },
-        {
-          "label": "delay",
-          "name": "Digital",
-          "dials": [
-            {
-              "label": "mix",
-              "value": "20"
-            },
-            {
-              "label": "time",
-              "value": "40"
-            },
-            {
-              "label": "repeat",
-              "value": "25"
-            }
-          ]
-        },
-        {
-          "label": "reverb",
-          "name": "Room",
-          "dials": [
-            {
-              "label": "decay",
-              "value": "18"
-            },
-            {
-              "label": "level",
-              "value": "10"
-            },
-            {
-              "label": "tone",
-              "value": "48"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "num": "06",
-      "name": "heavy rhythm",
-      "desc": "jrock choruses / palm mutes",
-      "chain": [
-        {
-          "label": "guitar",
-          "pickup": "bridge",
           "dials": [
             {
               "label": "vol",
@@ -664,11 +24,257 @@
           "dials": [
             {
               "label": "sens",
-              "value": "45"
+              "value": "30"
             },
             {
               "label": "decay",
-              "value": "20"
+              "value": "40"
+            }
+          ]
+        },
+        {
+          "label": "fx",
+          "name": "Rose Comp",
+          "dials": [
+            {
+              "label": "sustain",
+              "value": "30"
+            },
+            {
+              "label": "level",
+              "value": "50"
+            }
+          ]
+        },
+        {
+          "label": "amp",
+          "name": "Jazz Clean",
+          "dials": [
+            {
+              "label": "gain",
+              "value": "40"
+            },
+            {
+              "label": "master",
+              "value": "13"
+            },
+            {
+              "label": "bass",
+              "value": "30"
+            },
+            {
+              "label": "middle",
+              "value": "38"
+            },
+            {
+              "label": "treble",
+              "value": "45"
+            },
+            {
+              "label": "bright",
+              "value": "off"
+            }
+          ]
+        },
+        {
+          "label": "ir",
+          "name": "JZ120",
+          "dials": [
+            {
+              "label": "level",
+              "value": "0dB"
+            },
+            {
+              "label": "lo cut",
+              "value": "80hz"
+            },
+            {
+              "label": "hi cut",
+              "value": "10000hz"
+            }
+          ]
+        },
+        {
+          "label": "mod",
+          "off": true
+        },
+        {
+          "label": "delay",
+          "off": true
+        },
+        {
+          "label": "reverb",
+          "name": "Plate",
+          "dials": [
+            {
+              "label": "decay",
+              "value": "30"
+            },
+            {
+              "label": "level",
+              "value": "14"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "num": "02",
+      "name": "clean chorus",
+      "desc": "city pop / yamashita: tele centre, ce chorus",
+      "chain": [
+        {
+          "label": "guitar",
+          "pickup": "both",
+          "dials": [
+            {
+              "label": "vol",
+              "value": "10"
+            },
+            {
+              "label": "tone",
+              "value": "10"
+            }
+          ]
+        },
+        {
+          "label": "gate",
+          "dials": [
+            {
+              "label": "sens",
+              "value": "30"
+            },
+            {
+              "label": "decay",
+              "value": "40"
+            }
+          ]
+        },
+        {
+          "label": "fx",
+          "name": "Rose Comp",
+          "dials": [
+            {
+              "label": "sustain",
+              "value": "40"
+            },
+            {
+              "label": "level",
+              "value": "55"
+            }
+          ]
+        },
+        {
+          "label": "amp",
+          "name": "Jazz Clean",
+          "dials": [
+            {
+              "label": "gain",
+              "value": "40"
+            },
+            {
+              "label": "master",
+              "value": "13"
+            },
+            {
+              "label": "bass",
+              "value": "30"
+            },
+            {
+              "label": "middle",
+              "value": "40"
+            },
+            {
+              "label": "treble",
+              "value": "55"
+            },
+            {
+              "label": "bright",
+              "value": "on"
+            }
+          ]
+        },
+        {
+          "label": "ir",
+          "name": "JZ120",
+          "dials": [
+            {
+              "label": "level",
+              "value": "0dB"
+            },
+            {
+              "label": "lo cut",
+              "value": "100hz"
+            },
+            {
+              "label": "hi cut",
+              "value": "10000hz"
+            }
+          ]
+        },
+        {
+          "label": "mod",
+          "name": "CE-2",
+          "dials": [
+            {
+              "label": "rate",
+              "value": "30"
+            },
+            {
+              "label": "depth",
+              "value": "40"
+            }
+          ]
+        },
+        {
+          "label": "delay",
+          "off": true
+        },
+        {
+          "label": "reverb",
+          "name": "Plate",
+          "dials": [
+            {
+              "label": "decay",
+              "value": "28"
+            },
+            {
+              "label": "level",
+              "value": "15"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "num": "03",
+      "name": "breakup lead",
+      "desc": "yorushika / ts-style od into a fender, dry",
+      "chain": [
+        {
+          "label": "guitar",
+          "pickup": "neck",
+          "dials": [
+            {
+              "label": "vol",
+              "value": "10"
+            },
+            {
+              "label": "tone",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "label": "gate",
+          "dials": [
+            {
+              "label": "sens",
+              "value": "35"
+            },
+            {
+              "label": "decay",
+              "value": "45"
             }
           ]
         },
@@ -678,11 +284,11 @@
           "dials": [
             {
               "label": "level",
-              "value": "70"
+              "value": "55"
             },
             {
               "label": "drive",
-              "value": "10"
+              "value": "40"
             },
             {
               "label": "tone",
@@ -692,15 +298,251 @@
         },
         {
           "label": "amp",
-          "name": "Brit 800",
+          "name": "Deluxe Rvb",
           "dials": [
             {
               "label": "gain",
-              "value": "65"
+              "value": "50"
             },
             {
               "label": "master",
+              "value": "13"
+            },
+            {
+              "label": "bass",
+              "value": "45"
+            },
+            {
+              "label": "middle",
+              "value": "60"
+            },
+            {
+              "label": "treble",
+              "value": "55"
+            }
+          ]
+        },
+        {
+          "label": "ir",
+          "name": "DR112",
+          "dials": [
+            {
+              "label": "level",
+              "value": "0dB"
+            },
+            {
+              "label": "lo cut",
+              "value": "90hz"
+            },
+            {
+              "label": "hi cut",
+              "value": "8500hz"
+            }
+          ]
+        },
+        {
+          "label": "mod",
+          "off": true
+        },
+        {
+          "label": "delay",
+          "off": true
+        },
+        {
+          "label": "reverb",
+          "name": "Spring",
+          "dials": [
+            {
+              "label": "decay",
+              "value": "25"
+            },
+            {
+              "label": "level",
+              "value": "15"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "num": "04",
+      "name": "crunch rhythm",
+      "desc": "verses / od into a clean fender. vol 7 lighter",
+      "chain": [
+        {
+          "label": "guitar",
+          "pickup": "bridge",
+          "dials": [
+            {
+              "label": "vol",
               "value": "10"
+            },
+            {
+              "label": "tone",
+              "value": "8"
+            }
+          ]
+        },
+        {
+          "label": "gate",
+          "dials": [
+            {
+              "label": "sens",
+              "value": "30"
+            },
+            {
+              "label": "decay",
+              "value": "30"
+            }
+          ]
+        },
+        {
+          "label": "fx",
+          "name": "Morning Drive",
+          "dials": [
+            {
+              "label": "volume",
+              "value": "55"
+            },
+            {
+              "label": "drive",
+              "value": "45"
+            },
+            {
+              "label": "tone",
+              "value": "55"
+            }
+          ]
+        },
+        {
+          "label": "amp",
+          "name": "Deluxe Rvb",
+          "dials": [
+            {
+              "label": "gain",
+              "value": "30"
+            },
+            {
+              "label": "master",
+              "value": "12"
+            },
+            {
+              "label": "bass",
+              "value": "45"
+            },
+            {
+              "label": "middle",
+              "value": "55"
+            },
+            {
+              "label": "treble",
+              "value": "55"
+            }
+          ]
+        },
+        {
+          "label": "ir",
+          "name": "DR112",
+          "dials": [
+            {
+              "label": "level",
+              "value": "0dB"
+            },
+            {
+              "label": "lo cut",
+              "value": "90hz"
+            },
+            {
+              "label": "hi cut",
+              "value": "9000hz"
+            }
+          ]
+        },
+        {
+          "label": "mod",
+          "off": true
+        },
+        {
+          "label": "delay",
+          "off": true
+        },
+        {
+          "label": "reverb",
+          "name": "Spring",
+          "dials": [
+            {
+              "label": "decay",
+              "value": "25"
+            },
+            {
+              "label": "level",
+              "value": "12"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "num": "05",
+      "name": "drive lead",
+      "desc": "kessoku solos / pedal-pushed bogner",
+      "chain": [
+        {
+          "label": "guitar",
+          "pickup": "bridge",
+          "dials": [
+            {
+              "label": "vol",
+              "value": "10"
+            },
+            {
+              "label": "tone",
+              "value": "6"
+            }
+          ]
+        },
+        {
+          "label": "gate",
+          "dials": [
+            {
+              "label": "sens",
+              "value": "35"
+            },
+            {
+              "label": "decay",
+              "value": "40"
+            }
+          ]
+        },
+        {
+          "label": "fx",
+          "name": "T Screamer",
+          "dials": [
+            {
+              "label": "level",
+              "value": "55"
+            },
+            {
+              "label": "drive",
+              "value": "30"
+            },
+            {
+              "label": "tone",
+              "value": "50"
+            }
+          ]
+        },
+        {
+          "label": "amp",
+          "name": "Uber HiGain",
+          "dials": [
+            {
+              "label": "gain",
+              "value": "45"
+            },
+            {
+              "label": "master",
+              "value": "11"
             },
             {
               "label": "bass",
@@ -712,17 +554,17 @@
             },
             {
               "label": "treble",
-              "value": "55"
+              "value": "45"
             },
             {
               "label": "presence",
-              "value": "45"
+              "value": "35"
             }
           ]
         },
         {
           "label": "ir",
-          "name": "M1960AV",
+          "name": "UBER412",
           "dials": [
             {
               "label": "level",
@@ -730,7 +572,7 @@
             },
             {
               "label": "lo cut",
-              "value": "100hz"
+              "value": "90hz"
             },
             {
               "label": "hi cut",
@@ -748,28 +590,24 @@
         },
         {
           "label": "reverb",
-          "name": "Room",
+          "name": "Plate",
           "dials": [
             {
               "label": "decay",
-              "value": "12"
+              "value": "30"
             },
             {
               "label": "level",
-              "value": "6"
-            },
-            {
-              "label": "tone",
-              "value": "45"
+              "value": "12"
             }
           ]
         }
       ]
     },
     {
-      "num": "07",
-      "name": "punk rhythm",
-      "desc": "green day / dookie-era",
+      "num": "06",
+      "name": "heavy rhythm",
+      "desc": "kessoku choruses / palm mutes",
       "chain": [
         {
           "label": "guitar",
@@ -781,7 +619,7 @@
             },
             {
               "label": "tone",
-              "value": "8"
+              "value": "7"
             }
           ]
         },
@@ -790,7 +628,133 @@
           "dials": [
             {
               "label": "sens",
+              "value": "42"
+            },
+            {
+              "label": "decay",
+              "value": "20"
+            }
+          ]
+        },
+        {
+          "label": "fx",
+          "name": "T Screamer",
+          "dials": [
+            {
+              "label": "level",
+              "value": "70"
+            },
+            {
+              "label": "drive",
+              "value": "15"
+            },
+            {
+              "label": "tone",
+              "value": "60"
+            }
+          ]
+        },
+        {
+          "label": "amp",
+          "name": "Brit 800",
+          "dials": [
+            {
+              "label": "gain",
+              "value": "60"
+            },
+            {
+              "label": "master",
+              "value": "10"
+            },
+            {
+              "label": "bass",
               "value": "40"
+            },
+            {
+              "label": "middle",
+              "value": "65"
+            },
+            {
+              "label": "treble",
+              "value": "55"
+            },
+            {
+              "label": "presence",
+              "value": "40"
+            }
+          ]
+        },
+        {
+          "label": "ir",
+          "name": "GB412",
+          "dials": [
+            {
+              "label": "level",
+              "value": "0dB"
+            },
+            {
+              "label": "lo cut",
+              "value": "100hz"
+            },
+            {
+              "label": "hi cut",
+              "value": "8500hz"
+            }
+          ]
+        },
+        {
+          "label": "mod",
+          "off": true
+        },
+        {
+          "label": "delay",
+          "off": true
+        },
+        {
+          "label": "reverb",
+          "name": "Room",
+          "dials": [
+            {
+              "label": "decay",
+              "value": "20"
+            },
+            {
+              "label": "level",
+              "value": "10"
+            },
+            {
+              "label": "tone",
+              "value": "50"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "num": "07",
+      "name": "punk rhythm",
+      "desc": "green day dookie / boosted plexi, dry",
+      "chain": [
+        {
+          "label": "guitar",
+          "pickup": "bridge",
+          "dials": [
+            {
+              "label": "vol",
+              "value": "10"
+            },
+            {
+              "label": "tone",
+              "value": "7"
+            }
+          ]
+        },
+        {
+          "label": "gate",
+          "dials": [
+            {
+              "label": "sens",
+              "value": "42"
             },
             {
               "label": "decay",
@@ -800,11 +764,11 @@
         },
         {
           "label": "fx",
-          "name": "Red Dirt",
+          "name": "T Screamer",
           "dials": [
             {
               "label": "level",
-              "value": "60"
+              "value": "62"
             },
             {
               "label": "drive",
@@ -812,13 +776,13 @@
             },
             {
               "label": "tone",
-              "value": "55"
+              "value": "50"
             }
           ]
         },
         {
           "label": "amp",
-          "name": "Brit 800",
+          "name": "Plexi 100",
           "dials": [
             {
               "label": "gain",
@@ -830,7 +794,7 @@
             },
             {
               "label": "bass",
-              "value": "50"
+              "value": "55"
             },
             {
               "label": "middle",
@@ -838,11 +802,11 @@
             },
             {
               "label": "treble",
-              "value": "60"
+              "value": "42"
             },
             {
               "label": "presence",
-              "value": "45"
+              "value": "35"
             }
           ]
         },
@@ -874,21 +838,7 @@
         },
         {
           "label": "reverb",
-          "name": "Room",
-          "dials": [
-            {
-              "label": "decay",
-              "value": "12"
-            },
-            {
-              "label": "level",
-              "value": "6"
-            },
-            {
-              "label": "tone",
-              "value": "45"
-            }
-          ]
+          "off": true
         }
       ]
     }
