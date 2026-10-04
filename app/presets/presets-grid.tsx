@@ -52,7 +52,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sens",
-            "value": "15"
+            "value": "30"
           },
           {
             "label": "decay",
@@ -170,7 +170,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sens",
-            "value": "15"
+            "value": "30"
           },
           {
             "label": "decay",
@@ -312,7 +312,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sens",
-            "value": "20"
+            "value": "30"
           },
           {
             "label": "decay",
