@@ -526,7 +526,7 @@ const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "05",
     "name": "drive lead",
-    "desc": "kessoku solos / pedal-pushed bogner",
+    "desc": "kessoku solos / pedal-pushed dirty amp",
     "chain": [
       {
         "label": "guitar",
@@ -575,11 +575,11 @@ const DEFAULT_PRESETS: Preset[] = [
       },
       {
         "label": "amp",
-        "name": "Uber HiGain",
+        "name": "Brit 800",
         "dials": [
           {
             "label": "gain",
-            "value": "45"
+            "value": "50"
           },
           {
             "label": "master",
@@ -595,7 +595,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "treble",
-            "value": "45"
+            "value": "50"
           },
           {
             "label": "presence",
@@ -605,7 +605,7 @@ const DEFAULT_PRESETS: Preset[] = [
       },
       {
         "label": "ir",
-        "name": "UBER412",
+        "name": "M1960AV",
         "dials": [
           {
             "label": "level",
