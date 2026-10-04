@@ -291,7 +291,7 @@ const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "03",
     "name": "breakup lead",
-    "desc": "yorushika / dry",
+    "desc": "yorushika / od into a fender, dry",
     "chain": [
       {
         "label": "guitar",
@@ -322,14 +322,18 @@ const DEFAULT_PRESETS: Preset[] = [
       },
       {
         "label": "fx",
-        "name": "Rose Comp",
+        "name": "T Screamer",
         "dials": [
           {
-            "label": "sustain",
-            "value": "30"
+            "label": "level",
+            "value": "60"
           },
           {
-            "label": "level",
+            "label": "drive",
+            "value": "35"
+          },
+          {
+            "label": "tone",
             "value": "55"
           }
         ]
@@ -340,11 +344,11 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "gain",
-            "value": "45"
+            "value": "40"
           },
           {
             "label": "master",
-            "value": "13"
+            "value": "12"
           },
           {
             "label": "bass",
@@ -352,11 +356,11 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "middle",
-            "value": "55"
+            "value": "60"
           },
           {
             "label": "treble",
-            "value": "58"
+            "value": "55"
           }
         ]
       },
