@@ -290,8 +290,8 @@ const DEFAULT_PRESETS: Preset[] = [
   },
   {
     "num": "03",
-    "name": "yorushika lead",
-    "desc": "edge of breakup / tape echo",
+    "name": "breakup lead",
+    "desc": "yorushika / tape echo",
     "chain": [
       {
         "label": "guitar",
@@ -419,7 +419,7 @@ const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "04",
     "name": "crunch rhythm",
-    "desc": "verses + yorushika. guitar vol 7 for lighter",
+    "desc": "jrock verses. guitar vol 7 for lighter",
     "chain": [
       {
         "label": "guitar",
@@ -540,8 +540,8 @@ const DEFAULT_PRESETS: Preset[] = [
   },
   {
     "num": "05",
-    "name": "bocchi lead",
-    "desc": "Morning Drive boost / Brit 800",
+    "name": "drive lead",
+    "desc": "kessoku solos / boosted brit 800",
     "chain": [
       {
         "label": "guitar",
@@ -681,7 +681,7 @@ const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "06",
     "name": "heavy rhythm",
-    "desc": "kessoku choruses / palm mutes",
+    "desc": "jrock choruses / palm mutes",
     "chain": [
       {
         "label": "guitar",
