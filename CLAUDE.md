@@ -9,7 +9,8 @@ before changing anything visual or touching content.
   `--ink`, `--soft`, `--faint`, `--line`, `--accent #9a6a4f` (clay, hover/links
   only), `--green #6f8f6a` (prompts, sparingly). dark mode inverts to `#16140f`
   warm near-black, same accent. NO other colours (curated exceptions: guestbook
-  name palette in `app/guestbook/guestbook.tsx`).
+  name palette in `app/guestbook/guestbook.tsx`, and the amp's hardware slot
+  leds in `SLOT_LED`, `app/presets/presets-grid.tsx`).
 - no drop shadows, no border-radius, no gradients, no bold weights in body
   text, no images as decoration (content images in /writing are fine).
 - type: JetBrains Mono everywhere; `.display` class (mincho serif, 0.2em

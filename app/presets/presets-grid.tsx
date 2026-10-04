@@ -27,6 +27,19 @@ interface Preset {
 
 type SyncState = "idle" | "saving" | "error";
 
+// the amp's slot leds, fixed in hardware: they belong to the slot number,
+// not to whatever preset is saved there. a sanctioned exception to the
+// palette — these mirror physical lights, so they have to be recognisable.
+const SLOT_LED: Record<string, { name: string; color: string }> = {
+  "01": { name: "lime green", color: "#9bc53d" },
+  "02": { name: "orange", color: "#e0893a" },
+  "03": { name: "red", color: "#cf4f3f" },
+  "04": { name: "blue", color: "#4a7cc2" },
+  "05": { name: "cyan", color: "#3db3c2" },
+  "06": { name: "pink", color: "#e07fae" },
+  "07": { name: "white", color: "#ffffff" },
+};
+
 const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "01",
@@ -1069,10 +1082,24 @@ function PresetCard({
       presets.map((p, pi) => (pi !== presetIndex ? p : { ...p, desc }))
     );
 
+  const led = SLOT_LED[preset.num];
+
   return (
     <section id={`preset-${preset.num.replace(/^0/, "")}`} className="mt-12 first:mt-0">
       <div className="flex items-baseline gap-3">
-        <span className="text-[11px]" style={{ color: "var(--faint)" }}>
+        <span className="text-[11px] flex items-baseline gap-1.5" style={{ color: "var(--faint)" }}>
+          {led && (
+            <span
+              className="inline-block w-[7px] h-[7px] self-center"
+              style={{
+                background: led.color,
+                border: led.name === "white" ? "1px solid var(--soft)" : "none",
+              }}
+              title={`slot led: ${led.name}`}
+              aria-label={`slot led: ${led.name}`}
+              role="img"
+            />
+          )}
           {preset.num}
         </span>
         <h2 className="text-[13px] lowercase tracking-[0.15em]" style={{ color: "var(--ink)" }}>
