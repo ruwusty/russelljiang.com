@@ -31,7 +31,7 @@ const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "01",
     "name": "clean",
-    "desc": "general clean",
+    "desc": "general clean, dry",
     "chain": [
       {
         "label": "guitar",
@@ -52,7 +52,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sens",
-            "value": "20"
+            "value": "15"
           },
           {
             "label": "decay",
@@ -66,11 +66,11 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sustain",
-            "value": "40"
+            "value": "35"
           },
           {
             "label": "level",
-            "value": "60"
+            "value": "55"
           }
         ]
       },
@@ -80,7 +80,11 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "gain",
-            "value": "25"
+            "value": "20"
+          },
+          {
+            "label": "master",
+            "value": "15"
           },
           {
             "label": "bass",
@@ -92,11 +96,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "treble",
-            "value": "60"
-          },
-          {
-            "label": "master",
-            "value": "15"
+            "value": "55"
           }
         ]
       },
@@ -120,17 +120,7 @@ const DEFAULT_PRESETS: Preset[] = [
       },
       {
         "label": "mod",
-        "name": "CE-2",
-        "dials": [
-          {
-            "label": "rate",
-            "value": "30"
-          },
-          {
-            "label": "depth",
-            "value": "25"
-          }
-        ]
+        "off": true
       },
       {
         "label": "delay",
@@ -142,15 +132,15 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "decay",
-            "value": "25"
+            "value": "30"
           },
           {
             "label": "level",
-            "value": "12"
+            "value": "14"
           },
           {
             "label": "tone",
-            "value": "55"
+            "value": "50"
           }
         ]
       }
@@ -180,7 +170,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sens",
-            "value": "20"
+            "value": "15"
           },
           {
             "label": "decay",
@@ -194,11 +184,11 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sustain",
-            "value": "40"
+            "value": "45"
           },
           {
             "label": "level",
-            "value": "60"
+            "value": "55"
           }
         ]
       },
@@ -208,11 +198,15 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "gain",
-            "value": "20"
+            "value": "18"
+          },
+          {
+            "label": "master",
+            "value": "15"
           },
           {
             "label": "bass",
-            "value": "50"
+            "value": "45"
           },
           {
             "label": "middle",
@@ -220,11 +214,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "treble",
-            "value": "65"
-          },
-          {
-            "label": "master",
-            "value": "15"
+            "value": "62"
           }
         ]
       },
@@ -252,21 +242,35 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "intensity",
-            "value": "55"
+            "value": "50"
           },
           {
             "label": "rate",
-            "value": "35"
+            "value": "30"
           },
           {
             "label": "depth",
-            "value": "50"
+            "value": "45"
           }
         ]
       },
       {
         "label": "delay",
-        "off": true
+        "name": "Digital",
+        "dials": [
+          {
+            "label": "mix",
+            "value": "15"
+          },
+          {
+            "label": "time",
+            "value": "30"
+          },
+          {
+            "label": "repeat",
+            "value": "20"
+          }
+        ]
       },
       {
         "label": "reverb",
@@ -278,7 +282,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "level",
-            "value": "26"
+            "value": "24"
           }
         ]
       }
@@ -287,7 +291,7 @@ const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "03",
     "name": "yorushika lead",
-    "desc": "Rose Comp / Deluxe Rvb",
+    "desc": "edge of breakup / tape echo",
     "chain": [
       {
         "label": "guitar",
@@ -308,7 +312,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sens",
-            "value": "15"
+            "value": "20"
           },
           {
             "label": "decay",
@@ -322,11 +326,11 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sustain",
-            "value": "25"
+            "value": "30"
           },
           {
             "label": "level",
-            "value": "60"
+            "value": "55"
           }
         ]
       },
@@ -336,7 +340,11 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "gain",
-            "value": "40"
+            "value": "45"
+          },
+          {
+            "label": "master",
+            "value": "13"
           },
           {
             "label": "bass",
@@ -344,15 +352,11 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "middle",
-            "value": "48"
+            "value": "55"
           },
           {
             "label": "treble",
             "value": "58"
-          },
-          {
-            "label": "master",
-            "value": "14"
           }
         ]
       },
@@ -370,7 +374,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "hi cut",
-            "value": "10000hz"
+            "value": "9000hz"
           }
         ]
       },
@@ -384,11 +388,11 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "mix",
-            "value": "28"
+            "value": "25"
           },
           {
             "label": "time",
-            "value": "38"
+            "value": "40"
           },
           {
             "label": "repeat",
@@ -406,7 +410,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "level",
-            "value": "18"
+            "value": "16"
           }
         ]
       }
@@ -415,7 +419,7 @@ const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "04",
     "name": "light drive",
-    "desc": "yorushika pre-chorus",
+    "desc": "yorushika pre-chorus crunch",
     "chain": [
       {
         "label": "guitar",
@@ -436,7 +440,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sens",
-            "value": "15"
+            "value": "20"
           },
           {
             "label": "decay",
@@ -450,7 +454,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "volume",
-            "value": "40"
+            "value": "50"
           },
           {
             "label": "drive",
@@ -472,11 +476,11 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "master",
-            "value": "14"
+            "value": "12"
           },
           {
             "label": "bass",
-            "value": "48"
+            "value": "50"
           },
           {
             "label": "treble",
@@ -498,11 +502,11 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "lo cut",
-            "value": "default"
+            "value": "80hz"
           },
           {
             "label": "hi cut",
-            "value": "10000hz"
+            "value": "9000hz"
           }
         ]
       },
@@ -516,7 +520,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "mix",
-            "value": "22"
+            "value": "15"
           },
           {
             "label": "time",
@@ -524,25 +528,25 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "repeat",
-            "value": "25"
+            "value": "20"
           }
         ]
       },
       {
         "label": "reverb",
-        "name": "Hall",
+        "name": "Room",
         "dials": [
           {
             "label": "decay",
-            "value": "28"
+            "value": "22"
           },
           {
             "label": "level",
-            "value": "14"
+            "value": "12"
           },
           {
             "label": "tone",
-            "value": "52"
+            "value": "50"
           }
         ]
       }
@@ -551,7 +555,7 @@ const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "05",
     "name": "bocchi lead",
-    "desc": "Morning Drive / Brit 800",
+    "desc": "Morning Drive boost / Brit 800",
     "chain": [
       {
         "label": "guitar",
@@ -572,11 +576,11 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sens",
-            "value": "25"
+            "value": "30"
           },
           {
             "label": "decay",
-            "value": "50"
+            "value": "40"
           }
         ]
       },
@@ -586,15 +590,15 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "volume",
-            "value": "40"
-          },
-          {
-            "label": "drive",
             "value": "50"
           },
           {
+            "label": "drive",
+            "value": "40"
+          },
+          {
             "label": "tone",
-            "value": "72"
+            "value": "60"
           }
         ]
       },
@@ -604,7 +608,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "gain",
-            "value": "30"
+            "value": "55"
           },
           {
             "label": "master",
@@ -612,15 +616,15 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "bass",
-            "value": "25"
+            "value": "40"
           },
           {
             "label": "middle",
-            "value": "35"
+            "value": "60"
           },
           {
             "label": "treble",
-            "value": "60"
+            "value": "55"
           },
           {
             "label": "presence",
@@ -638,11 +642,11 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "lo cut",
-            "value": "60hz"
+            "value": "80hz"
           },
           {
             "label": "hi cut",
-            "value": "9000hz"
+            "value": "8500hz"
           }
         ]
       },
@@ -656,15 +660,15 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "mix",
-            "value": "25"
+            "value": "20"
           },
           {
             "label": "time",
-            "value": "42"
+            "value": "40"
           },
           {
             "label": "repeat",
-            "value": "28"
+            "value": "25"
           }
         ]
       },
@@ -703,7 +707,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "tone",
-            "value": "9"
+            "value": "8"
           }
         ]
       },
@@ -716,7 +720,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "decay",
-            "value": "25"
+            "value": "30"
           }
         ]
       },
@@ -730,11 +734,11 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "drive",
-            "value": "70"
+            "value": "60"
           },
           {
             "label": "tone",
-            "value": "65"
+            "value": "55"
           }
         ]
       },
@@ -744,133 +748,11 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "gain",
-            "value": "22"
-          },
-          {
-            "label": "bass",
-            "value": "42"
-          },
-          {
-            "label": "middle",
-            "value": "55"
-          },
-          {
-            "label": "treble",
-            "value": "65"
-          },
-          {
-            "label": "master",
-            "value": "13"
-          }
-        ]
-      },
-      {
-        "label": "ir",
-        "name": "DR112",
-        "dials": [
-          {
-            "label": "level",
-            "value": "0dB"
-          },
-          {
-            "label": "lo cut",
-            "value": "default"
-          },
-          {
-            "label": "hi cut",
-            "value": "default"
-          }
-        ]
-      },
-      {
-        "label": "mod",
-        "off": true
-      },
-      {
-        "label": "delay",
-        "off": true
-      },
-      {
-        "label": "reverb",
-        "name": "Room",
-        "dials": [
-          {
-            "label": "decay",
-            "value": "18"
-          },
-          {
-            "label": "level",
-            "value": "10"
-          },
-          {
-            "label": "tone",
-            "value": "50"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "num": "07",
-    "name": "punk rhythm",
-    "desc": "green day / dookie-era",
-    "chain": [
-      {
-        "label": "guitar",
-        "pickup": "bridge",
-        "dials": [
-          {
-            "label": "vol",
-            "value": "10"
-          },
-          {
-            "label": "tone",
-            "value": "10"
-          }
-        ]
-      },
-      {
-        "label": "gate",
-        "dials": [
-          {
-            "label": "sens",
-            "value": "40"
-          },
-          {
-            "label": "decay",
             "value": "25"
-          }
-        ]
-      },
-      {
-        "label": "fx",
-        "name": "Red Dirt",
-        "dials": [
-          {
-            "label": "level",
-            "value": "60"
-          },
-          {
-            "label": "drive",
-            "value": "15"
-          },
-          {
-            "label": "tone",
-            "value": "60"
-          }
-        ]
-      },
-      {
-        "label": "amp",
-        "name": "Brit 800",
-        "dials": [
-          {
-            "label": "gain",
-            "value": "72"
           },
           {
             "label": "master",
-            "value": "13"
+            "value": "12"
           },
           {
             "label": "bass",
@@ -878,21 +760,17 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "middle",
-            "value": "62"
+            "value": "55"
           },
           {
             "label": "treble",
-            "value": "65"
-          },
-          {
-            "label": "presence",
             "value": "55"
           }
         ]
       },
       {
         "label": "ir",
-        "name": "M1960AV",
+        "name": "DR112",
         "dials": [
           {
             "label": "level",
@@ -922,11 +800,137 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "decay",
-            "value": "15"
+            "value": "18"
           },
           {
             "label": "level",
+            "value": "10"
+          },
+          {
+            "label": "tone",
+            "value": "48"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "num": "07",
+    "name": "punk rhythm",
+    "desc": "green day / dookie-era",
+    "chain": [
+      {
+        "label": "guitar",
+        "pickup": "bridge",
+        "dials": [
+          {
+            "label": "vol",
+            "value": "10"
+          },
+          {
+            "label": "tone",
             "value": "8"
+          }
+        ]
+      },
+      {
+        "label": "gate",
+        "dials": [
+          {
+            "label": "sens",
+            "value": "40"
+          },
+          {
+            "label": "decay",
+            "value": "25"
+          }
+        ]
+      },
+      {
+        "label": "fx",
+        "name": "Red Dirt",
+        "dials": [
+          {
+            "label": "level",
+            "value": "60"
+          },
+          {
+            "label": "drive",
+            "value": "20"
+          },
+          {
+            "label": "tone",
+            "value": "55"
+          }
+        ]
+      },
+      {
+        "label": "amp",
+        "name": "Brit 800",
+        "dials": [
+          {
+            "label": "gain",
+            "value": "70"
+          },
+          {
+            "label": "master",
+            "value": "10"
+          },
+          {
+            "label": "bass",
+            "value": "50"
+          },
+          {
+            "label": "middle",
+            "value": "65"
+          },
+          {
+            "label": "treble",
+            "value": "60"
+          },
+          {
+            "label": "presence",
+            "value": "45"
+          }
+        ]
+      },
+      {
+        "label": "ir",
+        "name": "M1960AV",
+        "dials": [
+          {
+            "label": "level",
+            "value": "0dB"
+          },
+          {
+            "label": "lo cut",
+            "value": "90hz"
+          },
+          {
+            "label": "hi cut",
+            "value": "8000hz"
+          }
+        ]
+      },
+      {
+        "label": "mod",
+        "off": true
+      },
+      {
+        "label": "delay",
+        "off": true
+      },
+      {
+        "label": "reverb",
+        "name": "Room",
+        "dials": [
+          {
+            "label": "decay",
+            "value": "12"
+          },
+          {
+            "label": "level",
+            "value": "6"
           },
           {
             "label": "tone",
