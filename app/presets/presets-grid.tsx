@@ -97,7 +97,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "master",
-            "value": "13"
+            "value": "40"
           },
           {
             "label": "bass",
