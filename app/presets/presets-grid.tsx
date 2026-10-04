@@ -418,12 +418,12 @@ const DEFAULT_PRESETS: Preset[] = [
   },
   {
     "num": "04",
-    "name": "light drive",
-    "desc": "yorushika pre-chorus crunch",
+    "name": "kita rhythm",
+    "desc": "pedal crunch. guitar vol 7 for light drive",
     "chain": [
       {
         "label": "guitar",
-        "pickup": "both",
+        "pickup": "bridge",
         "dials": [
           {
             "label": "vol",
@@ -431,7 +431,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "tone",
-            "value": "7"
+            "value": "8"
           }
         ]
       },
@@ -440,11 +440,11 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sens",
-            "value": "20"
+            "value": "30"
           },
           {
             "label": "decay",
-            "value": "45"
+            "value": "30"
           }
         ]
       },
@@ -454,25 +454,25 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "volume",
-            "value": "50"
+            "value": "55"
           },
           {
             "label": "drive",
-            "value": "30"
+            "value": "60"
           },
           {
             "label": "tone",
-            "value": "50"
+            "value": "55"
           }
         ]
       },
       {
         "label": "amp",
-        "name": "Class A30",
+        "name": "Deluxe Rvb",
         "dials": [
           {
             "label": "gain",
-            "value": "35"
+            "value": "25"
           },
           {
             "label": "master",
@@ -480,21 +480,21 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "bass",
-            "value": "50"
+            "value": "45"
+          },
+          {
+            "label": "middle",
+            "value": "55"
           },
           {
             "label": "treble",
-            "value": "50"
-          },
-          {
-            "label": "cut",
-            "value": "45"
+            "value": "55"
           }
         ]
       },
       {
         "label": "ir",
-        "name": "A212",
+        "name": "DR112",
         "dials": [
           {
             "label": "level",
@@ -516,21 +516,7 @@ const DEFAULT_PRESETS: Preset[] = [
       },
       {
         "label": "delay",
-        "name": "Tape Echo",
-        "dials": [
-          {
-            "label": "mix",
-            "value": "15"
-          },
-          {
-            "label": "time",
-            "value": "35"
-          },
-          {
-            "label": "repeat",
-            "value": "20"
-          }
-        ]
+        "off": true
       },
       {
         "label": "reverb",
@@ -538,15 +524,15 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "decay",
-            "value": "22"
+            "value": "18"
           },
           {
             "label": "level",
-            "value": "12"
+            "value": "10"
           },
           {
             "label": "tone",
-            "value": "50"
+            "value": "48"
           }
         ]
       }
@@ -694,8 +680,8 @@ const DEFAULT_PRESETS: Preset[] = [
   },
   {
     "num": "06",
-    "name": "kita rhythm",
-    "desc": "clean platform, pedal drive",
+    "name": "jrock rhythm",
+    "desc": "kessoku band / heavy palm mutes",
     "chain": [
       {
         "label": "guitar",
@@ -707,7 +693,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "tone",
-            "value": "8"
+            "value": "7"
           }
         ]
       },
@@ -716,25 +702,25 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sens",
-            "value": "30"
+            "value": "45"
           },
           {
             "label": "decay",
-            "value": "30"
+            "value": "20"
           }
         ]
       },
       {
         "label": "fx",
-        "name": "Morning Drive",
+        "name": "T Screamer",
         "dials": [
           {
-            "label": "volume",
-            "value": "55"
+            "label": "level",
+            "value": "70"
           },
           {
             "label": "drive",
-            "value": "60"
+            "value": "10"
           },
           {
             "label": "tone",
@@ -744,15 +730,15 @@ const DEFAULT_PRESETS: Preset[] = [
       },
       {
         "label": "amp",
-        "name": "Deluxe Rvb",
+        "name": "Brit 800",
         "dials": [
           {
             "label": "gain",
-            "value": "25"
+            "value": "65"
           },
           {
             "label": "master",
-            "value": "12"
+            "value": "10"
           },
           {
             "label": "bass",
@@ -760,17 +746,21 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "middle",
-            "value": "55"
+            "value": "65"
           },
           {
             "label": "treble",
             "value": "55"
+          },
+          {
+            "label": "presence",
+            "value": "45"
           }
         ]
       },
       {
         "label": "ir",
-        "name": "DR112",
+        "name": "M1960AV",
         "dials": [
           {
             "label": "level",
@@ -778,11 +768,11 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "lo cut",
-            "value": "80hz"
+            "value": "100hz"
           },
           {
             "label": "hi cut",
-            "value": "9000hz"
+            "value": "8000hz"
           }
         ]
       },
@@ -800,15 +790,15 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "decay",
-            "value": "18"
+            "value": "12"
           },
           {
             "label": "level",
-            "value": "10"
+            "value": "6"
           },
           {
             "label": "tone",
-            "value": "48"
+            "value": "45"
           }
         ]
       }
