@@ -408,125 +408,7 @@ const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "04",
     "name": "crunch rhythm",
-    "desc": "verses / od into a clean fender",
-    "chain": [
-      {
-        "label": "guitar",
-        "pickup": "bridge",
-        "dials": [
-          {
-            "label": "vol",
-            "value": "10"
-          },
-          {
-            "label": "tone",
-            "value": "8"
-          }
-        ]
-      },
-      {
-        "label": "gate",
-        "dials": [
-          {
-            "label": "sens",
-            "value": "35"
-          },
-          {
-            "label": "decay",
-            "value": "30"
-          }
-        ]
-      },
-      {
-        "label": "fx",
-        "name": "Morning Drive",
-        "dials": [
-          {
-            "label": "volume",
-            "value": "55"
-          },
-          {
-            "label": "drive",
-            "value": "65"
-          },
-          {
-            "label": "tone",
-            "value": "55"
-          }
-        ]
-      },
-      {
-        "label": "amp",
-        "name": "Deluxe Rvb",
-        "dials": [
-          {
-            "label": "gain",
-            "value": "35"
-          },
-          {
-            "label": "master",
-            "value": "11"
-          },
-          {
-            "label": "bass",
-            "value": "45"
-          },
-          {
-            "label": "middle",
-            "value": "58"
-          },
-          {
-            "label": "treble",
-            "value": "55"
-          }
-        ]
-      },
-      {
-        "label": "ir",
-        "name": "DR112",
-        "dials": [
-          {
-            "label": "level",
-            "value": "0dB"
-          },
-          {
-            "label": "lo cut",
-            "value": "90hz"
-          },
-          {
-            "label": "hi cut",
-            "value": "9000hz"
-          }
-        ]
-      },
-      {
-        "label": "mod",
-        "off": true
-      },
-      {
-        "label": "delay",
-        "off": true
-      },
-      {
-        "label": "reverb",
-        "name": "Spring",
-        "dials": [
-          {
-            "label": "decay",
-            "value": "25"
-          },
-          {
-            "label": "level",
-            "value": "12"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "num": "05",
-    "name": "drive rhythm",
-    "desc": "choruses / 04 with the pedal up a notch",
+    "desc": "main rhythm / od into a clean fender",
     "chain": [
       {
         "label": "guitar",
@@ -583,7 +465,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "master",
-            "value": "10"
+            "value": "25"
           },
           {
             "label": "bass",
@@ -592,6 +474,124 @@ const DEFAULT_PRESETS: Preset[] = [
           {
             "label": "middle",
             "value": "60"
+          },
+          {
+            "label": "treble",
+            "value": "55"
+          }
+        ]
+      },
+      {
+        "label": "ir",
+        "name": "DR112",
+        "dials": [
+          {
+            "label": "level",
+            "value": "0dB"
+          },
+          {
+            "label": "lo cut",
+            "value": "90hz"
+          },
+          {
+            "label": "hi cut",
+            "value": "9000hz"
+          }
+        ]
+      },
+      {
+        "label": "mod",
+        "off": true
+      },
+      {
+        "label": "delay",
+        "off": true
+      },
+      {
+        "label": "reverb",
+        "name": "Spring",
+        "dials": [
+          {
+            "label": "decay",
+            "value": "25"
+          },
+          {
+            "label": "level",
+            "value": "12"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "num": "05",
+    "name": "boost rhythm",
+    "desc": "choruses / ts boost into the same fender",
+    "chain": [
+      {
+        "label": "guitar",
+        "pickup": "bridge",
+        "dials": [
+          {
+            "label": "vol",
+            "value": "10"
+          },
+          {
+            "label": "tone",
+            "value": "8"
+          }
+        ]
+      },
+      {
+        "label": "gate",
+        "dials": [
+          {
+            "label": "sens",
+            "value": "38"
+          },
+          {
+            "label": "decay",
+            "value": "30"
+          }
+        ]
+      },
+      {
+        "label": "fx",
+        "name": "T Screamer",
+        "dials": [
+          {
+            "label": "level",
+            "value": "75"
+          },
+          {
+            "label": "drive",
+            "value": "10"
+          },
+          {
+            "label": "tone",
+            "value": "55"
+          }
+        ]
+      },
+      {
+        "label": "amp",
+        "name": "Deluxe Rvb",
+        "dials": [
+          {
+            "label": "gain",
+            "value": "50"
+          },
+          {
+            "label": "master",
+            "value": "25"
+          },
+          {
+            "label": "bass",
+            "value": "45"
+          },
+          {
+            "label": "middle",
+            "value": "62"
           },
           {
             "label": "treble",
