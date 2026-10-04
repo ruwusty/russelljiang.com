@@ -88,7 +88,9 @@ const DEFAULT_ITEMS = [
   "freeing memory i never malloc'd, COMP1511 style",
   "COMP1511 make: *** [sleep] error 1",
   "COMP1511: off by one, in C this time",
-  "COMP1511: warning: unused variable 'sleep'"
+  "COMP1511: warning: unused variable 'sleep'",
+  "ECON2112: IDSDS-ing my to-do list",
+  "iterated deletion of strictly dominated weekend plans (ECON2112)"
 ];
 
 function shuffled<T>(arr: readonly T[]): T[] {
