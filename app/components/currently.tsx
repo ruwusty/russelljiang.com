@@ -90,7 +90,7 @@ const DEFAULT_ITEMS = [
   "COMP1511: off by one, in C this time",
   "COMP1511: warning: unused variable 'sleep'",
   "ECON2112: IDSDS-ing my to-do list",
-  "iterated deletion of strictly dominated weekend plans (ECON2112)"
+  "iterated deletion of strictly dominated study plans (ECON2112)"
 ];
 
 function shuffled<T>(arr: readonly T[]): T[] {
