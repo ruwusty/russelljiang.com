@@ -44,7 +44,7 @@ const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "01",
     "name": "clean",
-    "desc": "jpop clean / jc-120 natural",
+    "desc": "jpop clean / jc-120 natural, dry",
     "chain": [
       {
         "label": "guitar",
@@ -79,7 +79,7 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "sustain",
-            "value": "30"
+            "value": "20"
           },
           {
             "label": "level",
@@ -145,15 +145,19 @@ const DEFAULT_PRESETS: Preset[] = [
       },
       {
         "label": "reverb",
-        "name": "Plate",
+        "name": "Room",
         "dials": [
           {
             "label": "decay",
-            "value": "30"
+            "value": "15"
           },
           {
             "label": "level",
-            "value": "14"
+            "value": "10"
+          },
+          {
+            "label": "tone",
+            "value": "50"
           }
         ]
       }
