@@ -418,8 +418,8 @@ const DEFAULT_PRESETS: Preset[] = [
   },
   {
     "num": "04",
-    "name": "kita rhythm",
-    "desc": "pedal crunch. guitar vol 7 for light drive",
+    "name": "crunch rhythm",
+    "desc": "verses + yorushika. guitar vol 7 for lighter",
     "chain": [
       {
         "label": "guitar",
@@ -680,8 +680,8 @@ const DEFAULT_PRESETS: Preset[] = [
   },
   {
     "num": "06",
-    "name": "jrock rhythm",
-    "desc": "kessoku band / heavy palm mutes",
+    "name": "heavy rhythm",
+    "desc": "kessoku choruses / palm mutes",
     "chain": [
       {
         "label": "guitar",
@@ -693,7 +693,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "tone",
-            "value": "7"
+            "value": "9"
           }
         ]
       },
