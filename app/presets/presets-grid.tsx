@@ -291,7 +291,7 @@ const DEFAULT_PRESETS: Preset[] = [
   {
     "num": "03",
     "name": "breakup lead",
-    "desc": "yorushika / tape echo",
+    "desc": "yorushika / dry",
     "chain": [
       {
         "label": "guitar",
@@ -384,21 +384,7 @@ const DEFAULT_PRESETS: Preset[] = [
       },
       {
         "label": "delay",
-        "name": "Tape Echo",
-        "dials": [
-          {
-            "label": "mix",
-            "value": "25"
-          },
-          {
-            "label": "time",
-            "value": "40"
-          },
-          {
-            "label": "repeat",
-            "value": "30"
-          }
-        ]
+        "off": true
       },
       {
         "label": "reverb",
