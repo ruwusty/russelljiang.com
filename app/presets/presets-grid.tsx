@@ -561,11 +561,11 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "level",
-            "value": "55"
+            "value": "65"
           },
           {
             "label": "drive",
-            "value": "30"
+            "value": "15"
           },
           {
             "label": "tone",
@@ -579,11 +579,11 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "gain",
-            "value": "50"
+            "value": "30"
           },
           {
             "label": "master",
-            "value": "11"
+            "value": "12"
           },
           {
             "label": "bass",
@@ -687,11 +687,11 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "drive",
-            "value": "15"
+            "value": "10"
           },
           {
             "label": "tone",
-            "value": "60"
+            "value": "55"
           }
         ]
       },
@@ -701,11 +701,11 @@ const DEFAULT_PRESETS: Preset[] = [
         "dials": [
           {
             "label": "gain",
-            "value": "60"
+            "value": "35"
           },
           {
             "label": "master",
-            "value": "10"
+            "value": "11"
           },
           {
             "label": "bass",
@@ -713,7 +713,7 @@ const DEFAULT_PRESETS: Preset[] = [
           },
           {
             "label": "middle",
-            "value": "65"
+            "value": "60"
           },
           {
             "label": "treble",
