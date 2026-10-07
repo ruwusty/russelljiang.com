@@ -117,6 +117,10 @@ anything visual or touching content.
   `DIGEST_TRIGGER_SECRET`) or the owner-only [refresh] button (site password).
   output stored in blob `digest/latest.json` + dated archive; `/digest` reads
   it. env `GEMINI_API_KEY` required (`GEMINI_MODEL` optional override).
+  locally there's no blob token, so in `next dev` the page falls back to an
+  invented fixture (`app/lib/digest-fixture.ts`, via `readDigestForPage()`
+  in `digest-store.ts`; `DIGEST_FIXTURE=off` shows the empty state). the
+  generator reads the blob directly and production never sees the fixture.
 
 ## routes
 
