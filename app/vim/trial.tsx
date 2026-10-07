@@ -151,7 +151,7 @@ const posKey = (p: Pos) => `${p.row}:${p.col}`;
 const isAfter = (a: Pos, b: Pos) => a.row > b.row || (a.row === b.row && a.col > b.col);
 const distance = (a: Pos, b: Pos) => Math.abs(a.row - b.row) + Math.abs(a.col - b.col);
 
-function randomTarget(notNear: Pos, difficulty: Difficulty): Pos {
+function randomTarget(notNear: Pos, difficulty: Difficulty, rand = Math.random): Pos {
   const { minDist, maxDist } = DIFFICULTIES[difficulty];
   const starts = BUFFERS[difficulty].starts;
   const candidates = starts.filter((p) => {
@@ -159,7 +159,7 @@ function randomTarget(notNear: Pos, difficulty: Difficulty): Pos {
     return d >= minDist && d <= maxDist;
   });
   const pool = candidates.length > 0 ? candidates : starts;
-  return pool[Math.floor(Math.random() * pool.length)];
+  return pool[Math.floor(rand() * pool.length)];
 }
 
 function isTypingTarget(target: EventTarget | null): boolean {
@@ -175,7 +175,9 @@ function isTypingTarget(target: EventTarget | null): boolean {
 export function VimTrial() {
   const [difficulty, setDifficulty] = useState<Difficulty>("easy");
   const [cursor, setCursor] = useState<Pos>({ row: 0, col: 0 });
-  const [target, setTarget] = useState<Pos>(() => randomTarget({ row: 0, col: 0 }, "easy"));
+  // the first render must match the server's, so no randomness here; the
+  // mount effect below rolls the real target straight away
+  const [target, setTarget] = useState<Pos>(() => randomTarget({ row: 0, col: 0 }, "easy", () => 0));
   const [hits, setHits] = useState(0);
   const [keys, setKeys] = useState(0);
   const [startedAt, setStartedAt] = useState<number | null>(null);

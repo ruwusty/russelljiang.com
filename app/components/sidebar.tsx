@@ -79,7 +79,7 @@ export function Sidebar() {
     <nav className="text-[13px]" aria-label="site navigation">
       {/* a list widget on desktop; on a phone the rows wrap into a strip so
           the page itself is above the fold */}
-      <ul className="mt-1 list-none p-0 m-0 flex flex-wrap gap-x-5 gap-y-0.5 lg:block lg:space-y-0.5">
+      <ul className="mt-1 list-none p-0 m-0 flex flex-wrap gap-x-4 gap-y-1.5 lg:block lg:space-y-0.5">
         {items.map((item, i) => {
           const index = String(i + 1).padStart(2, "0");
           const active =
@@ -109,7 +109,7 @@ export function Sidebar() {
             <li key={item.label}>
               <LinkTag
                 href={item.href}
-                className="tui-item nav-row flex items-baseline gap-3"
+                className="tui-item nav-row flex items-baseline gap-3 py-1 lg:py-0"
                 data-selected={selectedHere ? "true" : "false"}
                 aria-current={active ? "page" : undefined}
                 {...(item.external && !item.href.startsWith("mailto:")

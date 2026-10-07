@@ -64,8 +64,10 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
             </span>
           </div>
 
-          {/* the tiles. below lg the side panes fold above and below main */}
-          <div className={`flex-1 grid gap-3 p-3 sm:gap-4 sm:p-4 lg:grid-cols-[210px_minmax(0,1fr)] ${outline ? "xl:grid-cols-[210px_minmax(0,1fr)_180px]" : ""}`}>
+          {/* the tiles. below lg the side panes fold above and below main, and
+              only main grows: without the explicit rows a short page stretches
+              every row, and the nav pane grows a blank tail on tablets */}
+          <div className={`flex-1 grid grid-rows-[auto_1fr_auto] gap-3 p-3 sm:gap-4 sm:p-4 lg:grid-rows-none lg:grid-cols-[210px_minmax(0,1fr)] ${outline ? "xl:grid-cols-[210px_minmax(0,1fr)_180px]" : ""}`}>
             <div className="contents lg:flex lg:flex-col lg:gap-4">
               <fieldset className="pane px-4 pb-3 pt-1 lg:px-5 lg:pb-4">
                 <legend>

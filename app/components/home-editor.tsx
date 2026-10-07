@@ -174,13 +174,13 @@ export function HomeEditor({
             {editing === "background" ? (
               editor("background", 6)
             ) : (
-              <dl className="m-0 text-[13px] grid grid-cols-[minmax(0,112px)_1fr] gap-x-3 gap-y-0.5">
+              <dl className="m-0 text-[13px] grid grid-cols-1 gap-x-3 sm:grid-cols-[minmax(0,112px)_1fr] sm:gap-y-0.5">
                 {content.background.map((row) => (
                   <div key={row.label} className="contents">
                     <dt className="truncate" style={{ color: "var(--accent)" }}>
                       {row.label}
                     </dt>
-                    <dd className="m-0" style={{ color: "var(--ink)" }}>
+                    <dd className="m-0 mb-2 sm:mb-0" style={{ color: "var(--ink)" }}>
                       {row.value}
                     </dd>
                   </div>
