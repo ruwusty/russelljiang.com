@@ -54,8 +54,10 @@ anything visual or touching content.
   is an inverse-video cell so the glyph under it stays readable), the
   currently typewriter, the library spine hover-lift
   (`.spine`), the petals (`petal-fall`/`petal-sway`), the cat cameo
-  (`cat-walk`), and the first-visit intro (the prompt types `cat ~/about.md`
-  once, ≤1s, then clears — `command-bar.tsx`). that is SEVEN. everything else
+  (`cat-walk`), and the first-visit intro (side panes print in, the prompt
+  types `fastfetch`, the page prints line by line via a stepped clip, ~2s
+  all told, any key/tap/scroll skips — `command-bar.tsx`, `intro-print` in
+  globals.css). that is SEVEN. everything else
   is instant colour changes. always respect `prefers-reduced-motion`. adding
   an eighth means adding it HERE, or the next reader inherits a rule that
   lies — which this line already did once, on 15 sep, when the prompt caret
@@ -127,8 +129,12 @@ next command, esc, or `clear`. the caret is a blinking inverse-video cell
 fish-style: ghost text after the caret, tab or → accepts, and the candidates
 (`COMMANDS` / `ARGS` in command-bar.tsx) sit on the line below.
 commands: `ls`, `cat <page>` (alias `go`), `grep <term>` (searches
-`app/lib/posts.ts`), plus the older ones. on a first visit to `/` the prompt
-types `cat ~/about.md` and reveals the page — that is the whole onboarding.
+`app/lib/posts.ts`), `fastfetch` (alias `neofetch`: the visitor's own
+browser/os/screen beside a random logo from `app/lib/fetch-logos.ts`, never
+the same twice running; output in `fetch-output.tsx`), plus the older ones.
+the home hero picks its logo from the same file, per request, server side.
+on a first visit to `/` the prompt types `fastfetch` and the page prints
+beneath it — that is the whole onboarding.
 new pages go in the sidebar AND `ROUTES` in command-bar.tsx; new essays go in
 `app/lib/posts.ts` (the writing index and `grep` both read it).
 

@@ -92,7 +92,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{if(location.pathname==='/'&&!localStorage.getItem('rj:intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.dataset.intro='pending'}}catch(e){}})()",
+              "(function(){try{if(location.pathname==='/'&&!localStorage.getItem('rj:intro:fetch')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.dataset.intro='pending'}}catch(e){}})()",
           }}
         />
       </head>

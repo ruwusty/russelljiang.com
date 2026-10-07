@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Kaomoji } from "./kaomoji";
 import { useSiteAuth } from "./site-auth";
 import type { HomeContent } from "../lib/home-content";
+import { logoText, type LogoName } from "../lib/fetch-logos";
 
 type Section = "bio" | "background" | "interests";
 type SaveState = "idle" | "saving" | "error";
@@ -21,25 +22,18 @@ const SECTION_HINT: Record<Section, string> = {
   interests: "one interest per line",
 };
 
-// neofetch's logo slot. ansi shadow, lit by .fetch-art
-const FETCH_ART = [
-  "██████╗      ██╗",
-  "██╔══██╗     ██║",
-  "██████╔╝     ██║",
-  "██╔══██╗██   ██║",
-  "██║  ██║╚█████╔╝",
-  "╚═╝  ╚═╝ ╚════╝ ",
-].join("\n");
-
 // neofetch ends on the terminal's colour row; this one ends on the palette
 const SWATCHES = ["--ink", "--soft", "--faint", "--line", "--accent", "--rose"];
 
 export function HomeEditor({
   initial,
   heading,
+  logo,
 }: {
   initial: HomeContent;
   heading: React.ReactNode;
+  /** picked per request by the page, so ssr and hydration agree */
+  logo: LogoName;
 }) {
   const { password } = useSiteAuth();
   const [content, setContent] = useState(initial);
@@ -159,7 +153,7 @@ export function HomeEditor({
         className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-10"
       >
         <pre className="fetch-art m-0 pt-1" aria-hidden="true">
-          {FETCH_ART}
+          {logoText(logo)}
         </pre>
         <div className="min-w-0 flex-1">
           {heading}

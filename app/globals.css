@@ -473,14 +473,44 @@ button:focus-visible,
   }
 }
 
-/* first-visit intro: the home content is in the html (seo) but held invisible
-   while the prompt types `cat ~/about.md`, then shown. `visibility`, not
-   `display`, so the layout is already settled and nothing jumps when it
-   appears. the attribute is set pre-paint by layout.tsx and cleared by
-   command-bar.tsx; if javascript never runs, it is never set and the content
-   is simply visible. */
-html[data-intro] .intro-content {
+/* first-visit intro, four phases on html[data-intro] (command-bar.tsx):
+   pending → boot (side panes print in) → typing (`fastfetch`) → render (the
+   page prints). held with `visibility`, not `display`, so the layout is
+   already settled and nothing jumps. the attribute is set pre-paint by
+   layout.tsx and cleared by command-bar.tsx; if javascript never runs it is
+   never set and everything is simply visible.
+
+   the print is a clip that opens downward in steps, one step per text line,
+   so it reads as output scrolling in rather than a fade. command-bar.tsx
+   sizes --intro-steps and --intro-ms to the content's height. */
+html[data-intro="pending"] .intro-boot,
+html[data-intro]:not([data-intro="render"]) .intro-content {
   visibility: hidden;
+}
+
+html[data-intro="boot"] .intro-boot {
+  animation: intro-print 320ms steps(12, end) both;
+}
+
+html[data-intro="render"] .intro-content {
+  animation: intro-print var(--intro-ms, 900ms) steps(var(--intro-steps, 30), end) both;
+}
+
+@keyframes intro-print {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-intro] .intro-boot,
+  html[data-intro] .intro-content {
+    animation: none;
+    visibility: visible;
+  }
 }
 
 /* library spines — books want to be touched */

@@ -1,6 +1,7 @@
 import { DocsShell } from "./components/docs-shell";
 import { HomeEditor } from "./components/home-editor";
 import { readHomeContent } from "./lib/home-store";
+import { pickLogo } from "./lib/fetch-logos";
 
 export const dynamic = "force-dynamic";
 
@@ -12,18 +13,19 @@ const toc = [
 
 export default async function Home() {
   const content = await readHomeContent();
+  // force-dynamic already, so a fresh logo per visit costs nothing
+  const logo = pickLogo();
 
   return (
     <DocsShell crumb="overview" toc={toc}>
-      {/* `.intro-content` is what `cat ~/about.md` prints. it is in the ssr
-          html regardless (seo); on a first visit globals.css hides it for the
-          ~0.9s the prompt takes to type, then it shows. see command-bar.tsx. */}
-      {/* `.intro-content` is what `cat ~/about.md` prints. it is in the ssr
-          html regardless (seo); on a first visit globals.css hides it for the
-          ~0.9s the prompt takes to type, then it shows. see command-bar.tsx. */}
+      {/* `.intro-content` is what the intro's `fastfetch` prints. it is in the
+          ssr html regardless (seo); on a first visit globals.css hides it
+          while the prompt types, then prints it line by line. see
+          command-bar.tsx. */}
       <div className="intro-content">
         <HomeEditor
           initial={content}
+          logo={logo}
           heading={
             <>
               <h1

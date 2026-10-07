@@ -14,6 +14,8 @@ import { useTheme } from "next-themes";
 import { Kaomoji } from "./kaomoji";
 import { useSiteAuth } from "./site-auth";
 import { grepPosts, posts, type Post } from "../lib/posts";
+import { pickLogo, type LogoName } from "../lib/fetch-logos";
+import { FetchOutput } from "./fetch-output";
 
 // the command line moved from the bottom of the pane to the top (russell, 15
 // sep 2026: "the command bar at the bottom makes it more a side feature").
@@ -36,10 +38,11 @@ import { grepPosts, posts, type Post } from "../lib/posts";
 // (or → at the end of the line) takes it; the candidates sit on the line
 // below so a visitor who has never seen a shell can read the menu.
 //
-// on first visit to the home page the prompt types `cat ~/about.md`, the
-// content reveals beneath it, and the prompt clears to `❯ █` — the way a
-// shell looks after a command returns. that demo is the entire onboarding:
-// a visitor who has watched it knows the syntax without a tooltip.
+// on first visit to the home page the side panes print in, the prompt types
+// `fastfetch`, and the page prints beneath it line by line while the prompt
+// clears to `❯ █` — the way a shell looks after a command returns. that demo
+// is the entire onboarding: a visitor who has watched it knows the syntax
+// without a tooltip, and `fastfetch` itself is a command they can rerun.
 
 const ROUTES: Record<string, string> = {
   home: "/",
@@ -74,12 +77,13 @@ const HELP_LINES: [string, string][] = [
   ["tea [min]", "a timer, for tea"],
   ["login / logout", "関係者以外立入禁止"],
   ["whoami", "introductions"],
+  ["fastfetch", "system info. new logo every run"],
   ["q / wq", "you have to try"],
 ];
 
 // tab completion tables. primary names only — aliases (`go`, `dir`, `h`)
 // still run, they just are not suggested.
-const COMMANDS = ["ls", "cat", "grep", "help", "theme", "tea", "whoami", "login", "logout", "vim", "clear"];
+const COMMANDS = ["ls", "cat", "grep", "fastfetch", "help", "theme", "tea", "whoami", "login", "logout", "vim", "clear"];
 const TARGETS = [...PAGES, ...Object.keys(EXTERNAL)];
 const TAGS = [...new Set(posts.filter((p) => p.href).flatMap((p) => p.tags))].sort();
 const ARGS: Record<string, string[]> = {
@@ -105,13 +109,23 @@ function complete(value: string): { candidates: string[]; ghost: string } {
   return { candidates, ghost };
 }
 
-// the intro. one command, typed once, then the prompt clears. timing follows
+// the intro, first visit to `/` only: the side panes print in (boot), the
+// prompt types `fastfetch`, then the page prints top to bottom one line at a
+// time, the way output scrolls into a terminal. typing timing follows
 // `currently.tsx` so the two typewriters on the site feel like one hand.
-const INTRO_CMD = "cat ~/about.md";
-const INTRO_KEY = "rj:intro";
+// the key changed with the command (was `rj:intro` for `cat ~/about.md`), so
+// everyone sees the new one once. layout.tsx reads the same key.
+const INTRO_CMD = "fastfetch";
+const INTRO_KEY = "rj:intro:fetch";
+const BOOT_MS = 340;
 const TYPE_MS = 38;
 const TYPE_JITTER_MS = 42;
-const INTRO_HOLD_MS = 260;
+const INTRO_HOLD_MS = 220;
+// the print: one step per text line, about 1ms per pixel of content, so the
+// part on screen lands in well under a second however long the page is
+const LINE_PX = 24;
+const PRINT_MIN_MS = 450;
+const PRINT_MAX_MS = 1800;
 
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
@@ -131,6 +145,7 @@ interface CommandState {
   focused: boolean;
   setFocused: (f: boolean) => void;
   message: string | null;
+  fetchLogo: LogoName | null;
   helpOpen: boolean;
   setHelpOpen: (o: boolean) => void;
   results: Post[] | null;
@@ -162,6 +177,10 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<"cmd" | "pw">("cmd");
   const [focused, setFocused] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  // `fastfetch` output: rich, so it sits beside `message` rather than in it.
+  // the two never show at once — anything that sets one clears the other.
+  const [fetchLogo, setFetchLogo] = useState<LogoName | null>(null);
+  const lastLogoRef = useRef<LogoName | null>(null);
   const [helpOpen, setHelpOpen] = useState(false);
   const [results, setResults] = useState<Post[] | null>(null);
   const [teaUntil, setTeaUntil] = useState<number | null>(null);
@@ -171,7 +190,10 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   // output stays put until something replaces or clears it — see the header.
-  const show = useCallback((text: string) => setMessage(text), []);
+  const show = useCallback((text: string) => {
+    setFetchLogo(null);
+    setMessage(text);
+  }, []);
 
   const focusPrompt = useCallback((prefill?: string) => {
     setResults(null);
@@ -187,21 +209,27 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  // ---- intro: type the first command into the prompt, then clear it ----
+  // ---- intro: boot, type `fastfetch`, print the page ----
   // the pre-paint script in layout.tsx sets html[data-intro="pending"] on a
-  // first visit to `/` (not under reduced-motion), and globals.css hides
-  // `.intro-content` while that attribute is present. so the content is in
-  // the ssr html for seo, invisible for the ~0.9s of the type, then shown.
-  // nothing is fetched behind the animation.
+  // first visit to `/` (not under reduced-motion). globals.css keys off the
+  // attribute: pending hides the side panes (`.intro-boot`) and the page
+  // (`.intro-content`); boot prints the panes; typing keeps the page hidden;
+  // render prints it with a stepped clip. the content is in the ssr html the
+  // whole time (seo), and nothing is fetched behind the animation.
   useEffect(() => {
     const root = document.documentElement;
     if (root.dataset.intro !== "pending" || pathname !== "/") return;
 
+    const content = document.querySelector<HTMLElement>(".intro-content");
     let cancelled = false;
     let i = 0;
     let timer: ReturnType<typeof setTimeout> | null = null;
     setIntro("typing");
-    root.dataset.intro = "typing";
+    root.dataset.intro = "boot";
+
+    const onPrinted = (e: AnimationEvent) => {
+      if (e.target === content) finish();
+    };
 
     const finish = (e?: Event) => {
       if (cancelled) return;
@@ -221,13 +249,33 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
       }
       if (timer) clearTimeout(timer);
       delete root.dataset.intro;
+      root.style.removeProperty("--intro-steps");
+      root.style.removeProperty("--intro-ms");
       setValue("");
       setIntro("done");
       try {
         localStorage.setItem(INTRO_KEY, "1");
       } catch {}
+      content?.removeEventListener("animationend", onPrinted);
       window.removeEventListener("keydown", finish, true);
       window.removeEventListener("pointerdown", finish, true);
+      window.removeEventListener("wheel", finish, true);
+    };
+
+    const print = () => {
+      if (cancelled) return;
+      const h = content?.offsetHeight ?? 0;
+      root.style.setProperty("--intro-steps", String(Math.max(8, Math.round(h / LINE_PX))));
+      root.style.setProperty(
+        "--intro-ms",
+        `${Math.min(PRINT_MAX_MS, Math.max(PRINT_MIN_MS, Math.round(h)))}ms`
+      );
+      // the command "returns": the prompt clears as its output prints
+      setValue("");
+      content?.addEventListener("animationend", onPrinted);
+      root.dataset.intro = "render";
+      // belt and braces, in case animationend never fires
+      timer = setTimeout(finish, PRINT_MAX_MS + 400);
     };
 
     const step = () => {
@@ -235,23 +283,33 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
       i += 1;
       setValue(INTRO_CMD.slice(0, i));
       if (i >= INTRO_CMD.length) {
-        timer = setTimeout(finish, INTRO_HOLD_MS);
+        timer = setTimeout(print, INTRO_HOLD_MS);
         return;
       }
       timer = setTimeout(step, TYPE_MS + Math.random() * TYPE_JITTER_MS);
     };
 
-    // any key or click skips straight to the content. capture phase so we run
-    // first; finish() then stops the event so it cannot reach j/k or `/`.
+    const type = () => {
+      if (cancelled) return;
+      root.dataset.intro = "typing";
+      timer = setTimeout(step, 140);
+    };
+
+    // any key, click, tap or scroll skips straight to the content. capture
+    // phase so we run first; finish() then stops the event so it cannot reach
+    // j/k or `/`.
     window.addEventListener("keydown", finish, true);
     window.addEventListener("pointerdown", finish, true);
-    timer = setTimeout(step, 180);
+    window.addEventListener("wheel", finish, true);
+    timer = setTimeout(type, BOOT_MS);
 
     return () => {
       if (!cancelled) {
         if (timer) clearTimeout(timer);
+        content?.removeEventListener("animationend", onPrinted);
         window.removeEventListener("keydown", finish, true);
         window.removeEventListener("pointerdown", finish, true);
+        window.removeEventListener("wheel", finish, true);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -302,6 +360,7 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
         setHelpOpen(false);
         setResults(null);
         setMessage(null);
+        setFetchLogo(null);
         return;
       }
       if (isTypingTarget(event.target)) return;
@@ -515,7 +574,17 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
         break;
       case "clear":
         setMessage(null);
+        setFetchLogo(null);
         break;
+      case "fastfetch":
+      case "neofetch": {
+        // remembered past a `clear`, so two fetches in a row always differ
+        const next = pickLogo(lastLogoRef.current ?? undefined);
+        lastLogoRef.current = next;
+        setMessage(null);
+        setFetchLogo(next);
+        break;
+      }
       default:
         show(`E492: not an editor command: ${head}`);
     }
@@ -550,13 +619,14 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
     setHelpOpen(false);
     setResults(null);
     setMessage(null);
+    setFetchLogo(null);
     inputRef.current?.blur();
   };
 
   return (
     <Ctx.Provider
       value={{
-        value, setValue, mode, focused, setFocused, message,
+        value, setValue, mode, focused, setFocused, message, fetchLogo,
         helpOpen, setHelpOpen, results, setResults, teaUntil, ruler,
         submit, cancel, focusPrompt, inputRef, intro,
       }}
@@ -571,6 +641,8 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
 /** the command line. lives under the crumb, on every page. */
 export function Prompt() {
   const c = useCommand();
+  const { resolvedTheme } = useTheme();
+  const { password } = useSiteAuth();
   const typing = c.intro === "typing";
   const pw = c.mode === "pw";
   const [caret, setCaret] = useState(0);
@@ -669,6 +741,15 @@ export function Prompt() {
           first message lands — a region added with its content is not read. */}
       <div className="text-[12px] lowercase whitespace-pre-wrap" aria-live="polite">
         {c.message}
+        {c.fetchLogo && (
+          <FetchOutput
+            logo={c.fetchLogo}
+            user={password ? "russell" : "guest"}
+            theme={resolvedTheme === "dark" ? "dark" : "light"}
+            pages={PAGES.length}
+            essays={posts.filter((p) => p.href).length}
+          />
+        )}
       </div>
 
       {candidates.length > 0 && (
