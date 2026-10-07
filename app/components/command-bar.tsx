@@ -304,6 +304,7 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
       }
       if (timer) clearTimeout(timer);
       delete root.dataset.intro;
+      delete root.dataset.introForce;
       root.style.removeProperty("--intro-steps");
       root.style.removeProperty("--intro-ms");
       setValue("");
@@ -647,15 +648,13 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
         break;
       case "reboot":
       case "restart": {
-        // forget the intro was seen and come back in through the front door,
-        // with a real page load so layout.tsx's pre-paint script runs again
+        // come back in through the front door with a real page load, so
+        // layout.tsx's pre-paint script runs again. asking for the boot is
+        // consent to see it, so the flag plays it even under reduced motion;
+        // only the unasked-for first-visit intro respects that setting.
         try {
-          localStorage.removeItem(INTRO_KEY);
+          sessionStorage.setItem("rj:reboot", "1");
         } catch {}
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          show("reboot: skipped, reduced motion is on");
-          break;
-        }
         window.location.assign("/");
         break;
       }

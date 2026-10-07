@@ -562,9 +562,11 @@ html[data-intro="render"] .intro-content {
   }
 }
 
+/* reduced motion skips the intro, except after `reboot`, which is the
+   visitor asking for it (html[data-intro-force]) */
 @media (prefers-reduced-motion: reduce) {
-  html[data-intro] .intro-boot,
-  html[data-intro] .intro-content {
+  html[data-intro]:not([data-intro-force]) .intro-boot,
+  html[data-intro]:not([data-intro-force]) .intro-content {
     animation: none;
     visibility: visible;
   }
