@@ -185,6 +185,7 @@ platform anything other than "sydney scholars".
 humour is part of the design system — russell explicitly wants it. puns and
 easter eggs in the house style are encouraged: `❯ cat ./this-page` finding an
 actual cat on the 404, `:q` → "E37: this is not vim", `:wq` → "nothing to
-write. nowhere to quit to.", the vim trial's buffer lines, "references :P".
+write. nowhere to quit to.", the unlisted `osu` / `cytus` / `` ` `` (osu!'s
+quick-retry key) commands, fastfetch's `offset +0ms (calibrated)`, the vim trial's buffer lines, "references :P".
 the rule of restraint still applies: one wink per page, deadpan delivery,
 never explain the joke.

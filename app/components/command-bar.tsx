@@ -183,6 +183,7 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
   // the two never show at once — anything that sets one clears the other.
   const [fetchLogo, setFetchLogo] = useState<LogoName | null>(null);
   const lastLogoRef = useRef<LogoName | null>(null);
+  const retriesRef = useRef(0);
   const [helpOpen, setHelpOpen] = useState(false);
   const [results, setResults] = useState<Post[] | null>(null);
   const [teaUntil, setTeaUntil] = useState<number | null>(null);
@@ -574,6 +575,20 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
       case "sudo":
         show("russell is not in the sudoers file. this incident will be reported.");
         break;
+      // rhythm games. unlisted, like sudo: found by the people who'd get them
+      case "osu":
+      case "osu!":
+        show("1 miss. it was the slider end.");
+        break;
+      case "cytus":
+        show("the scan line is on its way back down. hold.");
+        break;
+      case "`": {
+        // osu!'s quick-retry key
+        retriesRef.current += 1;
+        show(`retrying… (attempt ${retriesRef.current + 40})`);
+        break;
+      }
       case "clear":
         setMessage(null);
         setFetchLogo(null);

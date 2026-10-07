@@ -66,7 +66,8 @@ export function FetchOutput({
     ["terminal", browserName(ua)],
     ["display", `${window.innerWidth}×${window.innerHeight}${dpr > 1 ? ` @${dpr}x` : ""}`],
     ["theme", `wisteria (${theme})`],
-    ["font", "jetbrains mono"],
+    ["font", "maple mono"],
+    ["offset", "+0ms (calibrated)"],
     ["locale", `${navigator.language.toLowerCase()} · syd ${clock}`],
   ];
 
