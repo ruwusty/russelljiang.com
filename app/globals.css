@@ -343,6 +343,13 @@ body::after {
   }
 }
 
+/* one symbol, one cell, whatever font ends up drawing it (fetch-art.tsx) */
+.fetch-art .cell {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+}
+
 .swatch {
   display: inline-block;
   width: 22px;

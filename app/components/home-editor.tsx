@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Kaomoji } from "./kaomoji";
 import { useSiteAuth } from "./site-auth";
 import type { HomeContent } from "../lib/home-content";
-import { logoText, type LogoName } from "../lib/fetch-logos";
+import { type LogoName } from "../lib/fetch-logos";
+import { FetchArt } from "./fetch-art";
 
 type Section = "bio" | "background" | "interests";
 type SaveState = "idle" | "saving" | "error";
@@ -152,9 +153,7 @@ export function HomeEditor({
         id="introduction"
         className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-10"
       >
-        <pre className="fetch-art m-0 pt-1" aria-hidden="true">
-          {logoText(logo)}
-        </pre>
+        <FetchArt name={logo} className="m-0 pt-1" />
         <div className="min-w-0 flex-1">
           {heading}
           <div
