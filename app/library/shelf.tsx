@@ -117,7 +117,6 @@ function Pulled({
     ["by", book.author],
     ["status", where],
   ];
-  if (book.tag) branches.push(["track", <span key="t" style={{ color: "var(--accent)" }}>{book.tag}</span>]);
   if (book.note)
     branches.push([
       "note",

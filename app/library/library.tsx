@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSiteAuth } from "../components/site-auth";
 import { BookForm } from "./book-form";
 import { Shelf } from "./shelf";
-import { EMPTY_DRAFT, lookupUrl, type Book, type Draft, type Status } from "./types";
+import { EMPTY_DRAFT, type Book, type Draft, type Status } from "./types";
 import s from "./library.module.css";
 
 // first-run seed + outage fallback only — the blob is the source of truth.
@@ -33,18 +33,16 @@ const DEFAULT_BOOKS: Book[] = [
   { id: "consciousness", title: "consciousness explained", author: "daniel dennett", status: "to-read", tag: "throughline" },
 ];
 
-// the table's columns: cursor, number, title, author, track. author and
-// track fold into a line under the title below sm.
+// the table's columns: cursor, number, title, author. author folds into a
+// line under the title below sm.
 const COLS =
-  "grid grid-cols-[2ch_minmax(0,1fr)] sm:grid-cols-[1ch_2ch_minmax(0,1fr)_19ch_11ch] gap-x-[1ch]";
+  "grid grid-cols-[2ch_minmax(0,1fr)] sm:grid-cols-[1ch_2ch_minmax(0,1fr)_19ch] gap-x-[1ch]";
 // lines under a row start under the title: the narrow cells plus their gaps,
 // in the head's 13px ch, since those lines are set at 12px
 const UNDER_TITLE = "pl-[calc(4ch*13/12)] sm:pl-[calc(6ch*13/12)]";
-const METER_CELLS = 10;
 const SHELF_CELLS = 28;
-const UNTAGGED = "untagged";
 
-// ─── header: a fetch-style readout and a track meter ──────────────────────
+// ─── header: a fetch-style readout ─────────────────────────────────────────
 
 // one cell per book, in shelf order, while the shelf is small enough;
 // past that, the same three runs scaled down
@@ -59,10 +57,11 @@ function shelfCells(books: Book[]): Status[] {
   return out.slice(0, SHELF_CELLS);
 }
 
+// thin, like the digest's meters: ━ for books opened, ─ for the queue
 const CELL: Record<Status, { ch: string; color: string }> = {
-  reading: { ch: "█", color: "var(--accent)" },
-  read: { ch: "█", color: "var(--soft)" },
-  "to-read": { ch: "░", color: "var(--faint)" },
+  reading: { ch: "━", color: "var(--accent)" },
+  read: { ch: "━", color: "var(--soft)" },
+  "to-read": { ch: "─", color: "var(--faint)" },
 };
 
 function Swatch({ status }: { status: Status }) {
@@ -115,57 +114,6 @@ function Readout({ books, next }: { books: Book[]; next: Book | null }) {
   );
 }
 
-function TrackMeter({
-  tracks,
-  filter,
-  setFilter,
-}: {
-  tracks: { tag: string; n: number }[];
-  filter: string | null;
-  setFilter: (tag: string | null) => void;
-}) {
-  const max = Math.max(1, ...tracks.map((t) => t.n));
-  return (
-    <div className="text-[13px] leading-[1.75]" role="group" aria-label="filter the queue by track">
-      <div
-        className="grid grid-cols-[12ch_minmax(0,1fr)] gap-x-[1ch] px-[1ch] [&>span]:text-[11px] uppercase tracking-[0.08em]"
-        style={{ color: "var(--faint)" }}
-        aria-hidden="true"
-      >
-        <span>track</span>
-        <span>queued</span>
-      </div>
-      {tracks.map(({ tag, n }) => {
-        const filled = Math.max(1, Math.round((n / max) * METER_CELLS));
-        const on = filter === tag;
-        return (
-          <button
-            key={tag}
-            onClick={() => setFilter(on ? null : tag)}
-            className={`list-row ${s.bare} p-0 ${on ? s.on : ""}`}
-            aria-pressed={on}
-          >
-            <span className="list-head grid grid-cols-[12ch_minmax(0,1fr)] gap-x-[1ch] px-[1ch]">
-              <span className="truncate lowercase" style={{ color: "var(--ink)" }}>
-                {tag}
-              </span>
-              <span className="whitespace-nowrap overflow-hidden">
-                <span aria-hidden="true" style={{ color: "var(--accent)" }}>
-                  {"█".repeat(filled)}
-                </span>
-                <span aria-hidden="true" className={s.track}>
-                  {"░".repeat(METER_CELLS - filled)}
-                </span>{" "}
-                <span style={{ color: "var(--soft)" }}>{n}</span>
-              </span>
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 // ─── the table ─────────────────────────────────────────────────────────────
 
 function SectionHead({ id, name, count }: { id?: string; name: string; count: React.ReactNode }) {
@@ -195,7 +143,6 @@ function ColumnHeads() {
       <span>no</span>
       <span>title</span>
       <span className="hidden sm:inline">author</span>
-      <span className="hidden sm:inline">track</span>
     </div>
   );
 }
@@ -206,12 +153,14 @@ function Row({
   owner,
   editing,
   onEdit,
+  onPull,
 }: {
   book: Book;
   mark: React.ReactNode; // the number cell: a queue position, or ◉
   owner: boolean;
   editing: boolean;
   onEdit: () => void;
+  onPull: () => void;
 }) {
   const inner = (
     <>
@@ -224,14 +173,11 @@ function Row({
           {book.title}
           <span style={{ color: "var(--faint)" }} aria-hidden="true">
             {" "}
-            {owner ? "✎" : "↗"}
+            {owner ? "✎" : "↑"}
           </span>
         </span>
         <span className="hidden sm:block truncate lowercase" style={{ color: "var(--soft)" }}>
           {book.author}
-        </span>
-        <span className="hidden sm:block truncate lowercase" style={{ color: "var(--accent)" }}>
-          {book.tag}
         </span>
       </span>
       <span
@@ -239,12 +185,6 @@ function Row({
         style={{ color: "var(--soft)" }}
       >
         {book.author}
-        {book.tag && (
-          <>
-            {" · "}
-            <span style={{ color: "var(--accent)" }}>{book.tag}</span>
-          </>
-        )}
       </span>
       {book.note && (
         <span
@@ -257,7 +197,7 @@ function Row({
     </>
   );
 
-  // visitors look a book up; the owner opens it in the editor
+  // visitors pull the book's spine off the shelf; the owner opens the editor
   return owner ? (
     <button
       onClick={onEdit}
@@ -268,15 +208,13 @@ function Row({
       {inner}
     </button>
   ) : (
-    <a
-      href={lookupUrl(book)}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="list-row block py-2"
-      title="look it up on open library"
+    <button
+      onClick={onPull}
+      className={`list-row ${s.bare} px-0 py-2`}
+      aria-label={`pull ${book.title} off the shelf`}
     >
       {inner}
-    </a>
+    </button>
   );
 }
 
@@ -306,7 +244,6 @@ export function Library() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [draftFrom, setDraftFrom] = useState<DraftFrom>("add");
-  const [filter, setFilter] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "error">("idle");
   // owner editing is gated until the blob load settles — otherwise an early
   // drag or save would persist DEFAULT_BOOKS over the real shelf
@@ -452,18 +389,6 @@ export function Library() {
   const done = books.filter((b) => b.status === "read");
   const queueNo = new Map(queue.map((b, i) => [b.id, i + 1]));
 
-  // tracks in the order the queue first reaches them
-  const tracks: { tag: string; n: number }[] = [];
-  for (const b of queue) {
-    const tag = b.tag || UNTAGGED;
-    const t = tracks.find((x) => x.tag === tag);
-    if (t) t.n++;
-    else tracks.push({ tag, n: 1 });
-  }
-  // a filter whose track has emptied out quietly lets go
-  const activeFilter = filter && tracks.some((t) => t.tag === filter) ? filter : null;
-  const shown = activeFilter ? queue.filter((b) => (b.tag || UNTAGGED) === activeFilter) : queue;
-
   const rowFor = (book: Book, mark: React.ReactNode) => (
     <div key={book.id}>
       <Row
@@ -472,6 +397,10 @@ export function Library() {
         owner={owner}
         editing={Boolean(draft && draftFrom === "row" && draft.id === book.id)}
         onEdit={() => openEdit(book, "row")}
+        onPull={() => {
+          setSelectedId(book.id);
+          document.getElementById("shelf")?.scrollIntoView({ block: "start" });
+        }}
       />
       {form("row", book.id)}
     </div>
@@ -479,10 +408,7 @@ export function Library() {
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-y-6 gap-x-10 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <Readout books={books} next={queue[0] ?? null} />
-        {tracks.length > 0 && <TrackMeter tracks={tracks} filter={activeFilter} setFilter={setFilter} />}
-      </div>
+      <Readout books={books} next={queue[0] ?? null} />
 
       {password && (
         <div className="mt-6 px-[1ch] flex flex-wrap items-baseline gap-x-4 gap-y-1 text-[12px] lowercase">
@@ -508,6 +434,24 @@ export function Library() {
       )}
       {form("add", null)}
 
+      {/* the shelf first: it is the page's picture, and a row below pulls
+          its book here */}
+      <section id="shelf" className="mt-10 text-[13px]">
+        <SectionHead name="shelf" count={books.length} />
+        <Shelf
+          books={books}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+          queueNo={queueNo}
+          owner={owner}
+          reorder={reorder}
+          moveBy={moveBy}
+          onEdit={(b) => openEdit(b, "shelf")}
+          editing={selectedId ? form("shelf", selectedId) : null}
+        />
+      </section>
+
+
       {/* reading now: its own pane, the one thing on the shelf that's open */}
       <fieldset id="reading" className="pane mt-10 mx-0 mb-0 px-0 pt-1 pb-2 min-w-0 text-[13px]">
         <legend>
@@ -526,23 +470,7 @@ export function Library() {
       <section id="queue" className="mt-10 text-[13px]">
         <SectionHead
           name="queue"
-          count={
-            activeFilter ? (
-              <>
-                {shown.length}/{queue.length}{" "}
-                <button
-                  onClick={() => setFilter(null)}
-                  className="tui-btn lowercase"
-                  style={{ color: "var(--accent)" }}
-                  aria-label={`clear the ${activeFilter} filter`}
-                >
-                  /{activeFilter} ✕
-                </button>
-              </>
-            ) : (
-              queue.length
-            )
-          }
+          count={queue.length}
         />
         {queue.length === 0 ? (
           <p className="comment m-0 px-[1ch] text-[12px] lowercase" style={{ color: "var(--soft)" }}>
@@ -551,7 +479,7 @@ export function Library() {
         ) : (
           <>
             <ColumnHeads />
-            {shown.map((b) => rowFor(b, <No key="n" n={queueNo.get(b.id) ?? 0} />))}
+            {queue.map((b) => rowFor(b, <No key="n" n={queueNo.get(b.id) ?? 0} />))}
           </>
         )}
       </section>
@@ -573,27 +501,13 @@ export function Library() {
         )}
       </section>
 
-      <section id="shelf" className="mt-10 text-[13px]">
-        <SectionHead name="shelf" count={books.length} />
-        <Shelf
-          books={books}
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
-          queueNo={queueNo}
-          owner={owner}
-          reorder={reorder}
-          moveBy={moveBy}
-          onEdit={(b) => openEdit(b, "shelf")}
-          editing={selectedId ? form("shelf", selectedId) : null}
-        />
-      </section>
 
       <div
         className="mt-10 pt-2 px-[1ch] flex items-baseline justify-between gap-4 text-[11px] lowercase"
         style={{ color: "var(--faint)", borderTop: "1px solid var(--line)" }}
       >
         <span>
-          {books.length} books · {tracks.filter((t) => t.tag !== UNTAGGED).length} tracks · {done.length} read
+          {books.length} books · {reading.length} open · {done.length} read
         </span>
         <span className={`${s.end} normal-case`}>(END)</span>
       </div>

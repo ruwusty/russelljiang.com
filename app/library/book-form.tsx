@@ -74,15 +74,6 @@ export function BookForm({
             <option value="read">read</option>
           </select>
           <input
-            value={draft.tag}
-            onChange={(e) => setDraft({ ...draft, tag: e.target.value })}
-            placeholder="track (optional)"
-            maxLength={20}
-            className="px-2 py-1 text-[12px] outline-none flex-1 min-w-[120px] sm:flex-none sm:w-[150px]"
-            style={inputStyle}
-            aria-label="track"
-          />
-          <input
             value={draft.spine}
             onChange={(e) => setDraft({ ...draft, spine: e.target.value })}
             placeholder="spine label (if the title won't fit)"
