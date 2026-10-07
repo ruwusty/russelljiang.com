@@ -101,12 +101,12 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
                   <legend>
                     <span className="key">[4]</span> outline
                   </legend>
-                  <ol className="list-none m-0 p-0 text-[12px] space-y-1">
+                  <ol className="list-none m-0 p-0 text-[12px] space-y-0.5">
                     {toc.map((item, i) => (
                       <li key={item.href}>
                         <a href={item.href} className="site-link flex items-baseline gap-2 lowercase">
-                          <span style={{ color: "var(--faint)" }}>
-                            {String(i + 1).padStart(2, "0")}
+                          <span style={{ color: "var(--faint)" }} aria-hidden="true">
+                            {i === toc.length - 1 ? "└─" : "├─"}
                           </span>
                           <span className="truncate">{item.label}</span>
                         </a>

@@ -222,16 +222,19 @@ export function HomeEditor({
         className="mt-14 text-[13px] lowercase tracking-[0.15em]"
         style={{ color: "var(--ink)" }}
       >
-        <span style={{ color: "var(--accent)" }}>01</span> interests
+        <span style={{ color: "var(--accent)" }}>##</span> interests
         {editButton("interests")}
       </h2>
       {editing === "interests" ? (
         editor("interests", 13)
       ) : (
-        <ul className="mt-4 text-[14px] space-y-1 list-none p-0" style={{ color: "var(--ink)" }}>
-          {content.interests.map((line) => (
-            <li key={line} className="flex items-baseline gap-3">
-              <span style={{ color: "var(--accent)" }}>▸</span>
+        <ul className="mt-4 text-[14px] leading-[1.55] list-none p-0" style={{ color: "var(--ink)" }}>
+          {/* `tree`, not bullets */}
+          {content.interests.map((line, i) => (
+            <li key={line} className="flex items-baseline gap-2">
+              <span className="shrink-0" style={{ color: "var(--faint)" }} aria-hidden="true">
+                {i === content.interests.length - 1 ? "└──" : "├──"}
+              </span>
               <span>{line}</span>
             </li>
           ))}

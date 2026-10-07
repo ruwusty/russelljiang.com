@@ -1,39 +1,49 @@
 # russelljiang.com — conventions
 
-personal site for Russell Jiang. tui-inspired structure with a modern finish
-(think charm.sh's lipgloss, in a warm japanese-minimal palette). read this
-before changing anything visual or touching content.
+personal site for Russell Jiang. a tui you can read in a browser: tiled
+panes, reverse-video selection, box-drawing glyphs, one violet accent
+(obsidian-ish), with a modern window around it. read this before changing
+anything visual or touching content.
 
 ## design rules (hard)
 
-- palette via css vars in `app/globals.css` only: `--bg #faf8f3` (paper),
-  `--ink`, `--soft`, `--faint`, `--line`, `--accent #9a6a4f` (clay, hover/links
-  only), `--green #6f8f6a` (prompts, sparingly). dark mode inverts to `#16140f`
-  warm near-black, same accent. NO other hues (curated exceptions: guestbook
-  name palette in `app/guestbook/guestbook.tsx`, and the amp's hardware slot
-  leds in `SLOT_LED`, `app/presets/presets-grid.tsx`). `--soft` is #736f64 in
-  light mode so body copy set in it clears wcag aa (4.7:1); don't lighten it.
-- chrome may use gradients, radius and shadow, built only from the palette
-  vars, one hue per gradient. never blend clay into sage (russell:
-  "horrible"). sanctioned: the window's clay-corner border, the clay lamps +
-  dot grid behind it (`body::before/::after`), the focused pane's accent
-  border, the powerline status bar, ink→clay h1s (`h1.display`), the neofetch
-  art.
-  every ui element still behaves like a tui widget: selection is a solid
-  reverse-video bar, a cursor is a pointer glyph, focus is a border colour.
-  no fades, glows or rounded highlights on interactive rows.
-  content stays flat. avoid big low-contrast gradients inside panes: they
-  band visibly on 8-bit screens. no bold weights in body text, no images as
-  decoration (content images in /writing are fine).
-- type: JetBrains Mono everywhere; `.display` class (mincho serif, 0.2em
-  tracking, weight 400) for the site title and page h1s ONLY. body 14px,
-  line-height 1.9; small text 11–12px. lowercase except where grammar demands.
-- layout: one rounded `.window` in `app/components/docs-shell.tsx`: title bar,
-  tiled `.pane`s (fieldset + legend, so the name sits in the border), and the
-  powerline `StatusBar`. panes: [1] ~/site nav, [2] status, [3] main (prompt +
-  page, content capped at 720px), [4] outline at xl when the page's toc has
-  2+ entries. below lg the nav wraps into a strip above main and status
-  drops below it. `.hrule` (56px × 2px, solid clay) under each page heading.
+- palette via css vars in `app/globals.css` only. light: `--bg #f7f7f8`,
+  `--ink #222226`, `--soft #5c5c66`, `--faint`, `--line`, `--accent #6c4fe0`
+  (violet), `--green #2f7d4f` (prompts, "normal" mode, sparingly). dark:
+  `#1a1a1e` bg, `--accent #a88bfa`, `--green #7fbf8f`. cool neutral greys,
+  no warm tints. NO other hues (curated exceptions: guestbook name palette
+  in `app/guestbook/guestbook.tsx`, library spines, discord song colours,
+  and the amp's hardware slot leds in `SLOT_LED`,
+  `app/presets/presets-grid.tsx`). ink, soft and accent all clear wcag aa
+  on bg in both themes, and bg-on-accent does too (the reverse-video bars).
+  check contrast before changing any of them.
+- every ui element behaves like a tui widget. selection and the current
+  item are a solid reverse-video bar in the accent (nav rows, page h1s,
+  hovered list rows via `.list-row`/`.list-head`, a focused pane's legend).
+  a cursor is a pointer glyph (▹). focus is a border colour. lists are
+  `tree` glyphs (├── └──), tables have uppercase faint column heads (k9s),
+  section heads read `## name`. no fades, glows, rounded highlights or
+  cards on anything interactive.
+- the modern finish lives only in the chrome: the `.window` (10px radius,
+  backdrop blur, drop shadow, like a terminal emulator on a desktop), the
+  violet lamps + dot grid behind it (`body::before/::after`), the powerline
+  status bar. any gradient there uses one hue. avoid big low-contrast
+  gradients inside panes: they band visibly on 8-bit screens. no bold
+  weights in body text, no images as decoration (content images in
+  /writing are fine).
+- type: JetBrains Mono everywhere, headings included. `.display` is mono
+  with slight tracking; `h1.display` renders as a reverse-video block the
+  way charm's `glow` renders a markdown h1 (sizes forced from globals.css,
+  so per-page size utilities on h1s are ignored). `--font-display` (mincho)
+  survives only for the vertical 余白の美 in the margin. body 14px; small
+  text 11–12px. lowercase except where grammar demands.
+- layout: one `.window` in `app/components/docs-shell.tsx`: title bar,
+  tiled `.pane`s (fieldset + legend, so the name sits in the border, 4px
+  radius ≈ lipgloss RoundedBorder), and the powerline `StatusBar`. panes:
+  [1] ~/site nav, [2] status, [3] main (prompt + page, content capped at
+  720px), [4] outline at xl when the page's toc has 2+ entries. below lg
+  the nav wraps into a strip above main and status drops below it.
+  `.hrule` is a 1px `--line` rule across the column under each heading.
 - animations, the complete list (corrected 15 sep 2026 — this line used to
   name three while `globals.css` shipped six): the blinking cursors
   (`.cursor-block` in currently, `.caret-cell` in the prompt — the prompt's
