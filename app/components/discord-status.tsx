@@ -116,11 +116,11 @@ export function DiscordStatus() {
   const color = listening ? songColor(spotify.song) : STATUS_COLOR[discord_status];
 
   return (
-    <span className="flex items-baseline gap-2 xl:flex-wrap" style={{ color: "var(--soft)" }}>
+    <span className="flex items-baseline gap-2 lg:flex-wrap" style={{ color: "var(--soft)" }}>
       <span style={{ color: "var(--green)" }}>❯</span>
       <span className="shrink-0">status</span>
       <span
-        className="truncate xl:w-full xl:whitespace-normal xl:line-clamp-3"
+        className="truncate lg:w-full lg:whitespace-normal lg:line-clamp-3"
         style={{ color }}
       >
         {label}

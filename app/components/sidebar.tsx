@@ -76,13 +76,10 @@ export function Sidebar() {
   }, [router]);
 
   return (
-    <nav className="mt-10 text-[13px] xl:mt-0" aria-label="site navigation">
-      <div className="trail flex items-center gap-2 text-[12px]">
-        <span style={{ color: "var(--green)" }}>❯</span>
-        <span style={{ color: "var(--soft)" }}>ls ~/site</span>
-      </div>
-
-      <ul className="mt-3 space-y-1 list-none p-0 m-0">
+    <nav className="text-[13px]" aria-label="site navigation">
+      {/* a list widget on desktop; on a phone the rows wrap into a strip so
+          the page itself is above the fold */}
+      <ul className="mt-1 list-none p-0 m-0 flex flex-wrap gap-x-5 gap-y-0.5 lg:block lg:space-y-0.5">
         {items.map((item, i) => {
           const index = String(i + 1).padStart(2, "0");
           const active =
@@ -112,16 +109,17 @@ export function Sidebar() {
             <li key={item.label}>
               <LinkTag
                 href={item.href}
-                className="tui-item flex items-baseline gap-3"
+                className="tui-item nav-row flex items-baseline gap-3"
                 data-selected={selectedHere ? "true" : "false"}
+                aria-current={active ? "page" : undefined}
                 {...(item.external && !item.href.startsWith("mailto:")
                   ? { target: "_blank", rel: "noopener noreferrer" }
                   : {})}
               >
-                <span className="text-[11px]" style={{ color: "var(--faint)" }} aria-hidden="true">
+                <span className="hidden lg:inline text-[11px]" style={{ color: "var(--faint)" }} aria-hidden="true">
                   {index}
                 </span>
-                <span className="marker" aria-hidden="true">▸</span>
+                <span className="marker hidden lg:inline" aria-hidden="true">▸</span>
                 <span className="marker-hover" aria-hidden="true">▹</span>
                 <span
                   className="tui-label"

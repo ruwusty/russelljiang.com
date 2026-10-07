@@ -20,7 +20,14 @@ interface DocsShellProps {
   children: React.ReactNode;
 }
 
+// the deployed commit, shown in the status bar like a shell prompt's git
+// segment. vercel sets this at build; locally it is simply absent.
+const COMMIT = (process.env.VERCEL_GIT_COMMIT_SHA ?? "").slice(0, 7) || "dev";
+
 export function DocsShell({ crumb, toc, children }: DocsShellProps) {
+  // a one-entry outline is a label, not a map; give main the room instead
+  const outline = toc.length > 1;
+
   return (
     <CommandProvider>
     <div className="relative min-h-screen flex flex-col">
@@ -32,77 +39,86 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
         <span className="jp-tip">the beauty of negative space</span>
       </span>
 
-      <div className="mx-auto w-full max-w-[660px] flex-1 flex flex-col px-4 py-12 lg:py-20">
-        {/* terminal pane */}
-        <div
-          className="relative flex-1 flex flex-col"
-          style={{ border: "1px solid var(--line)" }}
-        >
-          {/* title sitting on the frame border */}
-          <span
-            className="absolute flex items-baseline gap-2 leading-none"
-            style={{
-              top: "-0.55em",
-              left: "20px",
-              background: "var(--bg)",
-              padding: "0 10px",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <Link
-              href="/"
-              className="display text-[15px] leading-none"
-              style={{ color: "var(--ink)", textDecoration: "none" }}
-            >
-              russell jiang
-            </Link>
-            <Kaomoji
-              slot="title"
-              fallback="(´。• ᵕ •。`)"
-              className="text-[11px]"
-              style={{ letterSpacing: "normal" }}
-            />
-          </span>
-          <span
-            className="absolute leading-none flex items-center gap-2.5"
-            style={{
-              top: "-0.6em",
-              right: "16px",
-              background: "var(--bg)",
-              padding: "0 8px",
-            }}
-          >
-            <MoonPhase />
-            <ThemeToggle />
-          </span>
-
-          <div className="flex-1 flex flex-col px-6 sm:px-10 pt-12 pb-10">
-            <header>
-              <div className="text-[11px] lowercase" style={{ color: "var(--soft)" }}>
-                ~/personal/{crumb}
-              </div>
-              {/* the command line, where the eye lands — not in the footer */}
-              <Prompt />
-
-              {/* at xl the whole strip hangs in the left margin and sticks
-                  while the pane scrolls; below xl it stays in the flow */}
-              <div className="xl:absolute xl:right-full xl:inset-y-0 xl:mr-9 xl:w-[180px]">
-                <div className="xl:sticky xl:top-10">
-                  <Sidebar />
-                  <StatusStrip />
-                </div>
-              </div>
-            </header>
-
-            <main id="content" className="mt-14 flex-1">{children}</main>
+      <div className="mx-auto w-full max-w-[1240px] flex-1 flex flex-col px-3 py-4 sm:px-6 sm:py-8 lg:py-12">
+        <div className="window flex-1 flex flex-col">
+          {/* title bar: who, and the two switches */}
+          <div className="titlebar flex items-center justify-between gap-4 px-4 sm:px-5 h-11">
+            <span className="flex items-baseline gap-2 min-w-0 leading-none">
+              <Link
+                href="/"
+                className="display text-[15px] leading-none"
+                style={{ color: "var(--ink)", textDecoration: "none" }}
+              >
+                russell jiang
+              </Link>
+              <Kaomoji
+                slot="title"
+                fallback="(´。• ᵕ •。`)"
+                className="hidden sm:inline text-[11px]"
+                style={{ letterSpacing: "normal" }}
+              />
+            </span>
+            <span className="leading-none flex items-center gap-3 shrink-0">
+              <MoonPhase />
+              <ThemeToggle />
+            </span>
           </div>
 
-          {/* statusbar: mode · message · ruler. the input moved up top. */}
-          <StatusBar sections={toc.length} />
+          {/* the tiles. below lg the side panes fold above and below main */}
+          <div className={`flex-1 grid gap-3 p-3 sm:gap-4 sm:p-4 lg:grid-cols-[210px_minmax(0,1fr)] ${outline ? "xl:grid-cols-[210px_minmax(0,1fr)_180px]" : ""}`}>
+            <div className="contents lg:flex lg:flex-col lg:gap-4">
+              <fieldset className="pane px-4 pb-3 pt-1 lg:px-5 lg:pb-4">
+                <legend>
+                  <span className="key">[1]</span> ~/site
+                </legend>
+                <Sidebar />
+              </fieldset>
+              <fieldset className="pane px-4 pb-3 pt-1 order-last lg:order-none lg:px-5 lg:pb-4">
+                <legend>
+                  <span className="key">[2]</span> status
+                </legend>
+                <StatusStrip />
+              </fieldset>
+            </div>
 
-          <CatCameo />
-          <PetalDrift />
-          <RmTheater />
+            <fieldset className="pane relative min-h-[60vh] px-5 pb-10 pt-2 sm:px-8 lg:px-10">
+              <legend>
+                <span className="key">[3]</span> ~/personal/{crumb}
+              </legend>
+              {/* the command line, where the eye lands */}
+              <Prompt />
+              <main id="content" className="mt-10 max-w-[720px]">
+                {children}
+              </main>
+              <CatCameo />
+              <PetalDrift />
+              <RmTheater />
+            </fieldset>
+
+            {outline && (
+              <div className="hidden xl:block">
+                <fieldset className="pane sticky top-6 px-4 pb-3 pt-1">
+                  <legend>
+                    <span className="key">[4]</span> outline
+                  </legend>
+                  <ol className="list-none m-0 p-0 text-[12px] space-y-1">
+                    {toc.map((item, i) => (
+                      <li key={item.href}>
+                        <a href={item.href} className="site-link flex items-baseline gap-2 lowercase">
+                          <span style={{ color: "var(--faint)" }}>
+                            {String(i + 1).padStart(2, "0")}
+                          </span>
+                          <span className="truncate">{item.label}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </fieldset>
+              </div>
+            )}
+          </div>
+
+          <StatusBar crumb={crumb} commit={COMMIT} />
         </div>
       </div>
     </div>

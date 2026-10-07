@@ -21,7 +21,26 @@ const SECTION_HINT: Record<Section, string> = {
   interests: "one interest per line",
 };
 
-export function HomeEditor({ initial }: { initial: HomeContent }) {
+// neofetch's logo slot. ansi shadow, lit by .fetch-art
+const FETCH_ART = [
+  "██████╗      ██╗",
+  "██╔══██╗     ██║",
+  "██████╔╝     ██║",
+  "██╔══██╗██   ██║",
+  "██║  ██║╚█████╔╝",
+  "╚═╝  ╚═╝ ╚════╝ ",
+].join("\n");
+
+// neofetch ends on the terminal's colour row; this one ends on the palette
+const SWATCHES = ["--ink", "--soft", "--faint", "--line", "--accent", "--green"];
+
+export function HomeEditor({
+  initial,
+  heading,
+}: {
+  initial: HomeContent;
+  heading: React.ReactNode;
+}) {
   const { password } = useSiteAuth();
   const [content, setContent] = useState(initial);
   const [editing, setEditing] = useState<Section | null>(null);
@@ -134,18 +153,64 @@ export function HomeEditor({ initial }: { initial: HomeContent }) {
 
   return (
     <>
-      {editing === "bio" ? (
-        editor("bio", 6)
-      ) : (
-        <p className="text-[14px] leading-[1.9]" style={{ color: "var(--soft)" }}>
-          {content.bio}
-          {editButton("bio")}
-        </p>
-      )}
+      {/* neofetch: logo left, who-am-i right */}
+      <section
+        id="introduction"
+        className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-10"
+      >
+        <pre className="fetch-art m-0 pt-1" aria-hidden="true">
+          {FETCH_ART}
+        </pre>
+        <div className="min-w-0 flex-1">
+          {heading}
+          <div
+            className="mt-3 mb-3 text-[12px] leading-none select-none overflow-hidden whitespace-nowrap"
+            style={{ color: "var(--faint)" }}
+            aria-hidden="true"
+          >
+            {"─".repeat(48)}
+          </div>
+          <div id="background">
+            {editing === "background" ? (
+              editor("background", 6)
+            ) : (
+              <dl className="m-0 text-[13px] grid grid-cols-[minmax(0,112px)_1fr] gap-x-3 gap-y-0.5">
+                {content.background.map((row) => (
+                  <div key={row.label} className="contents">
+                    <dt className="truncate" style={{ color: "var(--accent)" }}>
+                      {row.label}
+                    </dt>
+                    <dd className="m-0" style={{ color: "var(--ink)" }}>
+                      {row.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+            <div className="mt-4 flex items-center gap-0" aria-hidden="true">
+              {SWATCHES.map((v) => (
+                <span key={v} className="swatch" style={{ background: `var(${v})` }} />
+              ))}
+              {editButton("background")}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="mt-12">
+        {editing === "bio" ? (
+          editor("bio", 6)
+        ) : (
+          <p className="text-[14px] leading-[1.85]" style={{ color: "var(--ink)" }}>
+            {content.bio}
+            {editButton("bio")}
+          </p>
+        )}
+      </div>
 
       <aside
         className="mt-8 pl-4 text-[12px] leading-[1.9] lowercase"
-        style={{ borderLeft: "1px solid var(--line)", color: "var(--soft)" }}
+        style={{ borderLeft: "2px solid var(--green)", color: "var(--soft)" }}
       >
         <span style={{ color: "var(--green)" }}>note</span> — this site is a work
         in progress. check back occasionally — or don&apos;t.{" "}
@@ -153,46 +218,20 @@ export function HomeEditor({ initial }: { initial: HomeContent }) {
       </aside>
 
       <h2
-        id="background"
-        className="mt-16 text-[13px] lowercase tracking-[0.15em]"
-        style={{ color: "var(--ink)" }}
-      >
-        <span style={{ color: "var(--faint)" }}>01</span> background
-        {editButton("background")}
-      </h2>
-      {editing === "background" ? (
-        editor("background", 6)
-      ) : (
-        <dl
-          className="mt-4 text-[14px] grid grid-cols-[140px_1fr] gap-y-1"
-          style={{ color: "var(--soft)" }}
-        >
-          {content.background.map((row) => (
-            <div key={row.label} className="contents">
-              <dt className="text-[12px]" style={{ color: "var(--soft)" }}>
-                {row.label}
-              </dt>
-              <dd>{row.value}</dd>
-            </div>
-          ))}
-        </dl>
-      )}
-
-      <h2
         id="interests"
-        className="mt-16 text-[13px] lowercase tracking-[0.15em]"
+        className="mt-14 text-[13px] lowercase tracking-[0.15em]"
         style={{ color: "var(--ink)" }}
       >
-        <span style={{ color: "var(--faint)" }}>02</span> interests
+        <span style={{ color: "var(--accent)" }}>01</span> interests
         {editButton("interests")}
       </h2>
       {editing === "interests" ? (
         editor("interests", 13)
       ) : (
-        <ul className="mt-4 text-[14px] space-y-1 list-none p-0" style={{ color: "var(--soft)" }}>
+        <ul className="mt-4 text-[14px] space-y-1 list-none p-0" style={{ color: "var(--ink)" }}>
           {content.interests.map((line) => (
             <li key={line} className="flex items-baseline gap-3">
-              <span style={{ color: "var(--faint)" }}>▸</span>
+              <span style={{ color: "var(--accent)" }}>▸</span>
               <span>{line}</span>
             </li>
           ))}

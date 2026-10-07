@@ -759,43 +759,87 @@ export function Prompt() {
 
 /* ---------------------------------------------------------- status bar */
 
-/** the bottom line: mode · hints · ruler. no input, no output — both live
- *  at the prompt now. */
-export function StatusBar({ sections }: { sections: number }) {
+/** the bottom line: powerline segments. mode · path ··· hints ··· clock ·
+ *  commit · ruler. no input, no output — both live under the prompt. */
+export function StatusBar({ crumb, commit }: { crumb: string; commit: string }) {
   const c = useCommand();
   const inCommand = c.focused || c.mode === "pw";
+  const [clock, setClock] = useState<string | null>(null);
+
+  // sydney time, ticking on the minute. client-only so ssr never disagrees.
+  useEffect(() => {
+    const fmt = new Intl.DateTimeFormat("en-AU", {
+      timeZone: "Australia/Sydney",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    const tick = () => setClock(fmt.format(new Date()));
+    tick();
+    const id = setInterval(tick, 15_000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <footer
-      className="relative flex items-center justify-between gap-4 px-3 py-1 text-[11px] lowercase"
+      className="relative flex items-center justify-between gap-4 px-2 py-1.5 text-[11px] lowercase"
       style={{ borderTop: "1px solid var(--line)", color: "var(--soft)" }}
     >
-      <span className="flex items-baseline gap-2 min-w-0 flex-1">
+      <span className="flex items-center min-w-0 flex-1">
         <span
-          className="px-1.5 shrink-0"
+          className="seg inline-flex shrink-0"
           style={{
-            background: inCommand ? "var(--accent)" : "var(--green)",
+            background: inCommand
+              ? "linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 80%, var(--ink)))"
+              : "linear-gradient(90deg, var(--green), color-mix(in srgb, var(--green) 75%, var(--accent)))",
             color: "var(--bg)",
           }}
         >
           {c.mode === "pw" ? "login" : inCommand ? "command" : "normal"}
         </span>
+        <span
+          className="seg hidden sm:inline-flex shrink-0"
+          style={{ background: "var(--line)", color: "var(--ink)" }}
+        >
+          ~/{crumb}
+        </span>
         {c.teaUntil !== null && (
-          <span className="shrink-0" style={{ color: "var(--green)" }}>
+          <span className="ml-3 shrink-0" style={{ color: "var(--green)" }}>
             tea {Math.floor((c.teaUntil - Date.now()) / 60000)}:
             {String(Math.max(0, Math.ceil(((c.teaUntil - Date.now()) % 60000) / 1000)) % 60).padStart(2, "0")}
           </span>
         )}
-        <span className="hidden sm:inline truncate" style={{ color: "var(--soft)" }}>
+        <span className="ml-3 hidden md:inline truncate">
           j/k move · enter open · : cmd · / grep · tab complete
         </span>
       </span>
-      <span className="shrink-0 text-right flex items-center gap-2" style={{ color: "var(--soft)" }}>
-        <span>
-          {sections} sections · © 2026 · utf-8 ·{" "}
-          <span className="inline-block min-w-[3ch] text-left">{c.ruler}</span>
+      <span className="shrink-0 flex items-center">
+        <Kaomoji slot="statusbar" className="text-[11px] mr-3" />
+        {clock && (
+          <span
+            className="seg-r hidden sm:inline-flex"
+            style={{ background: "color-mix(in srgb, var(--line) 55%, transparent)" }}
+            title="sydney"
+          >
+            syd {clock}
+          </span>
+        )}
+        <span
+          className="seg-r hidden sm:inline-flex"
+          style={{ background: "var(--line)", color: "var(--ink)" }}
+          title="deployed commit"
+        >
+          ⎇ {commit}
         </span>
-        <Kaomoji slot="statusbar" className="text-[11px]" />
+        <span
+          className="seg-r inline-flex"
+          style={{
+            background: "linear-gradient(90deg, color-mix(in srgb, var(--accent) 75%, var(--green)), var(--accent))",
+            color: "var(--bg)",
+          }}
+        >
+          <span className="inline-block min-w-[3ch] text-right">{c.ruler}</span>
+        </span>
       </span>
     </footer>
   );

@@ -253,7 +253,7 @@ export function Currently() {
   return (
     <span className="flex flex-col min-w-0">
       <span
-        className="flex items-baseline gap-2 min-w-0 xl:flex-wrap"
+        className="flex items-baseline gap-2 min-w-0 lg:flex-wrap"
         style={{ color: "var(--soft)" }}
         aria-label={`currently: ${queue[index]}`}
       >
@@ -267,7 +267,7 @@ export function Currently() {
           </button>
         )}
         <span
-          className="truncate xl:w-full xl:whitespace-normal xl:line-clamp-3"
+          className="truncate lg:w-full lg:whitespace-normal lg:line-clamp-3"
           style={{ color: "var(--ink)" }}
           aria-hidden="true"
         >

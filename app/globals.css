@@ -5,11 +5,18 @@
 :root {
   --bg: #faf8f3;
   --ink: #3b3a36;
-  --soft: #8e8a7e;
+  --soft: #736f64;
   --faint: #c9c4b4;
   --line: #e4dfd1;
   --accent: #9a6a4f;
   --green: #6f8f6a;
+
+  /* chrome: the window, its panes, the ambient light behind them */
+  --glass: color-mix(in srgb, var(--bg) 52%, transparent);
+  --pane: color-mix(in srgb, var(--bg) 50%, transparent);
+  --glow-a: color-mix(in srgb, var(--accent) 34%, transparent);
+  --glow-b: color-mix(in srgb, var(--green) 32%, transparent);
+  --lift: 0 40px 90px -40px rgba(70, 48, 30, 0.28), 0 2px 6px -2px rgba(70, 48, 30, 0.08);
 
   /* legacy aliases kept so older components keep working */
   --text: var(--ink);
@@ -27,6 +34,10 @@
   --soft: #8e8a7e;
   --faint: #4a463b;
   --line: #2b2820;
+  --glass: color-mix(in srgb, var(--bg) 58%, transparent);
+  --glow-a: color-mix(in srgb, var(--accent) 42%, transparent);
+  --glow-b: color-mix(in srgb, var(--green) 32%, transparent);
+  --lift: 0 40px 100px -30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 0, 0, 0.3);
 }
 
 html {
@@ -40,7 +51,7 @@ body {
   color: var(--ink);
   font-family: var(--font-mono);
   font-size: 14px;
-  line-height: 1.9;
+  line-height: 1.75;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -91,12 +102,202 @@ html {
   text-transform: lowercase;
 }
 
+/* page headings carry the one gradient in the type: ink warming into clay */
+h1.display {
+  background: linear-gradient(100deg, var(--ink) 0%, var(--accent) 75%, var(--green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+
 /* short rule under the main heading */
 .hrule {
-  width: 44px;
-  height: 1px;
-  background: var(--ink);
+  width: 56px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--green));
   border: none;
+}
+
+/* ─── chrome ────────────────────────────────────────────────────────────
+   tui structure, modern finish. the site is one window: a title bar, tiled
+   panes with their names cut into the border (fieldset/legend does that
+   natively, transparent background and all), and a powerline status bar.
+   behind it, two soft lamps and a dot grid. */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    /* eased stops: a straight fade to transparent leaves a visible ring */
+    radial-gradient(
+      55vw 50vw at 8% 0%,
+      var(--glow-a),
+      color-mix(in srgb, var(--glow-a) 55%, transparent) 30%,
+      color-mix(in srgb, var(--glow-a) 18%, transparent) 55%,
+      transparent 80%
+    ),
+    radial-gradient(
+      60vw 55vw at 100% 100%,
+      var(--glow-b),
+      color-mix(in srgb, var(--glow-b) 55%, transparent) 30%,
+      color-mix(in srgb, var(--glow-b) 18%, transparent) 55%,
+      transparent 80%
+    );
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(circle, var(--faint) 1px, transparent 1.3px);
+  background-size: 22px 22px;
+  /* uniform on purpose: a masked fade shows through the window's blur as a
+     ring */
+  opacity: 0.5;
+}
+
+.window {
+  position: relative;
+  border-radius: 14px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(22px) saturate(1.15);
+  backdrop-filter: blur(22px) saturate(1.15);
+  box-shadow: var(--lift);
+}
+
+/* a 1px border that drifts from clay to line to sage */
+.window::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 70%, var(--line)),
+    var(--line) 35%,
+    var(--line) 65%,
+    color-mix(in srgb, var(--green) 70%, var(--line))
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+.titlebar {
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--line) 28%, transparent);
+  border-radius: 14px 14px 0 0;
+}
+
+.pane {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--pane);
+}
+
+.pane > legend {
+  margin-left: 12px;
+  padding: 0 8px;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--soft);
+  text-transform: lowercase;
+}
+
+.pane > legend .key {
+  color: var(--faint);
+}
+
+.pane:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 65%, var(--line));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 10%, transparent),
+    0 12px 40px -18px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.pane:focus-within > legend {
+  color: var(--accent);
+}
+
+/* nav rows read as a list widget: the current row is lit, not just inked */
+.nav-row {
+  border-radius: 4px;
+  padding: 0 8px;
+  margin: 0 -8px;
+}
+
+.nav-row[aria-current="page"] {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent) 16%, transparent),
+    transparent 85%
+  );
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.nav-row[data-selected="true"] {
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+}
+
+/* powerline status bar. segments are flat colour, cut into chevrons */
+/* display comes from the markup (inline-flex / hidden sm:inline-flex) so the
+   breakpoint utilities still win */
+.seg {
+  align-items: center;
+  height: 22px;
+  padding: 0 14px 0 10px;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
+  white-space: nowrap;
+}
+
+.seg + .seg {
+  margin-left: -6px;
+  padding-left: 16px;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%, 8px 50%);
+}
+
+.seg-r {
+  align-items: center;
+  height: 22px;
+  padding: 0 10px 0 16px;
+  clip-path: polygon(8px 0, 100% 0, 100% 100%, 8px 100%, 0 50%);
+  white-space: nowrap;
+}
+
+.seg-r + .seg-r {
+  margin-left: -6px;
+}
+
+/* neofetch: block letters lit from clay to sage */
+.fetch-art {
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: pre;
+  background: linear-gradient(160deg, var(--accent) 10%, var(--green) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  user-select: none;
+}
+
+@media (min-width: 640px) {
+  .fetch-art {
+    font-size: 15px;
+  }
+}
+
+.swatch {
+  display: inline-block;
+  width: 22px;
+  height: 12px;
 }
 
 /* section command rows: a hairline trailing off to the right margin.
@@ -305,6 +506,7 @@ html[data-intro] .intro-content {
 /* mdx essays: section headings auto-number themselves (01, 02, …) */
 .essay {
   counter-reset: essay-section;
+  line-height: 1.9;
 }
 
 .essay .essay-h2 {
@@ -410,7 +612,7 @@ body.phosphor::after {
   display: block;
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1400px) {
   .vertical-jp {
     display: block;
   }

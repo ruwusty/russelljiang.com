@@ -1,6 +1,7 @@
 # russelljiang.com — conventions
 
-personal site for Russell Jiang. tui × japanese minimal aesthetic. read this
+personal site for Russell Jiang. tui-inspired structure with a modern finish
+(think charm.sh's lipgloss, in a warm japanese-minimal palette). read this
 before changing anything visual or touching content.
 
 ## design rules (hard)
@@ -8,17 +9,26 @@ before changing anything visual or touching content.
 - palette via css vars in `app/globals.css` only: `--bg #faf8f3` (paper),
   `--ink`, `--soft`, `--faint`, `--line`, `--accent #9a6a4f` (clay, hover/links
   only), `--green #6f8f6a` (prompts, sparingly). dark mode inverts to `#16140f`
-  warm near-black, same accent. NO other colours (curated exceptions: guestbook
+  warm near-black, same accent. NO other hues (curated exceptions: guestbook
   name palette in `app/guestbook/guestbook.tsx`, and the amp's hardware slot
-  leds in `SLOT_LED`, `app/presets/presets-grid.tsx`).
-- no drop shadows, no border-radius, no gradients, no bold weights in body
-  text, no images as decoration (content images in /writing are fine).
+  leds in `SLOT_LED`, `app/presets/presets-grid.tsx`). `--soft` is #736f64 in
+  light mode so body copy set in it clears wcag aa (4.7:1); don't lighten it.
+- chrome may use gradients, radius and shadow, built only from the palette
+  vars: the window's clay→sage border, the ambient lamps + dot grid behind it
+  (`body::before/::after`), the focused pane's accent glow, the powerline
+  status bar, gradient h1s (`h1.display`), the `.hrule`, the neofetch art.
+  content stays flat. avoid big low-contrast gradients inside panes: they
+  band visibly on 8-bit screens. no bold weights in body text, no images as
+  decoration (content images in /writing are fine).
 - type: JetBrains Mono everywhere; `.display` class (mincho serif, 0.2em
   tracking, weight 400) for the site title and page h1s ONLY. body 14px,
   line-height 1.9; small text 11–12px. lowercase except where grammar demands.
-- layout: single column inside the bordered "terminal pane" in
-  `app/components/docs-shell.tsx`. 1px solid borders only, used sparingly.
-  a 44px × 1px `.hrule` under each page heading. generous whitespace.
+- layout: one rounded `.window` in `app/components/docs-shell.tsx`: title bar,
+  tiled `.pane`s (fieldset + legend, so the name sits in the border), and the
+  powerline `StatusBar`. panes: [1] ~/site nav, [2] status, [3] main (prompt +
+  page, content capped at 720px), [4] outline at xl when the page's toc has
+  2+ entries. below lg the nav wraps into a strip above main and status
+  drops below it. `.hrule` (56px × 2px, clay→sage) under each page heading.
 - animations, the complete list (corrected 15 sep 2026 — this line used to
   name three while `globals.css` shipped six): the blinking cursors
   (`.cursor-block` in currently, `.caret-cell` in the prompt — the prompt's
