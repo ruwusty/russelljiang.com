@@ -1,18 +1,20 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+// node, not edge: with maple bundled in, an edge function is over vercel's
+// 1 mb cap. nothing here is dynamic, so next renders the png once at build.
+export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = "russell jiang — a terminal you can read in a browser";
 
 // the link preview is the site in miniature: a dark window, the mark, and a
-// fetch beside it. maple mono ships next to this file (satori reads woff, not
-// woff2) so the card never depends on a network fetch. only characters maple
-// has go in here: satori draws anything missing as tofu.
-const maple = fetch(new URL("./og-maple-400.woff", import.meta.url)).then((r) => r.arrayBuffer());
-const mapleItalic = fetch(new URL("./og-maple-400-italic.woff", import.meta.url)).then((r) =>
-  r.arrayBuffer()
-);
+// fetch beside it. maple mono sits next to this file (satori reads woff, not
+// woff2) and is read from disk, so the card never depends on a network
+// fetch. only characters maple has go in here: satori draws anything
+// missing as tofu.
+const font = (name: string) => readFile(join(process.cwd(), "app", name));
 
 const C = {
   bg: "#1a1a1e",
@@ -48,7 +50,10 @@ function Mark({ px }: { px: number }) {
 }
 
 export default async function OpengraphImage() {
-  const [regular, italic] = await Promise.all([maple, mapleItalic]);
+  const [regular, italic] = await Promise.all([
+    font("og-maple-400.woff"),
+    font("og-maple-400-italic.woff"),
+  ]);
 
   const rows: [string, string][] = [
     ["degree", "data science & decisions @ unsw"],
