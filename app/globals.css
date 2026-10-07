@@ -214,34 +214,30 @@ body::after {
   color: var(--faint);
 }
 
+/* a focused pane recolours its border, the way a terminal does. no glow. */
 .pane:focus-within {
-  border-color: color-mix(in srgb, var(--accent) 65%, var(--line));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 10%, transparent),
-    0 12px 40px -18px color-mix(in srgb, var(--accent) 45%, transparent);
+  border-color: var(--accent);
 }
 
 .pane:focus-within > legend {
   color: var(--accent);
 }
 
-/* nav rows read as a list widget: the current row is lit, not just inked */
+/* nav rows are a list widget: the current page is a solid reverse-video bar
+   the width of the pane (lazygit, ranger). the j/k cursor is the ▹ pointer
+   from .tui-item, not a second bar. */
 .nav-row {
-  border-radius: 4px;
   padding: 0 8px;
   margin: 0 -8px;
 }
 
 .nav-row[aria-current="page"] {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--accent) 16%, transparent),
-    transparent 85%
-  );
-  box-shadow: inset 2px 0 0 var(--accent);
+  background: var(--accent);
 }
 
-.nav-row[data-selected="true"] {
-  background: color-mix(in srgb, var(--accent) 9%, transparent);
+.nav-row[aria-current="page"],
+.nav-row[aria-current="page"] * {
+  color: var(--bg) !important;
 }
 
 /* powerline status bar. segments are flat colour, cut into chevrons */
@@ -384,10 +380,12 @@ button:focus-visible,
   display: inline;
 }
 
-.tui-item:hover .tui-label,
-.tui-item:focus-visible .tui-label,
-.tui-item[data-selected="true"] .tui-label {
-  color: var(--accent);
+/* !important because the label's resting colour is an inline style; the
+   current-page bar keeps its own inverse colours */
+.tui-item:not([aria-current="page"]):hover .tui-label,
+.tui-item:not([aria-current="page"]):focus-visible .tui-label,
+.tui-item:not([aria-current="page"])[data-selected="true"] .tui-label {
+  color: var(--accent) !important;
 }
 
 /* blinking block cursor */

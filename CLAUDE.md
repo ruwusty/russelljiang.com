@@ -17,8 +17,11 @@ before changing anything visual or touching content.
   vars, one hue per gradient. never blend clay into sage (russell:
   "horrible"). sanctioned: the window's clay-corner border, the clay lamps +
   dot grid behind it (`body::before/::after`), the focused pane's accent
-  glow, the powerline status bar, ink→clay h1s (`h1.display`), the neofetch
+  border, the powerline status bar, ink→clay h1s (`h1.display`), the neofetch
   art.
+  every ui element still behaves like a tui widget: selection is a solid
+  reverse-video bar, a cursor is a pointer glyph, focus is a border colour.
+  no fades, glows or rounded highlights on interactive rows.
   content stays flat. avoid big low-contrast gradients inside panes: they
   band visibly on 8-bit screens. no bold weights in body text, no images as
   decoration (content images in /writing are fine).
