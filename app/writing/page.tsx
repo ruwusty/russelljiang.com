@@ -48,8 +48,20 @@ export default function WritingIndex() {
             <>
               <div className="list-head grid grid-cols-[11ch_minmax(0,1fr)] gap-x-4 px-[1ch]">
                 <span style={{ color: "var(--soft)" }}>{post.date}</span>
-                <span className="flex items-baseline justify-between gap-4 min-w-0">
+                <span className="relative flex items-baseline justify-between gap-4 min-w-0">
+                  {/* the highlight star hangs in the gutter, outside the
+                      truncating title, so every title starts in one column */}
+                  {post.featured && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute right-full mr-[0.6ch]"
+                      style={{ color: "var(--accent)" }}
+                    >
+                      ★
+                    </span>
+                  )}
                   <h2 className="m-0 text-[13px] font-normal truncate" style={{ color: "var(--ink)" }}>
+                    {post.featured && <span className="sr-only">highlight: </span>}
                     {post.title}
                   </h2>
                   <span className="hidden sm:inline shrink-0 text-[11px]" style={{ color: "var(--accent)" }}>
@@ -94,6 +106,7 @@ export default function WritingIndex() {
           style={{ color: "var(--faint)", borderTop: "1px solid var(--line)" }}
         >
           {posts.length} posts
+          {posts.some((p) => p.featured) && <> · <span style={{ color: "var(--accent)" }}>★</span> highlight</>}
         </div>
       </div>
     </DocsShell>

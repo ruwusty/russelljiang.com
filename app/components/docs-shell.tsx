@@ -69,13 +69,13 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
               every row, and the nav pane grows a blank tail on tablets */}
           <div className={`flex-1 grid grid-rows-[auto_1fr_auto] gap-3 p-3 sm:gap-4 sm:p-4 lg:grid-rows-none lg:grid-cols-[210px_minmax(0,1fr)] ${outline ? "xl:grid-cols-[210px_minmax(0,1fr)_180px]" : ""}`}>
             <div className="contents lg:flex lg:flex-col lg:gap-4">
-              <fieldset className="pane intro-boot px-4 pb-3 pt-1 lg:px-5 lg:pb-4">
+              <fieldset className="pane px-4 pb-3 pt-1 lg:px-5 lg:pb-4">
                 <legend>
                   <span className="key">[1]</span> ~/site
                 </legend>
                 <Sidebar />
               </fieldset>
-              <fieldset className="pane intro-boot px-4 pb-3 pt-1 order-last lg:order-none lg:px-5 lg:pb-4">
+              <fieldset className="pane px-4 pb-3 pt-1 order-last lg:order-none lg:px-5 lg:pb-4">
                 <legend>
                   <span className="key">[2]</span> status
                 </legend>
@@ -99,7 +99,7 @@ export function DocsShell({ crumb, toc, children }: DocsShellProps) {
 
             {outline && (
               <div className="hidden xl:block">
-                <fieldset className="pane intro-boot sticky top-6 px-4 pb-3 pt-1">
+                <fieldset className="pane sticky top-6 px-4 pb-3 pt-1">
                   <legend>
                     <span className="key">[4]</span> outline
                   </legend>

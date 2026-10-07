@@ -1,21 +1,60 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+// node, not edge: with maple bundled in, an edge function is over vercel's
+// 1 mb cap. nothing here is dynamic, so next renders the png once at build.
+export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "russell jiang — terminal-styled personal site";
+export const alt = "russell jiang — a terminal you can read in a browser";
 
-// ascii-only inside the card: satori renders missing glyphs as tofu, so no
-// box-drawing or kaomoji here. the frame is css borders, like the real site.
-const MONO_URL =
-  "https://raw.githubusercontent.com/JetBrains/JetBrainsMono/master/fonts/ttf/JetBrainsMono-Regular.ttf";
+// the link preview is the site in miniature: a dark window, the mark, and a
+// fetch beside it. maple mono sits next to this file (satori reads woff, not
+// woff2) and is read from disk, so the card never depends on a network
+// fetch. only characters maple has go in here: satori draws anything
+// missing as tofu.
+const font = (name: string) => readFile(join(process.cwd(), "app", name));
+
+const C = {
+  bg: "#1a1a1e",
+  ink: "#dcddde",
+  soft: "#9a9aa3",
+  faint: "#555560",
+  line: "#2e2e34",
+  accent: "#a28fc0",
+  rose: "#e0a8b0",
+};
+
+// the mark, the same drawing as app/icon.svg: the slash and the dot
+function Mark({ px }: { px: number }) {
+  return (
+    <svg width={px} height={px} viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="f" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0.1" stopColor="#a28fc0" />
+          <stop offset="0.95" stopColor="#e0a8b0" />
+        </linearGradient>
+      </defs>
+      <rect width="100" height="100" rx="22" fill="#26262c" />
+      <path d="M31.18 69.00 L44.82 27.00" stroke="url(#f)" strokeWidth="15" strokeLinecap="round" fill="none" />
+      <circle cx="68.83" cy="34.88" r="7.88" fill="url(#f)" />
+    </svg>
+  );
+}
 
 export default async function OpengraphImage() {
-  const mono = await fetch(MONO_URL)
-    .then((res) => (res.ok ? res.arrayBuffer() : null))
-    .catch(() => null);
+  const [regular, italic] = await Promise.all([
+    font("og-maple-400.woff"),
+    font("og-maple-400-italic.woff"),
+  ]);
 
-  const fontFamily = mono ? "JetBrains Mono" : "monospace";
+  const rows: [string, string][] = [
+    ["degree", "data science & decisions @ unsw"],
+    ["shell", "ru.sh"],
+    ["theme", "wisteria"],
+    ["site", "russelljiang.com"],
+  ];
 
   return new ImageResponse(
     (
@@ -24,121 +63,90 @@ export default async function OpengraphImage() {
           width: "100%",
           height: "100%",
           display: "flex",
-          background: "#faf8f3",
-          padding: 56,
-          fontFamily,
+          background: "#111114",
+          padding: 40,
+          fontFamily: "Maple Mono",
+          color: C.ink,
         }}
       >
+        {/* the window */}
         <div
           style={{
             flex: 1,
             display: "flex",
             flexDirection: "column",
-            border: "3px solid #e4dfd1",
-            position: "relative",
+            background: C.bg,
+            border: `2px solid ${C.line}`,
+            borderRadius: 20,
           }}
         >
-          {/* wordmark sitting on the frame border, like the site */}
-          <div
-            style={{
-              position: "absolute",
-              top: -22,
-              left: 48,
-              background: "#faf8f3",
-              padding: "0 20px",
-              fontSize: 30,
-              letterSpacing: "0.2em",
-              color: "#3b3a36",
-            }}
-          >
-            russell jiang
-          </div>
-
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              paddingLeft: 96,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 76,
-                letterSpacing: "0.12em",
-                color: "#3b3a36",
-              }}
-            >
-              russell jiang
-            </div>
-            <div
-              style={{
-                display: "flex",
-                marginTop: 28,
-                fontSize: 28,
-                color: "#8e8a7e",
-              }}
-            >
-              <span style={{ color: "#6f8f6a", marginRight: 18 }}>&gt;</span>
-              data science student · sydney
-            </div>
-            <div
-              style={{
-                display: "flex",
-                marginTop: 12,
-                fontSize: 28,
-                color: "#c9c4b4",
-              }}
-            >
-              <span style={{ color: "#6f8f6a", marginRight: 18 }}>&gt;</span>
-              russelljiang.com
-              <span
-                style={{
-                  width: 16,
-                  height: 34,
-                  background: "#6f8f6a",
-                  marginLeft: 10,
-                }}
-              />
-            </div>
-          </div>
-
-          {/* statusbar */}
+          {/* title bar */}
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              borderTop: "3px solid #e4dfd1",
-              padding: "16px 32px",
-              fontSize: 22,
+              padding: "18px 30px",
+              borderBottom: `2px solid ${C.line}`,
+              fontSize: 24,
+            }}
+          >
+            <span>russell jiang</span>
+            <span style={{ color: C.soft }}>[light]</span>
+          </div>
+
+          {/* the fetch */}
+          <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "0 64px", gap: 60 }}>
+            <Mark px={250} />
+            <div style={{ display: "flex", flexDirection: "column", fontSize: 26 }}>
+              <div style={{ display: "flex", color: C.soft }}>
+                <span style={{ color: C.rose, marginRight: 14 }}>❯</span>
+                fastfetch
+              </div>
+              <div style={{ display: "flex", marginTop: 18, fontSize: 52 }}>
+                <span style={{ color: C.accent, marginRight: 22 }}>#</span>
+                russell jiang
+              </div>
+              <div style={{ display: "flex", marginTop: 6, color: C.soft, fontStyle: "italic" }}>
+                a terminal you can read in a browser
+              </div>
+              <div style={{ display: "flex", width: 560, height: 2, background: C.line, margin: "22px 0 16px" }} />
+              {rows.map(([k, v]) => (
+                <div key={k} style={{ display: "flex", marginTop: 4 }}>
+                  <span style={{ width: 130, color: C.accent }}>{k}</span>
+                  <span>{v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* status bar */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderTop: `2px solid ${C.line}`,
+              padding: "12px 20px",
+              fontSize: 20,
             }}
           >
             <div style={{ display: "flex", alignItems: "center" }}>
-              <span
-                style={{
-                  background: "#6f8f6a",
-                  color: "#faf8f3",
-                  padding: "2px 14px",
-                }}
-              >
-                normal
-              </span>
-              <span style={{ color: "#c9c4b4", marginLeft: 20 }}>
-                j/k move · : for cmd
-              </span>
+              <span style={{ background: C.rose, color: C.bg, padding: "2px 16px" }}>normal</span>
+              <span style={{ background: C.line, color: C.ink, padding: "2px 16px" }}>~/overview</span>
+              <span style={{ color: C.faint, marginLeft: 20 }}>: cmd · / grep · tab complete</span>
             </div>
-            <span style={{ color: "#c9c4b4" }}>(c) 2026 · utf-8</span>
+            <span style={{ background: C.accent, color: C.bg, padding: "2px 16px" }}>all</span>
           </div>
         </div>
       </div>
     ),
     {
       ...size,
-      fonts: mono
-        ? [{ name: "JetBrains Mono", data: mono, weight: 400 as const, style: "normal" as const }]
-        : undefined,
+      fonts: [
+        { name: "Maple Mono", data: regular, weight: 400, style: "normal" },
+        { name: "Maple Mono", data: italic, weight: 400, style: "italic" },
+      ],
     }
   );
 }

@@ -128,31 +128,33 @@ export const LOGOS = {
     "│                    │",
     "╰────────────────────╯",
   ],
-  // a hit circle and its approach ring, after osu!. generated, not drawn:
+  // a hit circle and its approach ring, after osu!: the hit circle in half
+  // blocks, the approach ring thin, in line glyphs picked by the circle's
+  // direction at each cell. generated, not drawn:
   // a cell is 0.6em x 1.3em (the .fetch-art line), so hand-drawn circles
   // come out as ovals. each half-block (▀ ▄ █) is sampled against the rings
   // in em units instead
-  circle: [
-    "         ▄▄▄▄▄▄▄              ",
-    "     ▄█▀▀▀     ▀▀▀█▄          ",
-    "   ▄█▀             ▀█▄        ",
-    "  ▄█     ▄█▀▀▀█▄     █▄       ",
-    "  █    ▄█       █▄    █       ",
-    "  █    █    1    █    █  · · ✦",
-    "  █    ▀█       █▀    █       ",
-    "  ▀█     ▀█▄▄▄█▀     █▀       ",
-    "   ▀█▄             ▄█▀        ",
-    "     ▀█▄▄▄     ▄▄▄█▀          ",
-    "         ▀▀▀▀▀▀▀          300 ",
+  osu: [
+    "       ───────────             ",
+    "     ╱──         ──╲           ",
+    "   ╱                 ╲         ",
+    "  ╱      ▄█▀▀▀█▄      ╲        ",
+    " │     ▄█       █▄     │       ",
+    " │     █    1    █     │  · · ✦",
+    " │     ▀█       █▀     │       ",
+    "  ╲      ▀█▄▄▄█▀      ╱        ",
+    "   ╲                 ╱         ",
+    "     ╲──         ──╱           ",
+    "       ───────────         300 ",
   ],
   // the scan line and its notes, after cytus ii: a flick, taps, a drag chain
-  // snaking down at an angle, and a hold (one head, then its trail)
-  scanline: [
-    "               ◁◇▷           ",
-    "    ◉                   ◉    ",
-    "         ●·                  ",
-    "            ·●·              ",
-    "                ·●           ",
+  // whose heads are joined by a dotted diagonal, and a hold (one head, then its trail)
+  cytus: [
+    "        ●             ◁◇▷    ",
+    "    ◉     ·              ◉   ",
+    "            ●                ",
+    "              ·              ",
+    "                ●            ",
     "━━━━━━━━━━━━━━━━━━━━━━━━━━━ ▲",
     "      ◉                     │",
     "      ┃           ◉         ▼",

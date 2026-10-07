@@ -1,18 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <style>
-    .bg { fill: #f7f7f8; }
-    .frame { fill: none; stroke: #e2e2e8; stroke-width: 2; }
-    .prompt { fill: none; stroke: #7a6488; stroke-width: 3.2; stroke-linecap: square; }
-    .cur { fill: #a35d6d; }
-    @media (prefers-color-scheme: dark) {
-      .bg { fill: #1a1a1e; }
-      .frame { stroke: #2e2e34; }
-      .prompt { stroke: #a28fc0; }
-      .cur { fill: #e0a8b0; }
-    }
-  </style>
-  <rect class="bg" width="32" height="32" rx="7"/>
-  <rect class="frame" x="1" y="1" width="30" height="30" rx="6"/>
-  <path class="prompt" d="M9 10 L15.5 16 L9 22"/>
-  <rect class="cur" x="19" y="9.5" width="6" height="13"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- the mark: an italic r with everything taken away but its stem and the
+       ball of its arm. 18° slant, generated from proportions (bar weight,
+       dot = 1.05 × bar, gap = 0.55 × bar) and optically centred. the fade is
+       the fastfetch logos' wisteria into rose, on the dark window. -->
+  <defs>
+    <linearGradient id="f" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0.1" stop-color="#a28fc0"/>
+      <stop offset="0.95" stop-color="#e0a8b0"/>
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="22" fill="#1a1a1e"/>
+  <path d="M31.18 69.00 L44.82 27.00" stroke="url(#f)" stroke-width="15" stroke-linecap="round" fill="none"/>
+  <circle cx="68.83" cy="34.88" r="7.88" fill="url(#f)"/>
 </svg>

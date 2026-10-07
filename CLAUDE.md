@@ -63,15 +63,14 @@ anything visual or touching content.
   (`.cursor-block` in currently, `.caret-cell` in the prompt — the prompt's
   is an inverse-video cell so the glyph under it stays readable), the
   currently typewriter, the library spine hover-lift
-  (`.spine`), the petals (`petal-fall`/`petal-sway`), the cat cameo
-  (`cat-walk`), and the first-visit intro (side panes print in, the prompt
-  types `fastfetch`, the page prints line by line via a stepped clip, ~2s
-  all told, any key/tap/scroll skips — `command-bar.tsx`, `intro-print` in
-  globals.css). that is SEVEN. everything else
-  is instant colour changes. always respect `prefers-reduced-motion`. adding
-  an eighth means adding it HERE, or the next reader inherits a rule that
-  lies — which this line already did once, on 15 sep, when the prompt caret
-  became the seventh and the count below it still said six.
+  (`.spine`), the petals (`petal-fall`/`petal-sway`), and the cat cameo
+  (`cat-walk`). that is SIX. everything else is instant colour changes.
+  always respect `prefers-reduced-motion`. adding one means adding it HERE,
+  or the next reader inherits a rule that lies — which this line has done
+  twice: on 15 sep the prompt caret made seven while it still said six, and
+  in oct a first-visit boot intro (and a `reboot` command to replay it) was
+  added and then removed because russell found it wack. don't bring it back
+  without asking.
 - kaomoji appear only through the `<Kaomoji>` slot component
   (`app/components/kaomoji.tsx`) — never hardcode new ones into pages.
 
@@ -117,6 +116,10 @@ anything visual or touching content.
   `DIGEST_TRIGGER_SECRET`) or the owner-only [refresh] button (site password).
   output stored in blob `digest/latest.json` + dated archive; `/digest` reads
   it. env `GEMINI_API_KEY` required (`GEMINI_MODEL` optional override).
+  locally there's no blob token, so in `next dev` the page falls back to an
+  invented fixture (`app/lib/digest-fixture.ts`, via `readDigestForPage()`
+  in `digest-store.ts`; `DIGEST_FIXTURE=off` shows the empty state). the
+  generator reads the blob directly and production never sees the fixture.
 
 ## routes
 
@@ -143,8 +146,8 @@ commands: `ls`, `cat <page>` (alias `go`), `grep <term>` (searches
 browser/os/screen beside a random logo from `app/lib/fetch-logos.ts`, never
 the same twice running; output in `fetch-output.tsx`), plus the older ones.
 the home hero picks its logo from the same file, per request, server side.
-on a first visit to `/` the prompt types `fastfetch` and the page prints
-beneath it — that is the whole onboarding.
+↑/↓ walk the prompt's history (localStorage `rj:history`, never a login
+line).
 new pages go in the sidebar AND `ROUTES` in command-bar.tsx; new essays go in
 `app/lib/posts.ts` (the writing index and `grep` both read it).
 

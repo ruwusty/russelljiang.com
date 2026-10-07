@@ -52,7 +52,6 @@ completion, ↑/↓ walk your history.
 | `cat <page>` / `go <page>` | open one |
 | `grep <term>` | search the writing |
 | `fastfetch [logo]` | system info for *your* machine, next to one of 14 ascii logos. `-l` lists them |
-| `reboot` | replay the first-visit boot |
 | `theme [dark\|light]` | switch theme |
 | `tea [min]` | a timer, for tea |
 | `whoami` | introductions |
@@ -61,10 +60,7 @@ completion, ↑/↓ walk your history.
 
 a few more aren't in `help`. vim users will find one straight away.
 
-`j` / `k` + `enter` move through the nav. the first visit to `/` boots: the
-side panes print in, the prompt types `fastfetch`, and the page prints
-beneath it a line at a time. any key, tap or scroll skips it, and
-reduced-motion visitors never see it.
+`j` / `k` + `enter` move through the nav.
 
 ## the site is its own cms
 
