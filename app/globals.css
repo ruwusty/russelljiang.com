@@ -323,7 +323,10 @@ body::after {
 
 /* neofetch logo: wisteria at the top dripping into rose at the tips */
 .fetch-art {
-  font-size: 11px;
+  /* sizes where a cell (0.6em) is a whole number of pixels: 10px → 6px,
+     15px → 9px. at 11px a cell is 6.6px, browsers snap glyph advances to
+     whole pixels, and the generated circles come out 9% too narrow */
+  font-size: 10px;
   line-height: 1;
   letter-spacing: 0;
   white-space: pre;

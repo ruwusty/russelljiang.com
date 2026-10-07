@@ -62,7 +62,7 @@ export function FetchOutput({
     ["kernel", "next.js 15 · react 19"],
     ["uptime", uptime()],
     ["packages", `${pages} pages · ${essays} essays`],
-    ["shell", "rj-sh"],
+    ["shell", "ru.sh"],
     ["terminal", browserName(ua)],
     ["display", `${window.innerWidth}×${window.innerHeight}${dpr > 1 ? ` @${dpr}x` : ""}`],
     ["theme", `wisteria (${theme})`],
@@ -74,8 +74,8 @@ export function FetchOutput({
   return (
     <div className="mt-2 mb-1 flex flex-col gap-4 sm:flex-row sm:gap-8 normal-case">
       <pre
-        className="fetch-art m-0 pt-0.5 shrink-0"
-        style={{ fontSize: 11 }}
+        className="fetch-art m-0 pt-0.5 shrink-0 self-start"
+        style={{ fontSize: 10 }}
         aria-hidden="true"
       >
         {LOGOS[logo].join("\n")}
