@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSiteAuth } from "./site-auth";
+import { CurrentlyEditor } from "./currently-editor";
 
 const DEFAULT_ITEMS = [
   "trying to unify the forces",
@@ -277,36 +278,14 @@ export function Currently() {
       </span>
 
       {editing && (
-        <span className="mt-2 flex flex-col gap-1.5">
-          <textarea
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            rows={10}
-            spellCheck={false}
-            className="w-full px-2 py-1.5 text-[12px] leading-[1.7] outline-none resize-y"
-            style={{
-              background: "transparent",
-              border: "1px solid var(--line)",
-              color: "var(--ink)",
-              fontFamily: "inherit",
-            }}
-            aria-label="currently items, one per line"
-          />
-          <span className="flex items-baseline gap-3 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
-            <button onClick={save} className="tui-btn text-[11px]" style={{ color: "var(--rose)" }}>
-              {saveState === "saving" ? "[saving…]" : "[save]"}
-            </button>
-            <button onClick={() => setEditing(false)} className="tui-btn text-[11px]">
-              [cancel]
-            </button>
-            <span>
-              one per line · {draft.split("\n").filter((l) => l.trim()).length} lines
-            </span>
-            {saveState === "error" && (
-              <span style={{ color: "var(--accent)" }}>save failed</span>
-            )}
-          </span>
-        </span>
+        <CurrentlyEditor
+          draft={draft}
+          setDraft={setDraft}
+          maxLength={ITEM_MAX_LENGTH}
+          saveState={saveState}
+          onSave={save}
+          onCancel={() => setEditing(false)}
+        />
       )}
     </span>
   );
