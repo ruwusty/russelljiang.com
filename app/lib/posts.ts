@@ -8,6 +8,8 @@ export interface Post {
   tags: string[];
   published: string;
   href?: string;
+  /** russell's own pick of his best work: a ★ on the writing index */
+  featured?: boolean;
 }
 
 export const posts: Post[] = [
@@ -46,6 +48,7 @@ export const posts: Post[] = [
     tags: ["maths", "physics", "philosophy"],
     published: "personal",
     href: "/writing/the-same-shape-everywhere",
+    featured: true,
   },
   {
     title: "Vibe Coding Won't Save You",

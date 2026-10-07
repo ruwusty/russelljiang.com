@@ -14,6 +14,21 @@ export async function readLatestDigest(): Promise<Digest | null> {
   return null;
 }
 
+// what /digest renders. in `next dev` with no blob (no token locally), fall
+// back to an invented fixture so the page can be designed against real-looking
+// content; DIGEST_FIXTURE=off shows the empty state instead. the generator
+// keeps calling readLatestDigest() directly, so it never sees the fixture, and
+// next inlines NODE_ENV at build, so production can't reach this branch.
+export async function readDigestForPage(): Promise<Digest | null> {
+  const digest = await readLatestDigest();
+  if (digest) return digest;
+  if (process.env.NODE_ENV === "development" && process.env.DIGEST_FIXTURE !== "off") {
+    const { digestFixture } = await import("./digest-fixture");
+    return digestFixture();
+  }
+  return null;
+}
+
 export async function writeDigest(digest: Digest, dateKey: string): Promise<void> {
   const body = JSON.stringify(digest);
   const opts = {

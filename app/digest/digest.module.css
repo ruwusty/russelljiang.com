@@ -1,0 +1,28 @@
+/* the digest's own bits. everything else comes from globals.css: the rows
+   are .list-row/.list-head, so hover and keyboard focus are the house
+   reverse-video bar. */
+
+/* the ▹ cursor sits in its own cell and only shows on the row under the
+   pointer or keyboard focus. instant, like a terminal redraw. */
+.ptr {
+  visibility: hidden;
+}
+
+:global(.list-row):hover .ptr,
+:global(.list-row):focus-visible .ptr {
+  visibility: visible;
+}
+
+/* the meter's empty cells, kept just visible on the bar too */
+.track {
+  color: var(--line);
+}
+
+/* less(1)'s end-of-file marker: inverse video in --soft, not the accent,
+   because nothing here is selected */
+.end {
+  display: inline-block;
+  padding: 0 1ch;
+  background: var(--soft);
+  color: var(--bg);
+}
