@@ -38,9 +38,9 @@ const projects: Project[] = [
     index: "02",
     name: "this site",
     claim:
-      "my corner of the internet, which slowly turned into its own cms. the bio, the shelf, the study plan, even the kaomoji get edited live on the site; the repo just keeps the fallbacks. there’s also a vim command mode, a motion trial with a leaderboard, a guestbook, a daily digest curated from sixteen feeds, and a bonsai tree in here somewhere.",
+      "my corner of the internet: a tui you can read in a browser, which slowly turned into its own cms. tiled panes, a command line with history and tab completion, and a fastfetch that pairs your machine with one of fourteen ascii logos. the bio, the shelf, the study plan, even the kaomoji get edited live on the site; the repo just keeps the fallbacks. there’s also a vim motion trial with a leaderboard, a guestbook, a daily digest curated from sixteen feeds, and a bonsai tree in here somewhere.",
     role: "everything, with a pair programmer",
-    stack: "Next.js 15 · React 19 · Tailwind · Vercel Blob",
+    stack: "Next.js 15 · React 19 · Tailwind · Vercel Blob · Maple Mono",
     links: [
       { label: "source", href: "https://github.com/ruwusty/russelljiang.com" },
       { label: "you are here", href: "/" },
@@ -51,7 +51,7 @@ const projects: Project[] = [
     index: "03",
     name: "proxima",
     claim:
-      "an ai learning system living in my obsidian vault, named for the zone of proximal development by way of the nearest star still out of reach. the agent finds the edge of what i understand, teaches one reasoning step at a time, spars instead of lecturing, and logs every confusion to a longitudinal edges log, then reschedules the rematch on an expanding ladder: 3 days, then 10, then 21, then retired as durable. nineteen edges logged across three courses so far, six live this term, one recheck held; still self-graded, and the real test is a closed-book sit in november. one law holds it together: i generate first. it never does the thinking for me.",
+      "an ai learning system living in my obsidian vault, named for the zone of proximal development by way of the nearest star still out of reach. the agent finds the edge of what i understand, teaches one reasoning step at a time, spars instead of lecturing, and logs every confusion to a longitudinal edges log. each edge comes back for a rematch on a widening ladder until it holds, then retires as durable. it's still self-graded, so the real test is a closed-book exam. one law holds it together: i generate first. it never does the thinking for me.",
     role: "designer, and the learner it grades",
     stack: "claude code · obsidian · plain markdown, on purpose",
     links: [{ label: "the philosophy", href: "/writing/the-same-shape-everywhere" }],

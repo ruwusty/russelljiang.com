@@ -146,13 +146,13 @@ export const LOGOS = {
     "         ▀▀▀▀▀▀▀          300 ",
   ],
   // the scan line and its notes, after cytus ii: a flick, taps, a drag chain
-  // snaking down at an angle, and a hold (one head, then its trail)
+  // whose heads are joined by a dotted diagonal, and a hold (one head, then its trail)
   scanline: [
-    "               ◁◇▷           ",
-    "    ◉                   ◉    ",
-    "         ●·                  ",
-    "            ·●·              ",
-    "                ·●           ",
+    "        ●             ◁◇▷    ",
+    "    ◉     ·              ◉   ",
+    "            ●                ",
+    "              ·              ",
+    "                ●            ",
     "━━━━━━━━━━━━━━━━━━━━━━━━━━━ ▲",
     "      ◉                     │",
     "      ┃           ◉         ▼",
