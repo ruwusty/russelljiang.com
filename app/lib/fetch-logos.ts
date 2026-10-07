@@ -128,17 +128,21 @@ export const LOGOS = {
     "│                    │",
     "╰────────────────────╯",
   ],
-  // a hit circle and its approach ring, after osu!
+  // a hit circle and its approach ring, after osu!. generated, not drawn:
+  // a cell is 0.6em x 1em, so hand-drawn circles come out as ovals. each
+  // half-block (▀ ▄ █) is sampled against the rings in em units instead
   circle: [
-    "        ▄▄▄▄▄▄▄            ",
-    "     ▄▀▀       ▀▀▄         ",
-    "   ▄▀   ╭─────╮   ▀▄       ",
-    "  █    ╭╯     ╰╮    █      ",
-    "  █    │   1   │    █ · · ✦",
-    "  █    ╰╮     ╭╯    █      ",
-    "   ▀▄   ╰─────╯   ▄▀       ",
-    "     ▀▄▄       ▄▄▀         ",
-    "        ▀▀▀▀▀▀▀     300    ",
+    "       ▄▄▄▄▄▄▄            ",
+    "    ▄▄▀▀     ▀▀▄▄         ",
+    "   ▄▀           ▀▄        ",
+    "  ▄▀   ▄█▀▀▀█▄   ▀▄       ",
+    "  █   ▄▀     ▀▄   █       ",
+    "  █   █   1   █   █  · · ✦",
+    "  █   ▀▄     ▄▀   █       ",
+    "  ▀▄   ▀█▄▄▄█▀   ▄▀       ",
+    "   ▀▄           ▄▀        ",
+    "    ▀▀▄▄     ▄▄▀▀         ",
+    "       ▀▀▀▀▀▀▀        300 ",
   ],
   // the scan line and its notes, after cytus ii
   scanline: [
