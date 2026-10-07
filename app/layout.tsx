@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
+// maple mono (ofl, via fontsource, self-hosted in the build): the ligatures
+// and the cursive italic are the point. only 400 is ever used, so only 400
+// and 400 italic ship.
+import "@fontsource/maple-mono/400.css";
+import "@fontsource/maple-mono/400-italic.css";
 import { Providers } from "./providers";
 import { HitBeacon } from "./components/hit-beacon";
 import "./globals.css";
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains",
-  display: "swap",
-});
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -76,7 +74,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="author" href="/humans.txt" />
         <script

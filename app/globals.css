@@ -5,8 +5,10 @@
 /* symbols for the ascii art (flowers, stars, notes, moons) and the box and
    block characters, at one cell wide. a renamed subset of dejavu sans mono
    (public/fonts/LICENSE-dejavu.txt), whose advance is 0.602em against
-   jetbrains mono's 0.6em, so drawings stay in their columns. unicode-range
-   means it only ever answers for these characters; letters stay jetbrains. */
+   maple mono's 0.6em, so drawings stay in their columns. unicode-range
+   means it only ever answers for these characters, and maple answers first
+   for the ones it has (box drawing, blocks, ❯ ▸); this fills the rest
+   (✿ ★ ♪ ☾ ☕ ♨ …). */
 @font-face {
   font-family: "RJ Glyphs";
   src: url("/fonts/rj-glyphs.woff2") format("woff2");
@@ -42,8 +44,8 @@
   --border: var(--line);
 
   --font-display: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", Georgia, serif;
-  --font-mono: var(--font-jetbrains), "JetBrains Mono", "RJ Glyphs", ui-monospace,
-    SFMono-Regular, Menlo, monospace;
+  --font-mono: "Maple Mono", "RJ Glyphs", ui-monospace, SFMono-Regular, Menlo,
+    monospace;
 }
 
 .dark {
@@ -73,6 +75,18 @@ body {
   font-family: var(--font-mono);
   font-size: 14px;
   line-height: 1.75;
+  /* maple's ligatures (-> => != >= :: // www) are contextual alternates.
+     on by default in browsers; said out loud so nobody turns them off */
+  font-feature-settings: "calt" 1;
+}
+
+/* italics are maple's party trick (cursive f, l, k, and ligatures that
+   survive the slant), so they get used the way an editor uses them: for
+   the comment-ish voice. the tagline under every page title, essay
+   subtitles, the writing index blurbs, the home note. */
+h1.display + p,
+.comment {
+  font-style: italic;
 }
 
 @media (prefers-reduced-motion: reduce) {

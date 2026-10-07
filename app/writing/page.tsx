@@ -59,7 +59,7 @@ export default function WritingIndex() {
                 </span>
               </div>
               <p
-                className="mt-1 mb-0 pl-[1ch] sm:pl-[calc(11ch+1rem+1ch)] pr-[1ch] text-[12px] leading-[1.75]"
+                className="comment mt-1 mb-0 pl-[1ch] sm:pl-[calc(11ch+1rem+1ch)] pr-[1ch] text-[12px] leading-[1.75]"
                 style={{ color: "var(--soft)" }}
               >
                 {post.description}

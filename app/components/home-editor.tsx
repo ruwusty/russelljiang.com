@@ -203,7 +203,7 @@ export function HomeEditor({
       </div>
 
       <aside
-        className="mt-8 pl-4 text-[12px] leading-[1.9] lowercase"
+        className="comment mt-8 pl-4 text-[12px] leading-[1.9] lowercase"
         style={{ borderLeft: "2px solid var(--rose)", color: "var(--soft)" }}
       >
         <span style={{ color: "var(--rose)" }}>note</span> — this site is a work

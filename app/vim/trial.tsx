@@ -476,7 +476,8 @@ export function VimTrial() {
         aria-label="vim practice buffer"
       >
         {BUFFERS[difficulty].lines.map((line, row) => (
-          <div key={row}>
+          // comment lines in italic, the way an editor sets them
+          <div key={row} className={line.trimStart().startsWith("//") ? "comment" : undefined}>
             {(line.length > 0 ? line.split("") : [" "]).map((ch, col) => {
               const isCursor = cursor.row === row && cursor.col === col;
               const isTarget = !done && target.row === row && target.col === col;

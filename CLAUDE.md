@@ -36,13 +36,19 @@ anything visual or touching content.
   gradients inside panes: they band visibly on 8-bit screens. no bold
   weights in body text, no images as decoration (content images in
   /writing are fine).
-- type: JetBrains Mono everywhere, headings included. `.display` is mono
+- type: Maple Mono everywhere, headings included (OFL, via
+  `@fontsource/maple-mono`, 400 + 400 italic only, imported in layout.tsx).
+  its `calt` ligatures (-> => != >= :: //) stay on, and they keep the
+  monospace grid. italic is for the comment-ish voice only (`.comment`, and
+  the tagline under each h1): essay subtitles, the writing index blurbs, the
+  home note, `//` lines in the vim buffer. never for emphasis in body text. `.display` is mono
   with slight tracking; `h1.display` renders as `# name` with the `#` in
   accent (size and colour forced from globals.css, so per-page utilities on
   h1s are ignored). symbols and box/block characters come from "RJ Glyphs",
   a renamed one-cell subset of dejavu sans mono in `public/fonts/` (licence
-  beside it), behind jetbrains in `--font-mono` with a unicode-range, so art
-  can use ✿ ❀ ★ ☾ ♪ ☕ ♨ etc. and still line up. no braille in it. `--font-display` (mincho)
+  beside it), behind maple in `--font-mono` with a unicode-range, so art
+  can use ✿ ❀ ★ ☾ ♪ ☕ ♨ etc. and still line up (maple itself answers
+  first for box drawing, blocks and ❯ ▸). no braille in it. `--font-display` (mincho)
   survives only for the vertical 余白の美 in the margin. body 14px; small
   text 11–12px. lowercase except where grammar demands.
 - layout: one `.window` in `app/components/docs-shell.tsx`: title bar,
