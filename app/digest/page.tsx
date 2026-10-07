@@ -94,10 +94,10 @@ function TagMeter({ counts }: { counts: { tag: DigestTag; n: number }[] }) {
               </span>
               <span className="whitespace-nowrap overflow-hidden">
                 <span aria-hidden="true" style={{ color: "var(--accent)" }}>
-                  {"█".repeat(filled)}
+                  {"━".repeat(filled)}
                 </span>
                 <span aria-hidden="true" className={s.track}>
-                  {"░".repeat(METER_CELLS - filled)}
+                  {"─".repeat(METER_CELLS - filled)}
                 </span>{" "}
                 <span style={{ color: "var(--soft)" }}>{n}</span>
               </span>
