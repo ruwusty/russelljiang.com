@@ -14,7 +14,7 @@ import { useTheme } from "next-themes";
 import { Kaomoji } from "./kaomoji";
 import { useSiteAuth } from "./site-auth";
 import { grepPosts, posts, type Post } from "../lib/posts";
-import { pickLogo, type LogoName } from "../lib/fetch-logos";
+import { LOGO_NAMES, pickLogo, type LogoName } from "../lib/fetch-logos";
 import { FetchOutput } from "./fetch-output";
 
 // the command line moved from the bottom of the pane to the top (russell, 15
@@ -77,7 +77,7 @@ const HELP_LINES: [string, string][] = [
   ["tea [min]", "a timer, for tea"],
   ["login / logout", "関係者以外立入禁止"],
   ["whoami", "introductions"],
-  ["fastfetch", "system info. new logo every run"],
+  ["fastfetch [logo]", "system info. new logo every run · -l lists them"],
   ["q / wq", "you have to try"],
 ];
 
@@ -94,6 +94,8 @@ const ARGS: Record<string, string[]> = {
   theme: ["dark", "light"],
   grep: TAGS,
   tea: ["3", "5", "stop"],
+  fastfetch: [...LOGO_NAMES, "-l"],
+  neofetch: [...LOGO_NAMES, "-l"],
 };
 
 /** the candidates for the current line, and the text that would finish it. */
@@ -578,8 +580,17 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
         break;
       case "fastfetch":
       case "neofetch": {
-        // remembered past a `clear`, so two fetches in a row always differ
-        const next = pickLogo(lastLogoRef.current ?? undefined);
+        if (arg === "-l" || arg === "--list") {
+          show(LOGO_NAMES.join("  "));
+          break;
+        }
+        if (arg && !(LOGO_NAMES as string[]).includes(arg)) {
+          show(`${head.toLowerCase()}: no logo called "${arg}" (try ${head.toLowerCase()} -l)`);
+          break;
+        }
+        // a named logo, or a random one. the last is remembered past a
+        // `clear`, so two random fetches in a row always differ
+        const next = arg ? (arg as LogoName) : pickLogo(lastLogoRef.current ?? undefined);
         lastLogoRef.current = next;
         setMessage(null);
         setFetchLogo(next);

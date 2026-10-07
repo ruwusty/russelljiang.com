@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* symbols for the ascii art (flowers, stars, notes, moons) and the box and
+   block characters, at one cell wide. a renamed subset of dejavu sans mono
+   (public/fonts/LICENSE-dejavu.txt), whose advance is 0.602em against
+   jetbrains mono's 0.6em, so drawings stay in their columns. unicode-range
+   means it only ever answers for these characters; letters stay jetbrains. */
+@font-face {
+  font-family: "RJ Glyphs";
+  src: url("/fonts/rj-glyphs.woff2") format("woff2");
+  font-display: swap;
+  unicode-range: U+2190-21FF, U+2500-27BF;
+}
+
 :root {
   /* cool neutral greys and one dusty wisteria (藤). light values all clear
      wcag aa on --bg (ink 14.8, soft 6.2, accent 4.9) */
@@ -30,8 +42,8 @@
   --border: var(--line);
 
   --font-display: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", Georgia, serif;
-  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, SFMono-Regular,
-    Menlo, monospace;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", "RJ Glyphs", ui-monospace,
+    SFMono-Regular, Menlo, monospace;
 }
 
 .dark {
@@ -112,16 +124,20 @@ html {
   text-transform: lowercase;
 }
 
-/* page headings render the way charm's `glow` renders a markdown h1: a
-   reverse-video block in the accent. the !importants beat the per-page size
-   and colour utilities so all 20-odd h1s change from here. */
+/* page headings read like a markdown file open in a terminal: `# writing`,
+   the way `## interests` already does one level down. (they were reverse-
+   video blocks for a while; with the nav's current-row bar that was two
+   loud blocks per page.) the !importants beat the per-page size and colour
+   utilities so all 20-odd h1s change from here. */
 h1.display {
-  display: inline-block;
-  padding: 0 0.6ch;
-  font-size: 18px !important;
-  line-height: 1.7 !important;
-  background: var(--accent);
-  color: var(--bg) !important;
+  font-size: 22px !important;
+  line-height: 1.4 !important;
+  color: var(--ink) !important;
+}
+
+h1.display::before {
+  content: "# ";
+  color: var(--accent);
 }
 
 /* the rule under a heading: a plain ─ line across the column */

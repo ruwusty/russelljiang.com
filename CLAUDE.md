@@ -20,12 +20,13 @@ anything visual or touching content.
   on bg in both themes, and bg-on-accent does too (the reverse-video bars).
   check contrast before changing any of them.
 - every ui element behaves like a tui widget. selection and the current
-  item are a solid reverse-video bar in the accent (nav rows, page h1s,
-  hovered list rows via `.list-row`/`.list-head`, a focused pane's legend).
+  item are a solid reverse-video bar in the accent (nav rows, hovered list
+  rows via `.list-row`/`.list-head`, a focused pane's legend).
   a cursor is a pointer glyph (▹). focus is a border colour. lists are
   `tree` glyphs (├── └──), tables have uppercase faint column heads (k9s),
-  section heads read `## name`. no fades, glows, rounded highlights or
-  cards on anything interactive.
+  page h1s read `# name` and section heads `## name`, markdown in a
+  terminal. no fades, glows, rounded highlights or cards on anything
+  interactive.
 - the modern finish lives only in the chrome: the `.window` (10px radius,
   backdrop blur, drop shadow, like a terminal emulator on a desktop), the
   wisteria lamps + dot grid behind it (`body::before/::after`), the powerline
@@ -36,9 +37,12 @@ anything visual or touching content.
   weights in body text, no images as decoration (content images in
   /writing are fine).
 - type: JetBrains Mono everywhere, headings included. `.display` is mono
-  with slight tracking; `h1.display` renders as a reverse-video block the
-  way charm's `glow` renders a markdown h1 (sizes forced from globals.css,
-  so per-page size utilities on h1s are ignored). `--font-display` (mincho)
+  with slight tracking; `h1.display` renders as `# name` with the `#` in
+  accent (size and colour forced from globals.css, so per-page utilities on
+  h1s are ignored). symbols and box/block characters come from "RJ Glyphs",
+  a renamed one-cell subset of dejavu sans mono in `public/fonts/` (licence
+  beside it), behind jetbrains in `--font-mono` with a unicode-range, so art
+  can use ✿ ❀ ★ ☾ ♪ ☕ ♨ etc. and still line up. no braille in it. `--font-display` (mincho)
   survives only for the vertical 余白の美 in the margin. body 14px; small
   text 11–12px. lowercase except where grammar demands.
 - layout: one `.window` in `app/components/docs-shell.tsx`: title bar,
