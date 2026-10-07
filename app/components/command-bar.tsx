@@ -78,12 +78,13 @@ const HELP_LINES: [string, string][] = [
   ["login / logout", "関係者以外立入禁止"],
   ["whoami", "introductions"],
   ["fastfetch [logo]", "system info. new logo every run · -l lists them"],
+  ["reboot", "replay the first-visit boot"],
   ["q / wq", "you have to try"],
 ];
 
 // tab completion tables. primary names only — aliases (`go`, `dir`, `h`)
 // still run, they just are not suggested.
-const COMMANDS = ["ls", "cat", "grep", "fastfetch", "help", "theme", "tea", "whoami", "login", "logout", "vim", "clear"];
+const COMMANDS = ["ls", "cat", "grep", "fastfetch", "reboot", "help", "theme", "tea", "whoami", "login", "logout", "vim", "clear"];
 const TARGETS = [...PAGES, ...Object.keys(EXTERNAL)];
 const TAGS = [...new Set(posts.filter((p) => p.href).flatMap((p) => p.tags))].sort();
 const ARGS: Record<string, string[]> = {
@@ -593,6 +594,20 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
         setMessage(null);
         setFetchLogo(null);
         break;
+      case "reboot":
+      case "restart": {
+        // forget the intro was seen and come back in through the front door,
+        // with a real page load so layout.tsx's pre-paint script runs again
+        try {
+          localStorage.removeItem(INTRO_KEY);
+        } catch {}
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          show("reboot: skipped, reduced motion is on");
+          break;
+        }
+        window.location.assign("/");
+        break;
+      }
       case "fastfetch":
       case "neofetch": {
         if (arg === "-l" || arg === "--list") {
