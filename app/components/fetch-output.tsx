@@ -1,6 +1,7 @@
 "use client";
 
-import { LOGOS, type LogoName } from "../lib/fetch-logos";
+import { type LogoName } from "../lib/fetch-logos";
+import { FetchArt } from "./fetch-art";
 
 // what `fastfetch` prints under the prompt. the home hero is the about-me
 // fetch; this one reports on the machine you are reading from, the way the
@@ -73,13 +74,7 @@ export function FetchOutput({
 
   return (
     <div className="mt-2 mb-1 flex flex-col gap-4 sm:flex-row sm:gap-8 normal-case">
-      <pre
-        className="fetch-art m-0 pt-0.5 shrink-0 self-start"
-        style={{ fontSize: 10 }}
-        aria-hidden="true"
-      >
-        {LOGOS[logo].join("\n")}
-      </pre>
+      <FetchArt name={logo} className="m-0 pt-0.5 shrink-0 self-start" style={{ fontSize: 10 }} />
       <div className="min-w-0 text-[12px] leading-[1.6] lowercase">
         <div>
           <span style={{ color: "var(--accent)" }}>{user}</span>

@@ -85,12 +85,13 @@ export default function RootLayout({
             can hide `.intro-content` before the first frame — a useEffect is
             too late, since ssr paints the html before react hydrates and the
             content would flash then vanish. no-op under reduced-motion and on
-            every visit after the first. the attribute is removed by the
+            every visit after the first, unless the visitor typed `reboot`
+            (a one-shot sessionStorage flag): then it plays regardless. the attribute is removed by the
             prompt when its command finishes typing (command-bar.tsx). */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{if(location.pathname==='/'&&!localStorage.getItem('rj:intro:fetch')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.dataset.intro='pending'}}catch(e){}})()",
+              "(function(){try{var r=sessionStorage.getItem('rj:reboot');if(r)sessionStorage.removeItem('rj:reboot');if(location.pathname==='/'&&(r||(!localStorage.getItem('rj:intro:fetch')&&!matchMedia('(prefers-reduced-motion: reduce)').matches))){var d=document.documentElement;d.dataset.intro='pending';if(r)d.dataset.introForce='1'}}catch(e){}})()",
           }}
         />
       </head>
