@@ -1,25 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSiteAuth } from "../components/site-auth";
-
-type Status = "reading" | "to-read" | "read";
-
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  status: Status;
-  tag?: string;
-  note?: string;
-  spine?: string; // short label for the spine when the title won't fit
-}
-
-const STATUS_LABEL: Record<Status, string> = {
-  reading: "currently reading",
-  "to-read": "in the queue",
-  read: "read",
-};
+import { BookForm } from "./book-form";
+import { Shelf } from "./shelf";
+import { EMPTY_DRAFT, lookupUrl, type Book, type Draft, type Status } from "./types";
+import s from "./library.module.css";
 
 // first-run seed + outage fallback only — the blob is the source of truth.
 // edit on the site while logged in, not here.
@@ -47,178 +33,285 @@ const DEFAULT_BOOKS: Book[] = [
   { id: "consciousness", title: "consciousness explained", author: "daniel dennett", status: "to-read", tag: "throughline" },
 ];
 
-// same curated muted palette as the guestbook names — the sanctioned exception
-const SPINE_COLORS = [
-  "#6f8f6a", // moss
-  "#9a6a4f", // clay
-  "#a8895a", // ochre
-  "#5f8a8b", // pond teal
-  "#8a7a9e", // wisteria
-  "#9d7081", // dusty rose
-];
+// the table's columns: cursor, number, title, author, track. author and
+// track fold into a line under the title below sm.
+const COLS =
+  "grid grid-cols-[2ch_minmax(0,1fr)] sm:grid-cols-[1ch_2ch_minmax(0,1fr)_19ch_11ch] gap-x-[1ch]";
+// lines under a row start under the title: the narrow cells plus their gaps,
+// in the head's 13px ch, since those lines are set at 12px
+const UNDER_TITLE = "pl-[calc(4ch*13/12)] sm:pl-[calc(6ch*13/12)]";
+const METER_CELLS = 10;
+const SHELF_CELLS = 28;
+const UNTAGGED = "untagged";
 
-function hashString(s: string): number {
-  let h = 0;
-  for (const ch of s) h = (h * 31 + (ch.codePointAt(0) ?? 0)) >>> 0;
-  return h;
+// ─── header: a fetch-style readout and a track meter ──────────────────────
+
+// one cell per book, in shelf order, while the shelf is small enough;
+// past that, the same three runs scaled down
+function shelfCells(books: Book[]): Status[] {
+  if (books.length <= SHELF_CELLS) return books.map((b) => b.status);
+  const order: Status[] = ["reading", "read", "to-read"];
+  const out: Status[] = [];
+  for (const st of order) {
+    const n = Math.round((books.filter((b) => b.status === st).length / books.length) * SHELF_CELLS);
+    for (let i = 0; i < n; i++) out.push(st);
+  }
+  return out.slice(0, SHELF_CELLS);
 }
 
-function Spine({
-  book,
-  selected,
-  dropTarget,
-  lean,
-  onClick,
-  onDragStart,
-  onDragOver,
-  onDrop,
-  onDragEnd,
-}: {
-  book: Book;
-  selected: boolean;
-  dropTarget: boolean;
-  lean: boolean;
-  onClick: () => void;
-  onDragStart: () => void;
-  onDragOver: (e: React.DragEvent) => void;
-  onDrop: (e: React.DragEvent) => void;
-  onDragEnd: () => void;
-}) {
-  const h = hashString(book.title);
-  // a spine is at least tall enough for its title (≈6.6px per char at 10px
-  // mono, plus padding), otherwise hash-varied like a real shelf; very long
-  // titles cap out and take the ellipsis
-  const label = book.spine ?? book.title;
-  const needed = Math.ceil(24 + label.length * 6.7);
-  const height = Math.min(188, Math.max(100 + (h % 5) * 11, needed));
-  const width = 24 + ((h >> 4) % 4) * 3; // 24–33, so a full shelf fits one row
-  const color = SPINE_COLORS[h % SPINE_COLORS.length];
+const CELL: Record<Status, { ch: string; color: string }> = {
+  reading: { ch: "█", color: "var(--accent)" },
+  read: { ch: "█", color: "var(--soft)" },
+  "to-read": { ch: "░", color: "var(--faint)" },
+};
 
+function Swatch({ status }: { status: Status }) {
   return (
-    <button
-      onClick={onClick}
-      draggable
-      onDragStart={onDragStart}
-      onDragOver={onDragOver}
-      onDrop={onDrop}
-      onDragEnd={onDragEnd}
-      className="spine relative shrink-0 overflow-hidden"
-      data-pulled={selected ? "true" : "false"}
-      data-drop-target={dropTarget ? "true" : "false"}
-      data-lean={lean ? "true" : "false"}
-      style={{
-        height,
-        width,
-        background: color,
-        border: selected ? "1px solid var(--ink)" : "1px solid var(--line)",
-        cursor: "pointer",
-        padding: 0,
-      }}
-      aria-label={`${book.title} · ${book.author}`}
-      aria-expanded={selected}
-      title={`${book.title} · ${book.author}`}
-    >
-      {book.status === "reading" && (
-        <span
-          className="absolute top-0"
-          style={{ right: 5, width: 4, height: 16, background: "var(--accent)" }}
-          aria-hidden="true"
-        />
-      )}
-      <span
-        className="block mx-auto text-[10px] lowercase"
-        style={{
-          writingMode: "vertical-rl",
-          maxHeight: height - 14,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          color: "var(--bg)",
-          letterSpacing: "0.05em",
-          whiteSpace: "nowrap",
-          paddingTop: 7,
-        }}
-        aria-hidden="true"
-      >
-        {label}
-      </span>
-    </button>
+    <span aria-hidden="true" style={{ color: CELL[status].color }}>
+      {CELL[status].ch}{" "}
+    </span>
   );
 }
 
-interface Draft {
-  id: string | null; // null = adding new
-  title: string;
-  author: string;
-  status: Status;
-  tag: string;
-  note: string;
-  spine: string;
+function Readout({ books, next }: { books: Book[]; next: Book | null }) {
+  const count = (st: Status) => books.filter((b) => b.status === st).length;
+  const rows: [string, React.ReactNode][] = [
+    [
+      "shelf",
+      <span key="shelf" className="whitespace-nowrap">
+        <span aria-hidden="true">
+          {shelfCells(books).map((st, i) => (
+            <span key={i} style={{ color: CELL[st].color }}>
+              {CELL[st].ch}
+            </span>
+          ))}
+        </span>{" "}
+        <span style={{ color: "var(--soft)" }}>{books.length}</span>
+      </span>,
+    ],
+    ["reading", <><Swatch status="reading" />{count("reading")}</>],
+    ["queued", <><Swatch status="to-read" />{count("to-read")}</>],
+    ["read", <><Swatch status="read" />{count("read")}</>],
+    [
+      "next",
+      next ? (
+        <span className="block truncate">{next.title}</span>
+      ) : (
+        <span style={{ color: "var(--soft)" }}>open to suggestions</span>
+      ),
+    ],
+  ];
+  return (
+    <dl className="m-0 grid grid-cols-[8ch_minmax(0,1fr)] gap-x-[1ch] text-[13px] leading-[1.75]">
+      {rows.map(([key, value]) => (
+        <div key={key} className="contents">
+          <dt style={{ color: "var(--accent)" }}>{key}</dt>
+          <dd className="m-0 min-w-0" style={{ color: "var(--ink)" }}>
+            {value}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
 }
 
-const EMPTY_DRAFT: Draft = {
-  id: null,
-  title: "",
-  author: "",
-  status: "to-read",
-  tag: "",
-  note: "",
-  spine: "",
-};
+function TrackMeter({
+  tracks,
+  filter,
+  setFilter,
+}: {
+  tracks: { tag: string; n: number }[];
+  filter: string | null;
+  setFilter: (tag: string | null) => void;
+}) {
+  const max = Math.max(1, ...tracks.map((t) => t.n));
+  return (
+    <div className="text-[13px] leading-[1.75]" role="group" aria-label="filter the queue by track">
+      <div
+        className="grid grid-cols-[12ch_minmax(0,1fr)] gap-x-[1ch] px-[1ch] [&>span]:text-[11px] uppercase tracking-[0.08em]"
+        style={{ color: "var(--faint)" }}
+        aria-hidden="true"
+      >
+        <span>track</span>
+        <span>queued</span>
+      </div>
+      {tracks.map(({ tag, n }) => {
+        const filled = Math.max(1, Math.round((n / max) * METER_CELLS));
+        const on = filter === tag;
+        return (
+          <button
+            key={tag}
+            onClick={() => setFilter(on ? null : tag)}
+            className={`list-row ${s.bare} p-0 ${on ? s.on : ""}`}
+            aria-pressed={on}
+          >
+            <span className="list-head grid grid-cols-[12ch_minmax(0,1fr)] gap-x-[1ch] px-[1ch]">
+              <span className="truncate lowercase" style={{ color: "var(--ink)" }}>
+                {tag}
+              </span>
+              <span className="whitespace-nowrap overflow-hidden">
+                <span aria-hidden="true" style={{ color: "var(--accent)" }}>
+                  {"█".repeat(filled)}
+                </span>
+                <span aria-hidden="true" className={s.track}>
+                  {"░".repeat(METER_CELLS - filled)}
+                </span>{" "}
+                <span style={{ color: "var(--soft)" }}>{n}</span>
+              </span>
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
-const inputStyle = {
-  background: "transparent",
-  border: "1px solid var(--line)",
-  color: "var(--ink)",
-  fontFamily: "inherit",
-} as const;
+// ─── the table ─────────────────────────────────────────────────────────────
+
+function SectionHead({ id, name, count }: { id?: string; name: string; count: React.ReactNode }) {
+  return (
+    <h2
+      id={id}
+      className="m-0 mb-1 px-[1ch] flex items-baseline gap-[1ch] text-[13px] font-normal lowercase tracking-[0.15em]"
+      style={{ color: "var(--ink)" }}
+    >
+      <span style={{ color: "var(--accent)" }}>##</span>
+      <span>{name}</span>
+      <span className="text-[11px] tracking-normal" style={{ color: "var(--faint)" }}>
+        {count}
+      </span>
+    </h2>
+  );
+}
+
+function ColumnHeads() {
+  return (
+    <div
+      className={`${COLS} px-[1ch] pb-1 [&>span]:text-[11px] uppercase tracking-[0.08em]`}
+      style={{ color: "var(--faint)", borderBottom: "1px solid var(--line)" }}
+      aria-hidden="true"
+    >
+      <span className="hidden sm:block" />
+      <span>no</span>
+      <span>title</span>
+      <span className="hidden sm:inline">author</span>
+      <span className="hidden sm:inline">track</span>
+    </div>
+  );
+}
+
+function Row({
+  book,
+  mark,
+  owner,
+  editing,
+  onEdit,
+}: {
+  book: Book;
+  mark: React.ReactNode; // the number cell: a queue position, or ◉
+  owner: boolean;
+  editing: boolean;
+  onEdit: () => void;
+}) {
+  const inner = (
+    <>
+      <span className={`list-head ${COLS} px-[1ch]`}>
+        <span className={`${s.ptr} hidden sm:block`} style={{ color: "var(--ink)" }} aria-hidden="true">
+          ▹
+        </span>
+        {mark}
+        <span className="min-w-0" style={{ color: "var(--ink)" }}>
+          {book.title}
+          <span style={{ color: "var(--faint)" }} aria-hidden="true">
+            {" "}
+            {owner ? "✎" : "↗"}
+          </span>
+        </span>
+        <span className="hidden sm:block truncate lowercase" style={{ color: "var(--soft)" }}>
+          {book.author}
+        </span>
+        <span className="hidden sm:block truncate lowercase" style={{ color: "var(--accent)" }}>
+          {book.tag}
+        </span>
+      </span>
+      <span
+        className={`sm:hidden block ${UNDER_TITLE} pr-[1ch] text-[12px] leading-[1.75] lowercase`}
+        style={{ color: "var(--soft)" }}
+      >
+        {book.author}
+        {book.tag && (
+          <>
+            {" · "}
+            <span style={{ color: "var(--accent)" }}>{book.tag}</span>
+          </>
+        )}
+      </span>
+      {book.note && (
+        <span
+          className={`comment block mt-0.5 ${UNDER_TITLE} pr-[1ch] text-[12px] leading-[1.75]`}
+          style={{ color: "var(--soft)" }}
+        >
+          {book.note}
+        </span>
+      )}
+    </>
+  );
+
+  // visitors look a book up; the owner opens it in the editor
+  return owner ? (
+    <button
+      onClick={onEdit}
+      className={`list-row ${s.bare} px-0 py-2 ${editing ? s.on : ""}`}
+      aria-expanded={editing}
+      aria-label={`edit ${book.title} by ${book.author}`}
+    >
+      {inner}
+    </button>
+  ) : (
+    <a
+      href={lookupUrl(book)}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="list-row block py-2"
+      title="look it up on open library"
+    >
+      {inner}
+    </a>
+  );
+}
+
+function No({ n }: { n: number }) {
+  return (
+    <span style={{ color: "var(--faint)" }} aria-label={`number ${n}`}>
+      {String(n).padStart(2, "0")}
+    </span>
+  );
+}
+
+function Ribbon() {
+  return (
+    <span style={{ color: "var(--accent)" }} aria-label="reading now">
+      ◉
+    </span>
+  );
+}
+
+// ─── the page ──────────────────────────────────────────────────────────────
+
+type DraftFrom = "add" | "row" | "shelf";
 
 export function Library() {
   const { password } = useSiteAuth();
   const [books, setBooks] = useState<Book[]>(DEFAULT_BOOKS);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
+  const [draftFrom, setDraftFrom] = useState<DraftFrom>("add");
+  const [filter, setFilter] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "error">("idle");
   // owner editing is gated until the blob load settles — otherwise an early
   // drag or save would persist DEFAULT_BOOKS over the real shelf
   const [loaded, setLoaded] = useState(false);
-  const [dragId, setDragId] = useState<string | null>(null);
-  const [dropId, setDropId] = useState<string | null>(null);
-  const dragIdRef = useRef<string | null>(null);
-
-  // anyone can rearrange the shelf (it's satisfying); only the owner's
-  // arrangement persists — visitors' fidgeting resets on reload.
-  const reorder = (targetId: string | null) => {
-    const moving_id = dragIdRef.current;
-    dragIdRef.current = null;
-    setDragId(null);
-    setDropId(null);
-    if (!moving_id || moving_id === targetId) return;
-    const moving = books.find((b) => b.id === moving_id);
-    if (!moving) return;
-    const rest = books.filter((b) => b.id !== moving_id);
-    const at = targetId ? rest.findIndex((b) => b.id === targetId) : rest.length;
-    const next = [...rest.slice(0, at < 0 ? rest.length : at), moving, ...rest.slice(at < 0 ? rest.length : at)];
-    if (password && loaded) {
-      persist(next);
-    } else {
-      setBooks(next);
-    }
-  };
-
-  // keyboard/touch fallback for drag: nudge a book one slot along the shelf
-  const moveBy = (id: string, delta: -1 | 1) => {
-    const from = books.findIndex((b) => b.id === id);
-    const to = from + delta;
-    if (from < 0 || to < 0 || to >= books.length) return;
-    const next = [...books];
-    next[from] = books[to];
-    next[to] = books[from];
-    if (password && loaded) {
-      persist(next);
-    } else {
-      setBooks(next);
-    }
-  };
+  const owner = Boolean(password && loaded);
 
   useEffect(() => {
     let cancelled = false;
@@ -255,9 +348,56 @@ export function Library() {
     }
   };
 
-  const openAdd = () => setDraft({ ...EMPTY_DRAFT });
+  // anyone can rearrange the shelf (it's satisfying); only the owner's
+  // arrangement persists — visitors' fidgeting resets on reload.
+  const commit = (next: Book[]) => (owner ? persist(next) : setBooks(next));
 
-  const openEdit = (book: Book) =>
+  const reorder = (movingId: string, targetId: string | null) => {
+    const moving = books.find((b) => b.id === movingId);
+    if (!moving) return;
+    const rest = books.filter((b) => b.id !== movingId);
+    const found = targetId ? rest.findIndex((b) => b.id === targetId) : -1;
+    const at = found < 0 ? rest.length : found;
+    commit([...rest.slice(0, at), moving, ...rest.slice(at)]);
+  };
+
+  // keyboard/touch fallback for drag: nudge a book one slot along the shelf
+  const moveBy = (id: string, delta: -1 | 1) => {
+    const from = books.findIndex((b) => b.id === id);
+    const to = from + delta;
+    if (from < 0 || to < 0 || to >= books.length) return;
+    const next = [...books];
+    next[from] = books[to];
+    next[to] = books[from];
+    commit(next);
+  };
+
+  // the editor's ↑/↓: swap with the neighbour in the same list (the queue's
+  // order is its numbering), whatever sits between them on the shelf
+  const moveWithin = (id: string, delta: -1 | 1) => {
+    const book = books.find((b) => b.id === id);
+    if (!book) return;
+    const slots = books.flatMap((b, i) => (b.status === book.status ? [i] : []));
+    const k = slots.findIndex((i) => books[i].id === id);
+    const other = slots[k + delta];
+    if (other === undefined) return;
+    const next = [...books];
+    next[slots[k]] = books[other];
+    next[other] = book;
+    commit(next);
+  };
+
+  const openAdd = () => {
+    setDraftFrom("add");
+    setDraft({ ...EMPTY_DRAFT });
+  };
+
+  const openEdit = (book: Book, from: DraftFrom) => {
+    if (draft?.id === book.id && draftFrom === from) {
+      setDraft(null); // clicking the open row again closes it
+      return;
+    }
+    setDraftFrom(from);
     setDraft({
       id: book.id,
       title: book.title,
@@ -267,6 +407,7 @@ export function Library() {
       note: book.note ?? "",
       spine: book.spine ?? "",
     });
+  };
 
   const saveDraft = () => {
     if (!draft) return;
@@ -282,9 +423,7 @@ export function Library() {
       ...(draft.note.trim() ? { note: draft.note.trim().slice(0, 200) } : {}),
       ...(draft.spine.trim() ? { spine: draft.spine.trim().slice(0, 40) } : {}),
     };
-    const next = draft.id
-      ? books.map((b) => (b.id === draft.id ? book : b))
-      : [...books, book];
+    const next = draft.id ? books.map((b) => (b.id === draft.id ? book : b)) : [...books, book];
     persist(next);
     setDraft(null);
   };
@@ -296,17 +435,70 @@ export function Library() {
     setDraft(null);
   };
 
+  const form = (from: DraftFrom, id: string | null) =>
+    owner && draft && draftFrom === from && draft.id === id ? (
+      <BookForm
+        draft={draft}
+        setDraft={setDraft}
+        onSave={saveDraft}
+        onCancel={() => setDraft(null)}
+        onRemove={draft.id ? removeDraft : undefined}
+        onMove={draft.id && from === "row" ? (d) => moveWithin(draft.id!, d) : undefined}
+      />
+    ) : null;
+
+  const reading = books.filter((b) => b.status === "reading");
+  const queue = books.filter((b) => b.status === "to-read");
+  const done = books.filter((b) => b.status === "read");
+  const queueNo = new Map(queue.map((b, i) => [b.id, i + 1]));
+
+  // tracks in the order the queue first reaches them
+  const tracks: { tag: string; n: number }[] = [];
+  for (const b of queue) {
+    const tag = b.tag || UNTAGGED;
+    const t = tracks.find((x) => x.tag === tag);
+    if (t) t.n++;
+    else tracks.push({ tag, n: 1 });
+  }
+  // a filter whose track has emptied out quietly lets go
+  const activeFilter = filter && tracks.some((t) => t.tag === filter) ? filter : null;
+  const shown = activeFilter ? queue.filter((b) => (b.tag || UNTAGGED) === activeFilter) : queue;
+
+  const rowFor = (book: Book, mark: React.ReactNode) => (
+    <div key={book.id}>
+      <Row
+        book={book}
+        mark={mark}
+        owner={owner}
+        editing={Boolean(draft && draftFrom === "row" && draft.id === book.id)}
+        onEdit={() => openEdit(book, "row")}
+      />
+      {form("row", book.id)}
+    </div>
+  );
+
   return (
     <div>
-      {password && loaded && (
-        <div className="mb-2 flex items-baseline gap-4 text-[12px]">
-          {!draft && (
-            <button onClick={openAdd} className="tui-btn text-[12px]" style={{ color: "var(--rose)" }}>
+      <div className="grid grid-cols-1 gap-y-6 gap-x-10 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <Readout books={books} next={queue[0] ?? null} />
+        {tracks.length > 0 && <TrackMeter tracks={tracks} filter={activeFilter} setFilter={setFilter} />}
+      </div>
+
+      {password && (
+        <div className="mt-6 px-[1ch] flex flex-wrap items-baseline gap-x-4 gap-y-1 text-[12px] lowercase">
+          <span style={{ color: "var(--soft)" }}>
+            <span style={{ color: "var(--rose)" }}>❯</span> {loaded ? "owner" : "owner · loading the shelf…"}
+          </span>
+          {owner && !(draft && draftFrom === "add") && (
+            <button onClick={openAdd} className="tui-btn" style={{ color: "var(--rose)" }}>
               [add book]
             </button>
           )}
+          {owner && (
+            <span style={{ color: "var(--faint)" }}>click a row to edit it</span>
+          )}
           <span
-            className="text-[11px] lowercase"
+            className="text-[11px]"
             style={{ color: saveState === "error" ? "var(--accent)" : "var(--soft)" }}
             aria-live="polite"
           >
@@ -314,208 +506,97 @@ export function Library() {
           </span>
         </div>
       )}
+      {form("add", null)}
 
-      {draft && (
-        <div
-          className="mb-8 p-4 flex flex-col gap-2 text-[12px] lowercase"
-          style={{ border: "1px solid var(--line)" }}
-        >
-          <div className="flex items-center gap-2" style={{ color: "var(--soft)" }}>
-            <span style={{ color: "var(--rose)" }}>❯</span>
-            <span>{draft.id ? "edit book" : "add book"}</span>
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            <input
-              value={draft.title}
-              onChange={(e) => setDraft({ ...draft, title: e.target.value })}
-              placeholder="title"
-              autoFocus
-              className="px-2 py-1 text-[12px] outline-none flex-1 min-w-[200px]"
-              style={inputStyle}
-              aria-label="title"
-            />
-            <input
-              value={draft.author}
-              onChange={(e) => setDraft({ ...draft, author: e.target.value })}
-              placeholder="author"
-              className="px-2 py-1 text-[12px] outline-none w-[180px]"
-              style={inputStyle}
-              aria-label="author"
-            />
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            <select
-              value={draft.status}
-              onChange={(e) => setDraft({ ...draft, status: e.target.value as Status })}
-              className="px-2 py-1 text-[12px] outline-none"
-              style={{ ...inputStyle, background: "var(--bg)" }}
-              aria-label="status"
-            >
-              <option value="reading">currently reading</option>
-              <option value="to-read">the queue</option>
-              <option value="read">read</option>
-            </select>
-            <input
-              value={draft.tag}
-              onChange={(e) => setDraft({ ...draft, tag: e.target.value })}
-              placeholder="tag (optional)"
-              className="px-2 py-1 text-[12px] outline-none w-[140px]"
-              style={inputStyle}
-              aria-label="tag"
-            />
-            <input
-              value={draft.spine}
-              onChange={(e) => setDraft({ ...draft, spine: e.target.value })}
-              placeholder="spine label (if the title won't fit)"
-              className="px-2 py-1 text-[12px] outline-none w-[220px]"
-              style={inputStyle}
-              aria-label="spine label"
-            />
-            <input
-              value={draft.note}
-              onChange={(e) => setDraft({ ...draft, note: e.target.value })}
-              placeholder="note (optional)"
-              className="px-2 py-1 text-[12px] outline-none flex-1 min-w-[200px]"
-              style={inputStyle}
-              aria-label="note"
-            />
-          </div>
-          <div className="flex justify-between gap-3 mt-1 text-[12px]">
-            {draft.id ? (
-              <button onClick={removeDraft} className="tui-btn" style={{ color: "var(--accent)" }}>
-                [remove]
-              </button>
+      {/* reading now: its own pane, the one thing on the shelf that's open */}
+      <fieldset id="reading" className="pane mt-10 mx-0 mb-0 px-0 pt-1 pb-2 min-w-0 text-[13px]">
+        <legend>
+          <span className="key">◉ </span>reading now
+          <span className="key"> · {reading.length}</span>
+        </legend>
+        {reading.length === 0 ? (
+          <p className="comment m-0 px-[2ch] py-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
+            between books.
+          </p>
+        ) : (
+          <div className="px-[1ch]">{reading.map((b) => rowFor(b, <Ribbon key="r" />))}</div>
+        )}
+      </fieldset>
+
+      <section id="queue" className="mt-10 text-[13px]">
+        <SectionHead
+          name="queue"
+          count={
+            activeFilter ? (
+              <>
+                {shown.length}/{queue.length}{" "}
+                <button
+                  onClick={() => setFilter(null)}
+                  className="tui-btn lowercase"
+                  style={{ color: "var(--accent)" }}
+                  aria-label={`clear the ${activeFilter} filter`}
+                >
+                  /{activeFilter} ✕
+                </button>
+              </>
             ) : (
-              <span />
-            )}
-            <span className="flex gap-3">
-              <button onClick={() => setDraft(null)} className="tui-btn">
-                [cancel]
-              </button>
-              <button onClick={saveDraft} className="tui-btn" style={{ color: "var(--rose)" }}>
-                [save]
-              </button>
-            </span>
-          </div>
-        </div>
-      )}
+              queue.length
+            )
+          }
+        />
+        {queue.length === 0 ? (
+          <p className="comment m-0 px-[1ch] text-[12px] lowercase" style={{ color: "var(--soft)" }}>
+            nothing queued. suggestions go in the guestbook.
+          </p>
+        ) : (
+          <>
+            <ColumnHeads />
+            {shown.map((b) => rowFor(b, <No key="n" n={queueNo.get(b.id) ?? 0} />))}
+          </>
+        )}
+      </section>
 
-      {(() => {
-        const shelf = books;
-        const selected = shelf.find((b) => b.id === selectedId) ?? null;
-        // one book always leans; which one depends on the arrangement
-        const leanIndex = shelf.length > 1 ? hashString(shelf.map((b) => b.id).join()) % shelf.length : -1;
-        return (
-          <section id="shelf" className="mt-2">
-            {shelf.length === 0 ? (
-              <div className="pb-2" style={{ borderBottom: "1px solid var(--line)" }}>
-                <p className="text-[12px] lowercase" style={{ color: "var(--soft)" }}>
-                  the shelf is empty. it won&apos;t last.
-                </p>
-              </div>
-            ) : (
-              <div
-                className="mt-8 flex flex-wrap items-end gap-[6px] px-1"
-                style={{ borderBottom: "1px solid var(--line)" }}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  reorder(null); // dropped on the shelf itself: move to the end
-                }}
-              >
-                {shelf.map((book, i) => (
-                  <Spine
-                    key={book.id}
-                    book={book}
-                    selected={book.id === selectedId}
-                    dropTarget={dropId === book.id && dragId !== book.id}
-                    lean={i === leanIndex}
-                    onClick={() =>
-                      setSelectedId((cur) => (cur === book.id ? null : book.id))
-                    }
-                    onDragStart={() => {
-                      dragIdRef.current = book.id;
-                      setDragId(book.id);
-                    }}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setDropId(book.id);
-                    }}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      reorder(book.id);
-                    }}
-                    onDragEnd={() => {
-                      dragIdRef.current = null;
-                      setDragId(null);
-                      setDropId(null);
-                    }}
-                  />
-                ))}
-              </div>
-            )}
+      <section id="read" className="mt-10 text-[13px]">
+        <SectionHead name="read" count={done.length} />
+        {done.length === 0 ? (
+          <p
+            className="comment m-0 px-[1ch] pt-1 text-[12px] lowercase"
+            style={{ color: "var(--soft)", borderTop: "1px solid var(--line)" }}
+          >
+            nothing finished yet.
+          </p>
+        ) : (
+          <>
+            <ColumnHeads />
+            {done.map((b, i) => rowFor(b, <No key="n" n={i + 1} />))}
+          </>
+        )}
+      </section>
 
-            {selected && (
-              <div className="mt-4 pl-4" style={{ borderLeft: "1px solid var(--line)" }}>
-                <div className="flex items-baseline gap-2 flex-wrap">
-                  <span className="text-[14px]" style={{ color: "var(--ink)" }}>
-                    {selected.title}
-                  </span>
-                  <span className="text-[12px] lowercase" style={{ color: "var(--soft)" }}>
-                    · {selected.author}
-                  </span>
-                  {selected.tag && (
-                    <span className="text-[11px] lowercase" style={{ color: "var(--soft)" }}>
-                      [{selected.tag}]
-                    </span>
-                  )}
-                  <span className="text-[11px] lowercase" style={{ color: "var(--soft)" }}>
-                    · {STATUS_LABEL[selected.status]}
-                  </span>
-                  <button
-                    onClick={() => moveBy(selected.id, -1)}
-                    className="tui-btn text-[11px]"
-                    aria-label={`move ${selected.title} left`}
-                  >
-                    [←]
-                  </button>
-                  <button
-                    onClick={() => moveBy(selected.id, 1)}
-                    className="tui-btn text-[11px]"
-                    aria-label={`move ${selected.title} right`}
-                  >
-                    [→]
-                  </button>
-                  {password && loaded && (
-                    <button
-                      onClick={() => openEdit(selected)}
-                      className="tui-btn text-[11px]"
-                      aria-label={`edit ${selected.title}`}
-                    >
-                      [e]
-                    </button>
-                  )}
-                </div>
-                {selected.note && (
-                  <p
-                    className="mt-1 text-[12px] leading-[1.8] lowercase"
-                    style={{ color: "var(--ink)" }}
-                  >
-                    {selected.note}
-                  </p>
-                )}
-              </div>
-            )}
-          </section>
-        );
-      })()}
+      <section id="shelf" className="mt-10 text-[13px]">
+        <SectionHead name="shelf" count={books.length} />
+        <Shelf
+          books={books}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+          queueNo={queueNo}
+          owner={owner}
+          reorder={reorder}
+          moveBy={moveBy}
+          onEdit={(b) => openEdit(b, "shelf")}
+          editing={selectedId ? form("shelf", selectedId) : null}
+        />
+      </section>
 
-      <p className="mt-10 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
-        click a spine to pull it off the shelf. drag to rearrange, it soothes.
-        the ribbon marks what&apos;s open right now.
-      </p>
+      <div
+        className="mt-10 pt-2 px-[1ch] flex items-baseline justify-between gap-4 text-[11px] lowercase"
+        style={{ color: "var(--faint)", borderTop: "1px solid var(--line)" }}
+      >
+        <span>
+          {books.length} books · {tracks.filter((t) => t.tag !== UNTAGGED).length} tracks · {done.length} read
+        </span>
+        <span className={`${s.end} normal-case`}>(END)</span>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,51 @@
+/* the library's own bits. rows are .list-row/.list-head from globals.css, so
+   hover and keyboard focus are the house reverse-video bar; the spines keep
+   their sanctioned lift (.spine in globals.css). */
+
+/* the ▹ cursor sits in its own cell and only shows on the row under the
+   pointer or keyboard focus. instant, like a terminal redraw. */
+.ptr {
+  visibility: hidden;
+}
+
+:global(.list-row):hover .ptr,
+:global(.list-row):focus-visible .ptr,
+.on .ptr {
+  visibility: visible;
+}
+
+/* a track filter that's switched on holds the bar, like k9s's active view */
+.on :global(.list-head) {
+  background: var(--accent);
+}
+
+.on :global(.list-head) * {
+  color: var(--bg) !important;
+}
+
+/* empty meter cells, kept just visible on the bar too */
+.track {
+  color: var(--line);
+}
+
+/* less(1)'s end-of-file marker: inverse video in --soft, not the accent,
+   because nothing here is selected */
+.end {
+  display: inline-block;
+  padding: 0 1ch;
+  background: var(--soft);
+  color: var(--bg);
+}
+
+/* row buttons (owner mode, track filters) reset to plain text. padding
+   stays with the markup's utilities. */
+.bare {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
