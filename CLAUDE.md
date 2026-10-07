@@ -29,7 +29,9 @@ anything visual or touching content.
 - the modern finish lives only in the chrome: the `.window` (10px radius,
   backdrop blur, drop shadow, like a terminal emulator on a desktop), the
   wisteria lamps + dot grid behind it (`body::before/::after`), the powerline
-  status bar. any gradient there uses one hue. avoid big low-contrast
+  status bar. any gradient there uses one hue. the one two-hue gradient is
+  the neofetch logo (`.fetch-art`): wisteria at the top into rose at the
+  tips, like the flower. avoid big low-contrast
   gradients inside panes: they band visibly on 8-bit screens. no bold
   weights in body text, no images as decoration (content images in
   /writing are fine).

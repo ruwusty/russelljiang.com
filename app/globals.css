@@ -286,13 +286,13 @@ body::after {
   margin-left: -6px;
 }
 
-/* neofetch: block letters in clay, deepening toward ink */
+/* neofetch logo: wisteria at the top dripping into rose at the tips */
 .fetch-art {
   font-size: 11px;
   line-height: 1;
   letter-spacing: 0;
   white-space: pre;
-  background: linear-gradient(160deg, var(--accent) 20%, color-mix(in srgb, var(--accent) 55%, var(--ink)));
+  background: linear-gradient(180deg, var(--accent) 15%, var(--rose) 90%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
