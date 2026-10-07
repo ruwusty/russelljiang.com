@@ -119,6 +119,8 @@ function complete(value: string): { candidates: string[]; ghost: string } {
 // the key changed with the command (was `rj:intro` for `cat ~/about.md`), so
 // everyone sees the new one once. layout.tsx reads the same key.
 const INTRO_CMD = "fastfetch";
+const HISTORY_KEY = "rj:history";
+const HISTORY_MAX = 50;
 const INTRO_KEY = "rj:intro:fetch";
 const BOOT_MS = 340;
 const TYPE_MS = 38;
@@ -160,6 +162,7 @@ interface CommandState {
   focusPrompt: (prefill?: string) => void;
   inputRef: React.RefObject<HTMLInputElement | null>;
   intro: "idle" | "typing" | "done";
+  historyStep: (dir: -1 | 1) => void;
 }
 
 const Ctx = createContext<CommandState | null>(null);
@@ -185,6 +188,54 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
   const [fetchLogo, setFetchLogo] = useState<LogoName | null>(null);
   const lastLogoRef = useRef<LogoName | null>(null);
   const retriesRef = useRef(0);
+
+  // shell history: ↑/↓ walk it, newest last. kept across visits in this
+  // browser, capped, no immediate repeats, and never a `login <password>`
+  // line — that would leave the site password sitting in localStorage.
+  const historyRef = useRef<string[]>([]);
+  const histPosRef = useRef<number | null>(null);
+  const histDraftRef = useRef("");
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) ?? "[]");
+      if (Array.isArray(saved)) historyRef.current = saved.filter((x) => typeof x === "string");
+    } catch {}
+  }, []);
+  const remember = (line: string) => {
+    const cmd = line.trim();
+    histPosRef.current = null;
+    if (!cmd || /^:?\s*login\s+\S/i.test(cmd)) return;
+    const h = historyRef.current;
+    if (h[h.length - 1] === cmd) return;
+    historyRef.current = [...h, cmd].slice(-HISTORY_MAX);
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(historyRef.current));
+    } catch {}
+  };
+  const historyStep = (dir: -1 | 1) => {
+    const h = historyRef.current;
+    if (h.length === 0 || mode === "pw") return;
+    let pos = histPosRef.current;
+    if (pos === null) {
+      if (dir === 1) return;
+      histDraftRef.current = value;
+      pos = h.length;
+    }
+    const next = pos + dir;
+    if (next < 0) return;
+    if (next >= h.length) {
+      histPosRef.current = null;
+      setValue(histDraftRef.current);
+    } else {
+      histPosRef.current = next;
+      setValue(h[next]);
+    }
+    // caret to the end, like a shell; next frame, after the value lands
+    requestAnimationFrame(() => {
+      const el = inputRef.current;
+      if (el) el.setSelectionRange(el.value.length, el.value.length);
+    });
+  };
   const [helpOpen, setHelpOpen] = useState(false);
   const [results, setResults] = useState<Post[] | null>(null);
   const [teaUntil, setTeaUntil] = useState<number | null>(null);
@@ -645,6 +696,7 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
       }
       return;
     }
+    remember(value);
     if (run(value) === "password") {
       setMode("pw");
       setValue("");
@@ -669,7 +721,7 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
       value={{
         value, setValue, mode, focused, setFocused, message, fetchLogo,
         helpOpen, setHelpOpen, results, setResults, teaUntil, ruler,
-        submit, cancel, focusPrompt, inputRef, intro,
+        submit, cancel, focusPrompt, inputRef, intro, historyStep,
       }}
     >
       {children}
@@ -761,6 +813,9 @@ export function Prompt() {
               } else if (e.key === "Escape") {
                 e.preventDefault();
                 c.cancel();
+              } else if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                e.preventDefault();
+                c.historyStep(e.key === "ArrowUp" ? -1 : 1);
               } else if (ghost && (e.key === "Tab" || e.key === "ArrowRight") && !e.shiftKey) {
                 e.preventDefault();
                 accept();
