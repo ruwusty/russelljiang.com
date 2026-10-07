@@ -18,29 +18,23 @@ export default async function Home() {
 
   return (
     <DocsShell crumb="overview" toc={toc}>
-      {/* `.intro-content` is what the intro's `fastfetch` prints. it is in the
-          ssr html regardless (seo); on a first visit globals.css hides it
-          while the prompt types, then prints it line by line. see
-          command-bar.tsx. */}
-      <div className="intro-content">
-        <HomeEditor
-          initial={content}
-          logo={logo}
-          heading={
-            <>
-              <h1
-                className="display text-[26px] xl:text-[30px] leading-[1.3] m-0"
-                style={{ color: "var(--ink)" }}
-              >
-                russell jiang
-              </h1>
-              <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
-                b. data science and decisions (i) @ unsw · tutor &amp; tech @ sydney scholars · amusa
-              </p>
-            </>
-          }
-        />
-      </div>
+      <HomeEditor
+        initial={content}
+        logo={logo}
+        heading={
+          <>
+            <h1
+              className="display text-[26px] xl:text-[30px] leading-[1.3] m-0"
+              style={{ color: "var(--ink)" }}
+            >
+              russell jiang
+            </h1>
+            <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
+              b. data science and decisions (i) @ unsw · tutor &amp; tech @ sydney scholars · amusa
+            </p>
+          </>
+        }
+      />
     </DocsShell>
   );
 }

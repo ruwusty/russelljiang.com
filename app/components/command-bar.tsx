@@ -37,12 +37,6 @@ import { FetchOutput } from "./fetch-output";
 // fish-style: the best match is drawn as ghost text after the caret and tab
 // (or → at the end of the line) takes it; the candidates sit on the line
 // below so a visitor who has never seen a shell can read the menu.
-//
-// on first visit to the home page the side panes print in, the prompt types
-// `fastfetch`, and the page prints beneath it line by line while the prompt
-// clears to `❯ █` — the way a shell looks after a command returns. that demo
-// is the entire onboarding: a visitor who has watched it knows the syntax
-// without a tooltip, and `fastfetch` itself is a command they can rerun.
 
 const ROUTES: Record<string, string> = {
   home: "/",
@@ -78,13 +72,12 @@ const HELP_LINES: [string, string][] = [
   ["login / logout", "関係者以外立入禁止"],
   ["whoami", "introductions"],
   ["fastfetch [logo]", "system info. new logo every run · -l lists them"],
-  ["reboot", "replay the first-visit boot"],
   ["q / wq", "you have to try"],
 ];
 
 // tab completion tables. primary names only — aliases (`go`, `dir`, `h`)
 // still run, they just are not suggested.
-const COMMANDS = ["ls", "cat", "grep", "fastfetch", "reboot", "help", "theme", "tea", "whoami", "login", "logout", "vim", "clear"];
+const COMMANDS = ["ls", "cat", "grep", "fastfetch", "help", "theme", "tea", "whoami", "login", "logout", "vim", "clear"];
 const TARGETS = [...PAGES, ...Object.keys(EXTERNAL)];
 const TAGS = [...new Set(posts.filter((p) => p.href).flatMap((p) => p.tags))].sort();
 const ARGS: Record<string, string[]> = {
@@ -112,25 +105,9 @@ function complete(value: string): { candidates: string[]; ghost: string } {
   return { candidates, ghost };
 }
 
-// the intro, first visit to `/` only: the side panes print in (boot), the
-// prompt types `fastfetch`, then the page prints top to bottom one line at a
-// time, the way output scrolls into a terminal. typing timing follows
-// `currently.tsx` so the two typewriters on the site feel like one hand.
-// the key changed with the command (was `rj:intro` for `cat ~/about.md`), so
-// everyone sees the new one once. layout.tsx reads the same key.
-const INTRO_CMD = "fastfetch";
+// shell history, kept in this browser
 const HISTORY_KEY = "rj:history";
 const HISTORY_MAX = 50;
-const INTRO_KEY = "rj:intro:fetch";
-const BOOT_MS = 340;
-const TYPE_MS = 38;
-const TYPE_JITTER_MS = 42;
-const INTRO_HOLD_MS = 220;
-// the print: one step per text line, about 1ms per pixel of content, so the
-// part on screen lands in well under a second however long the page is
-const LINE_PX = 24;
-const PRINT_MIN_MS = 450;
-const PRINT_MAX_MS = 1800;
 
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
@@ -161,7 +138,6 @@ interface CommandState {
   cancel: () => void;
   focusPrompt: (prefill?: string) => void;
   inputRef: React.RefObject<HTMLInputElement | null>;
-  intro: "idle" | "typing" | "done";
   historyStep: (dir: -1 | 1) => void;
 }
 
@@ -241,7 +217,6 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
   const [teaUntil, setTeaUntil] = useState<number | null>(null);
   const [, forceTick] = useState(0);
   const [ruler, setRuler] = useState("all");
-  const [intro, setIntro] = useState<"idle" | "typing" | "done">("idle");
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   // output stays put until something replaces or clears it — see the header.
@@ -262,113 +237,6 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
       const n = el.value.length;
       el.setSelectionRange(n, n);
     });
-  }, []);
-
-  // ---- intro: boot, type `fastfetch`, print the page ----
-  // the pre-paint script in layout.tsx sets html[data-intro="pending"] on a
-  // first visit to `/` (not under reduced-motion). globals.css keys off the
-  // attribute: pending hides the side panes (`.intro-boot`) and the page
-  // (`.intro-content`); boot prints the panes; typing keeps the page hidden;
-  // render prints it with a stepped clip. the content is in the ssr html the
-  // whole time (seo), and nothing is fetched behind the animation.
-  useEffect(() => {
-    const root = document.documentElement;
-    if (root.dataset.intro !== "pending" || pathname !== "/") return;
-
-    const content = document.querySelector<HTMLElement>(".intro-content");
-    let cancelled = false;
-    let i = 0;
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    setIntro("typing");
-    root.dataset.intro = "boot";
-
-    const onPrinted = (e: AnimationEvent) => {
-      if (e.target === content) finish();
-    };
-
-    const finish = (e?: Event) => {
-      if (cancelled) return;
-      cancelled = true;
-      // the keystroke or click that skipped the intro must not ALSO be
-      // handled by anything else — `j` is the sidebar's next-item binding and
-      // `/` focuses the prompt. capture-phase registration alone does not
-      // prevent that (measured: `j` skipped the intro and moved the sidebar
-      // selection 0 -> 1); the event has to be stopped here, before it
-      // proceeds to the bubble-phase listeners on the same window.
-      if (e) {
-        e.stopPropagation();
-        // keyboard only: a `/` must not also open the browser's quick-find.
-        // a click that skips the intro keeps its default — if it landed on a
-        // sidebar link, navigating is exactly what the visitor asked for.
-        if (e.type === "keydown") e.preventDefault();
-      }
-      if (timer) clearTimeout(timer);
-      delete root.dataset.intro;
-      delete root.dataset.introForce;
-      root.style.removeProperty("--intro-steps");
-      root.style.removeProperty("--intro-ms");
-      setValue("");
-      setIntro("done");
-      try {
-        localStorage.setItem(INTRO_KEY, "1");
-      } catch {}
-      content?.removeEventListener("animationend", onPrinted);
-      window.removeEventListener("keydown", finish, true);
-      window.removeEventListener("pointerdown", finish, true);
-      window.removeEventListener("wheel", finish, true);
-    };
-
-    const print = () => {
-      if (cancelled) return;
-      const h = content?.offsetHeight ?? 0;
-      root.style.setProperty("--intro-steps", String(Math.max(8, Math.round(h / LINE_PX))));
-      root.style.setProperty(
-        "--intro-ms",
-        `${Math.min(PRINT_MAX_MS, Math.max(PRINT_MIN_MS, Math.round(h)))}ms`
-      );
-      // the command "returns": the prompt clears as its output prints
-      setValue("");
-      content?.addEventListener("animationend", onPrinted);
-      root.dataset.intro = "render";
-      // belt and braces, in case animationend never fires
-      timer = setTimeout(finish, PRINT_MAX_MS + 400);
-    };
-
-    const step = () => {
-      if (cancelled) return;
-      i += 1;
-      setValue(INTRO_CMD.slice(0, i));
-      if (i >= INTRO_CMD.length) {
-        timer = setTimeout(print, INTRO_HOLD_MS);
-        return;
-      }
-      timer = setTimeout(step, TYPE_MS + Math.random() * TYPE_JITTER_MS);
-    };
-
-    const type = () => {
-      if (cancelled) return;
-      root.dataset.intro = "typing";
-      timer = setTimeout(step, 140);
-    };
-
-    // any key, click, tap or scroll skips straight to the content. capture
-    // phase so we run first; finish() then stops the event so it cannot reach
-    // j/k or `/`.
-    window.addEventListener("keydown", finish, true);
-    window.addEventListener("pointerdown", finish, true);
-    window.addEventListener("wheel", finish, true);
-    timer = setTimeout(type, BOOT_MS);
-
-    return () => {
-      if (!cancelled) {
-        if (timer) clearTimeout(timer);
-        content?.removeEventListener("animationend", onPrinted);
-        window.removeEventListener("keydown", finish, true);
-        window.removeEventListener("pointerdown", finish, true);
-        window.removeEventListener("wheel", finish, true);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // vim's ruler: where you are in the buffer
@@ -646,18 +514,6 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
         setMessage(null);
         setFetchLogo(null);
         break;
-      case "reboot":
-      case "restart": {
-        // come back in through the front door with a real page load, so
-        // layout.tsx's pre-paint script runs again. asking for the boot is
-        // consent to see it, so the flag plays it even under reduced motion;
-        // only the unasked-for first-visit intro respects that setting.
-        try {
-          sessionStorage.setItem("rj:reboot", "1");
-        } catch {}
-        window.location.assign("/");
-        break;
-      }
       case "fastfetch":
       case "neofetch": {
         if (arg === "-l" || arg === "--list") {
@@ -682,7 +538,6 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
   };
 
   const submit = () => {
-    if (intro === "typing") return;
     if (mode === "pw") {
       const attempt = value;
       setMode("cmd");
@@ -720,7 +575,7 @@ export function CommandProvider({ children }: { children: React.ReactNode }) {
       value={{
         value, setValue, mode, focused, setFocused, message, fetchLogo,
         helpOpen, setHelpOpen, results, setResults, teaUntil, ruler,
-        submit, cancel, focusPrompt, inputRef, intro, historyStep,
+        submit, cancel, focusPrompt, inputRef, historyStep,
       }}
     >
       {children}
@@ -735,7 +590,6 @@ export function Prompt() {
   const c = useCommand();
   const { resolvedTheme } = useTheme();
   const { password } = useSiteAuth();
-  const typing = c.intro === "typing";
   const pw = c.mode === "pw";
   const [caret, setCaret] = useState(0);
   const sync = (e: React.SyntheticEvent<HTMLInputElement>) =>
@@ -743,9 +597,9 @@ export function Prompt() {
 
   const display = pw ? "•".repeat(c.value.length) : c.value.toLowerCase();
   // the cell sits at the caret while typing here; at the end otherwise (the
-  // intro, or the resting prompt) so it reads as a prompt, not a text field.
-  const at = c.focused && !typing ? Math.min(caret, display.length) : display.length;
-  const completing = c.focused && !typing && !pw;
+  // resting prompt) so it reads as a prompt, not a text field.
+  const at = c.focused ? Math.min(caret, display.length) : display.length;
+  const completing = c.focused && !pw;
   const { candidates, ghost: rawGhost } = completing ? complete(c.value) : { candidates: [], ghost: "" };
   // an empty prompt lists the menu; it does not guess. and a caret mid-line
   // means the visitor is editing, not finishing — no ghost there either.
@@ -793,7 +647,6 @@ export function Prompt() {
             ref={c.inputRef}
             type={pw ? "password" : "text"}
             value={c.value}
-            readOnly={typing}
             onChange={(e) => {
               c.setValue(e.target.value);
               sync(e);
