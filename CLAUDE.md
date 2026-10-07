@@ -1,16 +1,16 @@
 # russelljiang.com — conventions
 
 personal site for Russell Jiang. a tui you can read in a browser: tiled
-panes, reverse-video selection, box-drawing glyphs, one violet accent
-(obsidian-ish), with a modern window around it. read this before changing
+panes, reverse-video selection, box-drawing glyphs, one dusty wisteria
+accent (藤), with a modern window around it. read this before changing
 anything visual or touching content.
 
 ## design rules (hard)
 
 - palette via css vars in `app/globals.css` only. light: `--bg #f7f7f8`,
-  `--ink #222226`, `--soft #5c5c66`, `--faint`, `--line`, `--accent #6c4fe0`
-  (violet), `--green #2f7d4f` (prompts, "normal" mode, sparingly). dark:
-  `#1a1a1e` bg, `--accent #a88bfa`, `--green #7fbf8f`. cool neutral greys,
+  `--ink #222226`, `--soft #5c5c66`, `--faint`, `--line`, `--accent #7a6488`
+  (wisteria), `--green #2f7d4f` (prompts, "normal" mode, sparingly). dark:
+  `#1a1a1e` bg, `--accent #a28fc0`, `--green #7fbf8f`. cool neutral greys,
   no warm tints. NO other hues (curated exceptions: guestbook name palette
   in `app/guestbook/guestbook.tsx`, library spines, discord song colours,
   and the amp's hardware slot leds in `SLOT_LED`,
@@ -26,7 +26,7 @@ anything visual or touching content.
   cards on anything interactive.
 - the modern finish lives only in the chrome: the `.window` (10px radius,
   backdrop blur, drop shadow, like a terminal emulator on a desktop), the
-  violet lamps + dot grid behind it (`body::before/::after`), the powerline
+  wisteria lamps + dot grid behind it (`body::before/::after`), the powerline
   status bar. any gradient there uses one hue. avoid big low-contrast
   gradients inside panes: they band visibly on 8-bit screens. no bold
   weights in body text, no images as decoration (content images in
