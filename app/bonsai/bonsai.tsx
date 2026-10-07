@@ -9,7 +9,7 @@ const NAP_FRAME = FRAME_A.map((row) => row.replaceAll("o", "X"));
 const STORAGE_KEY = "bonsai";
 const W = 44;
 const H = 38;
-const PX = 3;
+const PX = 5; // same pixel size as the cat that naps beside it
 
 // hours of growth to reach each stage
 const STAGES: [number, string][] = [
@@ -293,7 +293,7 @@ function TreeSvg({ state, season }: { state: BonsaiState; season: Season }) {
       viewBox={`0 0 ${W} ${H}`}
       width={W * PX}
       height={H * PX}
-      style={{ display: "block", shapeRendering: "crispEdges" }}
+      style={{ display: "block", shapeRendering: "crispEdges", maxWidth: "100%", height: "auto" }}
       aria-hidden="true"
     >
       {[...cells.entries()].map(([key, color]) => {
@@ -434,7 +434,7 @@ export function Bonsai() {
       >
         <TreeSvg state={state} season={season} />
         {catNapping && (
-          <div className="absolute bottom-0" style={{ left: "calc(50% + 76px)" }} aria-hidden="true">
+          <div className="absolute bottom-0" style={{ left: `min(calc(50% + ${(W * PX) / 2 + 10}px), calc(100% - 90px))` }} aria-hidden="true">
             <span
               className="absolute -top-4 left-2 text-[10px]"
               style={{ color: "var(--faint)" }}
