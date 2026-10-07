@@ -789,9 +789,7 @@ export function StatusBar({ crumb, commit }: { crumb: string; commit: string }) 
         <span
           className="seg inline-flex shrink-0"
           style={{
-            background: inCommand
-              ? "linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 80%, var(--ink)))"
-              : "linear-gradient(90deg, var(--green), color-mix(in srgb, var(--green) 75%, var(--accent)))",
+            background: inCommand ? "var(--accent)" : "var(--green)",
             color: "var(--bg)",
           }}
         >
@@ -834,7 +832,7 @@ export function StatusBar({ crumb, commit }: { crumb: string; commit: string }) 
         <span
           className="seg-r inline-flex"
           style={{
-            background: "linear-gradient(90deg, color-mix(in srgb, var(--accent) 75%, var(--green)), var(--accent))",
+            background: "var(--accent)",
             color: "var(--bg)",
           }}
         >

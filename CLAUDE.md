@@ -14,9 +14,11 @@ before changing anything visual or touching content.
   leds in `SLOT_LED`, `app/presets/presets-grid.tsx`). `--soft` is #736f64 in
   light mode so body copy set in it clears wcag aa (4.7:1); don't lighten it.
 - chrome may use gradients, radius and shadow, built only from the palette
-  vars: the window's clay→sage border, the ambient lamps + dot grid behind it
-  (`body::before/::after`), the focused pane's accent glow, the powerline
-  status bar, gradient h1s (`h1.display`), the `.hrule`, the neofetch art.
+  vars, one hue per gradient. never blend clay into sage (russell:
+  "horrible"). sanctioned: the window's clay-corner border, the clay lamps +
+  dot grid behind it (`body::before/::after`), the focused pane's accent
+  glow, the powerline status bar, ink→clay h1s (`h1.display`), the neofetch
+  art.
   content stays flat. avoid big low-contrast gradients inside panes: they
   band visibly on 8-bit screens. no bold weights in body text, no images as
   decoration (content images in /writing are fine).
@@ -28,7 +30,7 @@ before changing anything visual or touching content.
   powerline `StatusBar`. panes: [1] ~/site nav, [2] status, [3] main (prompt +
   page, content capped at 720px), [4] outline at xl when the page's toc has
   2+ entries. below lg the nav wraps into a strip above main and status
-  drops below it. `.hrule` (56px × 2px, clay→sage) under each page heading.
+  drops below it. `.hrule` (56px × 2px, solid clay) under each page heading.
 - animations, the complete list (corrected 15 sep 2026 — this line used to
   name three while `globals.css` shipped six): the blinking cursors
   (`.cursor-block` in currently, `.caret-cell` in the prompt — the prompt's

@@ -15,7 +15,7 @@
   --glass: color-mix(in srgb, var(--bg) 52%, transparent);
   --pane: color-mix(in srgb, var(--bg) 50%, transparent);
   --glow-a: color-mix(in srgb, var(--accent) 34%, transparent);
-  --glow-b: color-mix(in srgb, var(--green) 32%, transparent);
+  --glow-b: color-mix(in srgb, var(--accent) 16%, transparent);
   --lift: 0 40px 90px -40px rgba(70, 48, 30, 0.28), 0 2px 6px -2px rgba(70, 48, 30, 0.08);
 
   /* legacy aliases kept so older components keep working */
@@ -36,7 +36,7 @@
   --line: #2b2820;
   --glass: color-mix(in srgb, var(--bg) 58%, transparent);
   --glow-a: color-mix(in srgb, var(--accent) 42%, transparent);
-  --glow-b: color-mix(in srgb, var(--green) 32%, transparent);
+  --glow-b: color-mix(in srgb, var(--accent) 18%, transparent);
   --lift: 0 40px 100px -30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 0, 0, 0.3);
 }
 
@@ -102,9 +102,9 @@ html {
   text-transform: lowercase;
 }
 
-/* page headings carry the one gradient in the type: ink warming into clay */
+/* page headings warm from ink into clay, one hue, no second colour */
 h1.display {
-  background: linear-gradient(100deg, var(--ink) 0%, var(--accent) 75%, var(--green));
+  background: linear-gradient(100deg, var(--ink) 35%, var(--accent));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent !important;
@@ -114,7 +114,7 @@ h1.display {
 .hrule {
   width: 56px;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--green));
+  background: var(--accent);
   border: none;
 }
 
@@ -170,7 +170,7 @@ body::after {
   box-shadow: var(--lift);
 }
 
-/* a 1px border that drifts from clay to line to sage */
+/* a 1px border, clay in the top-left corner fading out into line */
 .window::before {
   content: "";
   position: absolute;
@@ -180,9 +180,7 @@ body::after {
   background: linear-gradient(
     135deg,
     color-mix(in srgb, var(--accent) 70%, var(--line)),
-    var(--line) 35%,
-    var(--line) 65%,
-    color-mix(in srgb, var(--green) 70%, var(--line))
+    var(--line) 40%
   );
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
@@ -275,13 +273,13 @@ body::after {
   margin-left: -6px;
 }
 
-/* neofetch: block letters lit from clay to sage */
+/* neofetch: block letters in clay, deepening toward ink */
 .fetch-art {
   font-size: 11px;
   line-height: 1;
   letter-spacing: 0;
   white-space: pre;
-  background: linear-gradient(160deg, var(--accent) 10%, var(--green) 90%);
+  background: linear-gradient(160deg, var(--accent) 20%, color-mix(in srgb, var(--accent) 55%, var(--ink)));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
