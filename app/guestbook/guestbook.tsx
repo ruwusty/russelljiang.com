@@ -120,7 +120,7 @@ export function Guestbook() {
       {/* sign */}
       <div id="sign" className="flex flex-col gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
         <div className="flex items-baseline gap-2 flex-wrap">
-          <span style={{ color: "var(--green)" }}>❯</span>
+          <span style={{ color: "var(--rose)" }}>❯</span>
           <span className="shrink-0">name</span>
           <input
             value={name}
@@ -133,7 +133,7 @@ export function Guestbook() {
           />
         </div>
         <div className="flex items-baseline gap-2 flex-wrap">
-          <span style={{ color: "var(--green)" }}>❯</span>
+          <span style={{ color: "var(--rose)" }}>❯</span>
           <span className="shrink-0">message</span>
           <input
             value={message}
@@ -151,7 +151,7 @@ export function Guestbook() {
             onClick={sign}
             disabled={submitting || !message.trim()}
             className="tui-btn text-[12px]"
-            style={{ color: message.trim() ? "var(--green)" : "var(--faint)" }}
+            style={{ color: message.trim() ? "var(--rose)" : "var(--faint)" }}
           >
             {submitting ? "[signing…]" : "[sign]"}
           </button>
@@ -179,7 +179,7 @@ export function Guestbook() {
       {/* entries */}
       <div id="entries" className="mt-12">
         <div className="trail flex items-center gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
-          <span style={{ color: "var(--green)" }}>❯</span>
+          <span style={{ color: "var(--rose)" }}>❯</span>
           <span>cat guestbook.log</span>
         </div>
 

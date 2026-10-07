@@ -142,7 +142,7 @@ export function Stats() {
   return (
     <div id="numbers">
       <div className="trail flex items-center gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
-        <span style={{ color: "var(--green)" }}>❯</span>
+        <span style={{ color: "var(--rose)" }}>❯</span>
         <span>cat /proc/site</span>
       </div>
 
@@ -185,7 +185,7 @@ export function Stats() {
       {password && hits && (
         <div className="mt-10">
           <div className="trail flex items-center gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
-            <span style={{ color: "var(--green)" }}>❯</span>
+            <span style={{ color: "var(--rose)" }}>❯</span>
             <span>tail -n 7 access.log</span>
           </div>
           <dl

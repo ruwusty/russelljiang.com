@@ -86,7 +86,7 @@ export function LoginRow({ login, onClose }: LoginRowProps) {
 
   return (
     <div className="mt-3 flex items-baseline gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
-      <span style={{ color: "var(--green)" }}>❯</span>
+      <span style={{ color: "var(--rose)" }}>❯</span>
       <span className="shrink-0">password:</span>
       <input
         type="password"

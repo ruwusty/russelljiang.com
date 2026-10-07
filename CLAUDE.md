@@ -9,8 +9,10 @@ anything visual or touching content.
 
 - palette via css vars in `app/globals.css` only. light: `--bg #f7f7f8`,
   `--ink #222226`, `--soft #5c5c66`, `--faint`, `--line`, `--accent #7a6488`
-  (wisteria), `--green #2f7d4f` (prompts, "normal" mode, sparingly). dark:
-  `#1a1a1e` bg, `--accent #a28fc0`, `--green #7fbf8f`. cool neutral greys,
+  (wisteria), `--rose #a35d6d` (sakura: prompts, cursors, "normal" mode,
+  sparingly). dark: `#1a1a1e` bg, `--accent #a28fc0`, `--rose #e0a8b0`.
+  `--ok` (#2f7d4f / #7fbf8f) is a semantic green for meaning only (discord
+  online, a valid plan), never decoration. cool neutral greys,
   no warm tints. NO other hues (curated exceptions: guestbook name palette
   in `app/guestbook/guestbook.tsx`, library spines, discord song colours,
   and the amp's hardware slot leds in `SLOT_LED`,

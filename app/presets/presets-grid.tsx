@@ -1164,7 +1164,7 @@ export function PresetsGrid() {
           <button
             onClick={() => setLoginOpen((v) => !v)}
             className="tui-btn text-[12px]"
-            style={{ color: "var(--green)" }}
+            style={{ color: "var(--rose)" }}
           >
             [login]
           </button>

@@ -53,7 +53,7 @@ export default function VimPage() {
       >
         {motions.map(([key, desc]) => (
           <div key={key} className="contents">
-            <dt style={{ color: "var(--green)" }}>{key}</dt>
+            <dt style={{ color: "var(--rose)" }}>{key}</dt>
             <dd className="lowercase">{desc}</dd>
           </div>
         ))}

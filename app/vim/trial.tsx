@@ -435,7 +435,7 @@ export function VimTrial() {
   return (
     <div id="trial">
       <div className="flex items-baseline gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
-        <span style={{ color: "var(--green)" }}>❯</span>
+        <span style={{ color: "var(--rose)" }}>❯</span>
         <span>
           reach <span style={{ color: "var(--ink)" }}>{config.targets}</span> targets — fast, in few keystrokes
         </span>
@@ -447,7 +447,7 @@ export function VimTrial() {
             key={d}
             onClick={() => pickDifficulty(d)}
             className="tui-btn text-[12px]"
-            style={{ color: d === difficulty ? "var(--green)" : "var(--soft)" }}
+            style={{ color: d === difficulty ? "var(--rose)" : "var(--soft)" }}
           >
             [{d}]
           </button>
@@ -483,7 +483,7 @@ export function VimTrial() {
                   key={col}
                   style={
                     isCursor
-                      ? { background: "var(--green)", color: "var(--bg)" }
+                      ? { background: "var(--rose)", color: "var(--bg)" }
                       : isTarget
                         ? { background: "var(--accent)", color: "var(--bg)" }
                         : undefined
@@ -498,7 +498,7 @@ export function VimTrial() {
       </pre>
 
       {hint && (
-        <div className="mt-2 text-[11px] lowercase" style={{ color: "var(--green)" }}>
+        <div className="mt-2 text-[11px] lowercase" style={{ color: "var(--rose)" }}>
           hint: {hint}
         </div>
       )}
@@ -513,7 +513,7 @@ export function VimTrial() {
           <span aria-live="polite">
             {done && (
               <span>
-                done — <span style={{ color: "var(--green)" }}>{finalTime.toFixed(1)}s</span> ·{" "}
+                done — <span style={{ color: "var(--rose)" }}>{finalTime.toFixed(1)}s</span> ·{" "}
                 {keys} keys
               </span>
             )}
@@ -533,7 +533,7 @@ export function VimTrial() {
       {/* submit finished run */}
       {done && submitState !== "done" && (
         <div className="mt-4 flex items-baseline gap-2 flex-wrap text-[12px]" style={{ color: "var(--soft)" }}>
-          <span style={{ color: "var(--green)" }}>❯</span>
+          <span style={{ color: "var(--rose)" }}>❯</span>
           <span className="shrink-0">post to global as</span>
           <input
             value={playerName}
@@ -556,7 +556,7 @@ export function VimTrial() {
           <button
             onClick={submitScore}
             className="tui-btn text-[12px]"
-            style={{ color: "var(--green)" }}
+            style={{ color: "var(--rose)" }}
           >
             {submitState === "sending" ? "[posting…]" : "[submit]"}
           </button>
@@ -571,19 +571,19 @@ export function VimTrial() {
       {/* leaderboards */}
       <div className="mt-10">
         <div className="trail flex items-baseline gap-3 flex-wrap text-[12px]" style={{ color: "var(--soft)" }}>
-          <span style={{ color: "var(--green)" }}>❯</span>
+          <span style={{ color: "var(--rose)" }}>❯</span>
           <span>leaderboard · {difficulty}</span>
           <button
             onClick={() => setBoardView("global")}
             className="tui-btn text-[12px]"
-            style={{ color: boardView === "global" ? "var(--green)" : "var(--soft)" }}
+            style={{ color: boardView === "global" ? "var(--rose)" : "var(--soft)" }}
           >
             [global]
           </button>
           <button
             onClick={() => setBoardView("personal")}
             className="tui-btn text-[12px]"
-            style={{ color: boardView === "personal" ? "var(--green)" : "var(--soft)" }}
+            style={{ color: boardView === "personal" ? "var(--rose)" : "var(--soft)" }}
           >
             [personal]
           </button>

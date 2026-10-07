@@ -242,8 +242,8 @@ function TreeSvg({ state, season }: { state: BonsaiState; season: Season }) {
     const g = state.growthH;
     if (g < 2) {
       // a seed's worth of optimism
-      put(21, H - 7, "var(--green)");
-      if (g > 0.5) put(21, H - 8, "var(--green)");
+      put(21, H - 7, "var(--rose)");
+      if (g > 0.5) put(21, H - 8, "var(--rose)");
       return map;
     }
 
@@ -276,10 +276,10 @@ function TreeSvg({ state, season }: { state: BonsaiState; season: Season }) {
             tip.x + dx,
             tip.y + dy,
             blossom
-              ? "color-mix(in srgb, var(--green) 40%, var(--bg))"
+              ? "color-mix(in srgb, var(--rose) 40%, var(--bg))"
               : turned
                 ? "var(--soft)"
-                : "var(--green)"
+                : "var(--rose)"
           );
         }
       }
@@ -452,7 +452,7 @@ export function Bonsai() {
       )}
 
       <div className="mt-4 flex items-baseline gap-4 flex-wrap text-[12px]">
-        <button onClick={water} className="tui-btn text-[12px]" style={{ color: "var(--green)" }}>
+        <button onClick={water} className="tui-btn text-[12px]" style={{ color: "var(--rose)" }}>
           [water]
         </button>
         {petalsReady > 0 && (
@@ -483,7 +483,7 @@ export function Bonsai() {
       {shopOpen && (
         <div className="mt-5 text-[12px] lowercase flex flex-col gap-1.5">
           <div className="flex items-center gap-2" style={{ color: "var(--soft)" }}>
-            <span style={{ color: "var(--green)" }}>❯</span>
+            <span style={{ color: "var(--rose)" }}>❯</span>
             <span>petal shop · you have {state.petals}</span>
           </div>
 
@@ -510,7 +510,7 @@ export function Bonsai() {
                 }}
                 aria-label="tree name"
               />
-              <button onClick={engrave} className="tui-btn text-[12px]" style={{ color: "var(--green)" }}>
+              <button onClick={engrave} className="tui-btn text-[12px]" style={{ color: "var(--rose)" }}>
                 [engrave]
               </button>
               <button onClick={() => setPlaqueDraft(null)} className="tui-btn text-[12px]">

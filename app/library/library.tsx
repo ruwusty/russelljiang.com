@@ -301,7 +301,7 @@ export function Library() {
       {password && loaded && (
         <div className="mb-2 flex items-baseline gap-4 text-[12px]">
           {!draft && (
-            <button onClick={openAdd} className="tui-btn text-[12px]" style={{ color: "var(--green)" }}>
+            <button onClick={openAdd} className="tui-btn text-[12px]" style={{ color: "var(--rose)" }}>
               [add book]
             </button>
           )}
@@ -321,7 +321,7 @@ export function Library() {
           style={{ border: "1px solid var(--line)" }}
         >
           <div className="flex items-center gap-2" style={{ color: "var(--soft)" }}>
-            <span style={{ color: "var(--green)" }}>❯</span>
+            <span style={{ color: "var(--rose)" }}>❯</span>
             <span>{draft.id ? "edit book" : "add book"}</span>
           </div>
           <div className="flex gap-2 flex-wrap">
@@ -392,7 +392,7 @@ export function Library() {
               <button onClick={() => setDraft(null)} className="tui-btn">
                 [cancel]
               </button>
-              <button onClick={saveDraft} className="tui-btn" style={{ color: "var(--green)" }}>
+              <button onClick={saveDraft} className="tui-btn" style={{ color: "var(--rose)" }}>
                 [save]
               </button>
             </span>

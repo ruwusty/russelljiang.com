@@ -23,7 +23,7 @@ export default function NotFound() {
       <div className="hrule my-8" />
 
       <div className="trail flex items-center gap-2 text-[12px]" style={{ color: "var(--soft)" }}>
-        <span style={{ color: "var(--green)" }}>❯</span>
+        <span style={{ color: "var(--rose)" }}>❯</span>
         <span>cat ./this-page</span>
       </div>
       <p className="mt-2 text-[13px] leading-[1.9] lowercase" style={{ color: "var(--soft)" }}>

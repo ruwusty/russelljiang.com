@@ -32,7 +32,7 @@ const FETCH_ART = [
 ].join("\n");
 
 // neofetch ends on the terminal's colour row; this one ends on the palette
-const SWATCHES = ["--ink", "--soft", "--faint", "--line", "--accent", "--green"];
+const SWATCHES = ["--ink", "--soft", "--faint", "--line", "--accent", "--rose"];
 
 export function HomeEditor({
   initial,
@@ -139,7 +139,7 @@ export function HomeEditor({
           className="flex items-baseline gap-3 text-[11px] lowercase"
           style={{ color: "var(--soft)" }}
         >
-          <button onClick={save} className="tui-btn text-[11px]" style={{ color: "var(--green)" }}>
+          <button onClick={save} className="tui-btn text-[11px]" style={{ color: "var(--rose)" }}>
             {saveState === "saving" ? "[saving…]" : "[save]"}
           </button>
           <button onClick={() => setEditing(null)} className="tui-btn text-[11px]">
@@ -210,9 +210,9 @@ export function HomeEditor({
 
       <aside
         className="mt-8 pl-4 text-[12px] leading-[1.9] lowercase"
-        style={{ borderLeft: "2px solid var(--green)", color: "var(--soft)" }}
+        style={{ borderLeft: "2px solid var(--rose)", color: "var(--soft)" }}
       >
-        <span style={{ color: "var(--green)" }}>note</span> — this site is a work
+        <span style={{ color: "var(--rose)" }}>note</span> — this site is a work
         in progress. check back occasionally — or don&apos;t.{" "}
         <Kaomoji slot="home-note" fallback="¯\_(ツ)_/¯" className="text-[12px]" />
       </aside>

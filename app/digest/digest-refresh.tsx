@@ -52,7 +52,7 @@ export function DigestRefresh() {
         onClick={run}
         disabled={state === "running"}
         className="tui-btn shrink-0 text-[12px]"
-        style={{ color: "var(--green)" }}
+        style={{ color: "var(--rose)" }}
       >
         {state === "running" ? "[refreshing… ~30s]" : "[refresh digest]"}
       </button>

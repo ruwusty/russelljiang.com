@@ -244,13 +244,13 @@ export function CatPet() {
 
       {/* actions */}
       <div className="mt-4 flex items-baseline gap-4 text-[12px]">
-        <button onClick={doPet} className="tui-btn text-[12px]" style={{ color: "var(--green)" }}>
+        <button onClick={doPet} className="tui-btn text-[12px]" style={{ color: "var(--rose)" }}>
           [pet]
         </button>
-        <button onClick={doFeed} className="tui-btn text-[12px]" style={{ color: "var(--green)" }}>
+        <button onClick={doFeed} className="tui-btn text-[12px]" style={{ color: "var(--rose)" }}>
           [feed]
         </button>
-        <button onClick={doPlay} className="tui-btn text-[12px]" style={{ color: "var(--green)" }}>
+        <button onClick={doPlay} className="tui-btn text-[12px]" style={{ color: "var(--rose)" }}>
           [play]
         </button>
         <span className="text-[12px] lowercase min-h-[1em]" style={{ color: "var(--soft)" }} aria-live="polite">

@@ -610,7 +610,7 @@ export function Prompt() {
         className="flex items-baseline gap-2 text-[12px] min-h-6"
         style={{ color: "var(--ink)" }}
       >
-        <span style={{ color: "var(--green)" }} aria-hidden="true">
+        <span style={{ color: "var(--rose)" }} aria-hidden="true">
           {pw ? "password:" : "❯"}
         </span>
         <span className="sr-only">{pw ? "password" : "command"}</span>
@@ -707,7 +707,7 @@ export function Prompt() {
           <div className="grid gap-x-5 gap-y-1" style={{ gridTemplateColumns: "max-content 1fr" }}>
             {HELP_LINES.map(([cmd, desc]) => (
               <span key={cmd} className="contents">
-                <span style={{ color: "var(--green)" }}>{cmd}</span>
+                <span style={{ color: "var(--rose)" }}>{cmd}</span>
                 <span style={{ color: "var(--soft)" }}>{desc}</span>
               </span>
             ))}
@@ -789,7 +789,7 @@ export function StatusBar({ crumb, commit }: { crumb: string; commit: string }) 
         <span
           className="seg inline-flex shrink-0"
           style={{
-            background: inCommand ? "var(--accent)" : "var(--green)",
+            background: inCommand ? "var(--accent)" : "var(--rose)",
             color: "var(--bg)",
           }}
         >
@@ -802,7 +802,7 @@ export function StatusBar({ crumb, commit }: { crumb: string; commit: string }) 
           ~/{crumb}
         </span>
         {c.teaUntil !== null && (
-          <span className="ml-3 shrink-0" style={{ color: "var(--green)" }}>
+          <span className="ml-3 shrink-0" style={{ color: "var(--rose)" }}>
             tea {Math.floor((c.teaUntil - Date.now()) / 60000)}:
             {String(Math.max(0, Math.ceil(((c.teaUntil - Date.now()) % 60000) / 1000)) % 60).padStart(2, "0")}
           </span>

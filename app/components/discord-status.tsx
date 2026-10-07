@@ -16,7 +16,7 @@ interface LanyardData {
 }
 
 const STATUS_COLOR: Record<StatusType, string> = {
-  online: "var(--green)",
+  online: "var(--ok)",
   idle: "var(--accent)",
   dnd: "var(--accent)",
   offline: "var(--faint)",
@@ -117,7 +117,7 @@ export function DiscordStatus() {
 
   return (
     <span className="flex items-baseline gap-2 lg:flex-wrap" style={{ color: "var(--soft)" }}>
-      <span style={{ color: "var(--green)" }}>❯</span>
+      <span style={{ color: "var(--rose)" }}>❯</span>
       <span className="shrink-0">status</span>
       <span
         className="truncate lg:w-full lg:whitespace-normal lg:line-clamp-3"

@@ -114,7 +114,7 @@ export function RmTheater() {
             )}
           </div>
           {phase === "reveal" && (
-            <button className="tui-btn text-[12px]" style={{ color: "var(--green)" }}>
+            <button className="tui-btn text-[12px]" style={{ color: "var(--rose)" }}>
               [restore from backup]
             </button>
           )}

@@ -25,7 +25,7 @@ const TYPE_LABELS: Record<CourseType, string> = {
 };
 
 const TYPE_COLORS: Record<CourseType, string> = {
-  core: "var(--green)",
+  core: "var(--rose)",
   prescribed: "var(--accent)",
   free: "var(--soft)",
   gened: "var(--faint)",
@@ -415,7 +415,7 @@ export function ProgramPlanner() {
             <button
               onClick={() => setLoginOpen((v) => !v)}
               className="tui-btn text-[12px]"
-              style={{ color: "var(--green)" }}
+              style={{ color: "var(--rose)" }}
             >
               [login]
             </button>
@@ -613,7 +613,7 @@ export function ProgramPlanner() {
                 <button onClick={() => setModal(null)} className="tui-btn">
                   [cancel]
                 </button>
-                <button onClick={saveModal} className="tui-btn" style={{ color: "var(--green)" }}>
+                <button onClick={saveModal} className="tui-btn" style={{ color: "var(--rose)" }}>
                   [save]
                 </button>
               </span>
@@ -630,7 +630,7 @@ function Counter({ label, value, ok }: { label: string; value: number; ok?: bool
     <span>
       <span
         style={{
-          color: ok === true ? "var(--green)" : ok === false ? "var(--accent)" : "var(--ink)",
+          color: ok === true ? "var(--ok)" : ok === false ? "var(--accent)" : "var(--ink)",
         }}
       >
         {value}

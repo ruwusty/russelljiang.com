@@ -257,7 +257,7 @@ export function Currently() {
         style={{ color: "var(--soft)" }}
         aria-label={`currently: ${queue[index]}`}
       >
-        <span style={{ color: "var(--green)" }} aria-hidden="true">
+        <span style={{ color: "var(--rose)" }} aria-hidden="true">
           ❯
         </span>
         <span className="shrink-0">currently</span>
@@ -293,7 +293,7 @@ export function Currently() {
             aria-label="currently items, one per line"
           />
           <span className="flex items-baseline gap-3 text-[11px] lowercase" style={{ color: "var(--soft)" }}>
-            <button onClick={save} className="tui-btn text-[11px]" style={{ color: "var(--green)" }}>
+            <button onClick={save} className="tui-btn text-[11px]" style={{ color: "var(--rose)" }}>
               {saveState === "saving" ? "[saving…]" : "[save]"}
             </button>
             <button onClick={() => setEditing(false)} className="tui-btn text-[11px]">
