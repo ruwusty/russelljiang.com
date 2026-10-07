@@ -26,25 +26,19 @@ const C = {
   rose: "#e0a8b0",
 };
 
-// the mark: one swappable piece, the same drawing as app/icon.svg
+// the mark, the same drawing as app/icon.svg: the slash and the dot
 function Mark({ px }: { px: number }) {
   return (
     <svg width={px} height={px} viewBox="0 0 100 100">
       <defs>
-        <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0.08" stopColor="#7a6488" />
-          <stop offset="0.95" stopColor="#a35d6d" />
+        <linearGradient id="f" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0.1" stopColor="#a28fc0" />
+          <stop offset="0.95" stopColor="#e0a8b0" />
         </linearGradient>
       </defs>
-      <rect width="100" height="100" rx="22" fill="url(#g)" />
-      <path d="M33 78 L49 30" fill="none" stroke="#f7f7f8" strokeWidth="10" strokeLinecap="round" />
-      <path
-        d="M44 46 C 52 34, 62 30, 74 33"
-        fill="none"
-        stroke="#f7f7f8"
-        strokeWidth="10"
-        strokeLinecap="round"
-      />
+      <rect width="100" height="100" rx="22" fill="#26262c" />
+      <path d="M31.18 69.00 L44.82 27.00" stroke="url(#f)" strokeWidth="15" strokeLinecap="round" fill="none" />
+      <circle cx="68.83" cy="34.88" r="7.88" fill="url(#f)" />
     </svg>
   );
 }

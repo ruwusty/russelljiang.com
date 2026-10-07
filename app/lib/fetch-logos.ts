@@ -132,7 +132,7 @@ export const LOGOS = {
   // a cell is 0.6em x 1.3em (the .fetch-art line), so hand-drawn circles
   // come out as ovals. each half-block (▀ ▄ █) is sampled against the rings
   // in em units instead
-  circle: [
+  osu: [
     "         ▄▄▄▄▄▄▄              ",
     "     ▄█▀▀▀     ▀▀▀█▄          ",
     "   ▄█▀             ▀█▄        ",
@@ -147,7 +147,7 @@ export const LOGOS = {
   ],
   // the scan line and its notes, after cytus ii: a flick, taps, a drag chain
   // whose heads are joined by a dotted diagonal, and a hold (one head, then its trail)
-  scanline: [
+  cytus: [
     "        ●             ◁◇▷    ",
     "    ◉     ·              ◉   ",
     "            ●                ",
