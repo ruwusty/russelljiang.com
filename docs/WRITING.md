@@ -80,5 +80,8 @@ export default function Page() {
 - the final line ends with the ■ end mark, which **replaces** the full stop:
   `…and that was the point ■`
 - one kaomoji max, usually none. restraint is the point.
+- *italics* for spoken stress: the word you'd lean on reading it aloud
+  (*worse*, *still beyond reach*). five to eight per essay. maple's italic
+  is cursive, so it's loud; never italicise a whole argument.
 - drafts: gate behind login like `app/writing/the-boulder-and-the-ladder`
   (client-side gate + `robots: noindex`, not listed anywhere) until published.

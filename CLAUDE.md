@@ -41,7 +41,9 @@ anything visual or touching content.
   its `calt` ligatures (-> => != >= :: //) stay on, and they keep the
   monospace grid. italic is for the comment-ish voice only (`.comment`, and
   the tagline under each h1): essay subtitles, the writing index blurbs, the
-  home note, `//` lines in the vim buffer. never for emphasis in body text. `.display` is mono
+  home note, `//` lines in the vim buffer. in essays it also carries
+  emphasis, sparingly: the one word you'd lean on reading it aloud, a
+  handful per essay, never whole sentences of argument. `.display` is mono
   with slight tracking; `h1.display` renders as `# name` with the `#` in
   accent (size and colour forced from globals.css, so per-page utilities on
   h1s are ignored). symbols and box/block characters come from "RJ Glyphs",

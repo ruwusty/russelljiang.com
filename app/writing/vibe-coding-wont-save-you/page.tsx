@@ -40,6 +40,10 @@ function Strong({ children }: { children: React.ReactNode }) {
   return <span style={{ color: "var(--ink)" }}>{children}</span>;
 }
 
+function Em({ children }: { children: React.ReactNode }) {
+  return <em className="italic">{children}</em>;
+}
+
 function Ref({ n }: { n: number }) {
   return (
     <a
@@ -80,18 +84,14 @@ function Figure({
 }) {
   return (
     <figure className="mt-8">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt={alt}
-        className={stretch ? "block w-full" : "block max-w-full h-auto"}
-        style={{
-          border: "1px solid var(--line)",
-          // fixed paper background so transparent figures stay readable in dark mode
-          background: "#faf8f3",
-          padding: "12px",
-        }}
-      />
+      <div className={stretch ? "p-3" : "p-3 w-fit max-w-full"} style={{ border: "1px solid var(--line)" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={alt}
+          className={`essay-fig ${stretch ? "block w-full" : "block max-w-full h-auto"}`}
+        />
+      </div>
       {caption && (
         <figcaption className="mt-2 text-[11px] leading-[1.7]" style={{ color: "var(--soft)" }}>
           {caption}
@@ -126,14 +126,14 @@ export default function VibeCodingPost() {
       </H2>
       <P>
         AI has made code a commodity. Anyone can import scikit-learn. Anyone can prompt their way
-        to a working model. But functional code is not the same as valid analysis, and this
+        to a working model. But functional code is not the same as <Em>valid</Em> analysis, and this
         distinction matters more than it ever has.
       </P>
       <P>
         At its core, data science is about making claims to other people — and having people act
         on them. When these claims are wrong, the decisions that follow are wrong too. The
         differentiator was never who could write the code, it was always who could reason about
-        whether the answer is right.
+        whether the answer is <Em>right</Em>.
       </P>
       <P>
         The market has noticed this shift. While technical skills may get you through the door,
@@ -157,7 +157,7 @@ export default function VibeCodingPost() {
       </H2>
       <P>
         Here&apos;s what AI is genuinely good at: getting you to a working implementation quickly.
-        What it can&apos;t do is tell you whether this implementation is statistically appropriate
+        What it <Em>can&apos;t</Em> do is tell you whether this implementation is statistically appropriate
         for your problem.
       </P>
       <P>
@@ -184,7 +184,7 @@ export default function VibeCodingPost() {
         knowing when the model is wrong
       </H2>
       <P>
-        Some of the most important skills in data science come from diagnosing models, not just
+        Some of the most important skills in data science come from <Em>diagnosing</Em> models, not just
         building them.
       </P>
       <P>
@@ -199,19 +199,19 @@ export default function VibeCodingPost() {
         loss keeps falling. But to actually diagnose it — to know whether you need more data,
         stronger regularisation, a simpler architecture, or to revisit your feature engineering —
         you need to understand the bias-variance tradeoff. Googling &quot;my val loss is going
-        up&quot; gets you a list of possible causes. Understanding the mechanics tells you which
-        one applies to your situation.
+        up&quot; gets you a list of possible causes. Understanding the mechanics tells you <Em>which
+        one</Em> applies to your situation.
       </P>
 
       <Figure
         src="/blogs/overfitting.png"
         alt="Overfitting diagram: training error falls while validation error rises"
-        caption="overfitting in supervised learning. training error in blue, validation error in red, both as a function of training cycles. gringer, overfitting, cc by 3.0, via wikimedia commons."
+        caption="overfitting in supervised learning. training error is the lower curve, validation error the upper, both against training cycles. gringer, overfitting, cc by 3.0, via wikimedia commons."
       />
 
       <P>
         Then there&apos;s the problem that breaks things most in production: hypothesis testing. A
-        result that looks statistically significant isn&apos;t necessarily meaningful. You need the
+        result that looks statistically significant isn&apos;t necessarily <Em>meaningful</Em>. You need the
         intuition to know when a result is real and when it&apos;s noise — understanding p-values,
         effect sizes, confidence intervals, and when you simply need more data. <Ref n={6} />
       </P>
@@ -237,7 +237,7 @@ export default function VibeCodingPost() {
       </H2>
       <P>
         All of this is already a problem when you&apos;re the one running the code. It gets
-        considerably worse when the code runs itself.
+        considerably worse when the code <Em>runs itself</Em>.
       </P>
       <P>
         We&apos;re in the middle of a shift from generative AI tools you interact with, to agentic
@@ -288,7 +288,7 @@ export default function VibeCodingPost() {
       <P>
         The skill being valued right now isn&apos;t &quot;can you implement an agent.&quot;
         It&apos;s &quot;can you reason about what happens when this system fails.&quot;
-        That&apos;s a fundamentally statistical question.
+        That&apos;s a fundamentally <Em>statistical</Em> question.
       </P>
 
       <H2 id="maths" index="05">

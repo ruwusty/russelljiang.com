@@ -583,6 +583,18 @@ button:focus-visible,
   color: var(--accent);
 }
 
+/* essay figures print straight onto the pane: multiply turns their white
+   paper into --bg. dark mode inverts them (hue-rotate keeps the colours
+   roughly the colours) so line art reads as light-on-dark, not a lit sheet */
+.essay-fig {
+  mix-blend-mode: multiply;
+}
+
+.dark .essay-fig {
+  mix-blend-mode: screen;
+  filter: invert(1) hue-rotate(180deg);
+}
+
 /* konami: phosphor mode (the one sanctioned rule-break — it's a cheat code) */
 body.phosphor {
   --bg: #0c110c;

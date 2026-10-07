@@ -87,7 +87,7 @@ export default function SameShapePost() {
 
       <P>
         i spent an evening that was supposed to be econometrics homework and ended up somewhere
-        near the foundations of physics. it wasn’t a detour. the whole point is that it wasn’t a
+        near the foundations of physics. it wasn’t a detour. the whole point is that it <Em>wasn’t</Em> a
         detour.
       </P>
       <P>
@@ -121,13 +121,13 @@ export default function SameShapePost() {
       </P>
       <P>
         so the demand elasticity in an economics course, the regression slope in a statistics
-        course, and the correlation coefficient in a probability course are not three facts but one
+        course, and the correlation coefficient in a probability course are not three facts but <Em>one</Em>
         fact, projected onto three different walls. the covariance is the object. everything else is
         a choice of lighting.
       </P>
       <P>
         after that you start getting suspicious whenever two things in different subjects have the
-        same shape. usually it means they are the same thing.
+        same shape. usually it means they <Em>are</Em> the same thing.
       </P>
 
       <Section id="isomorphism" index="02">
@@ -171,7 +171,7 @@ export default function SameShapePost() {
         but if you have already internalised the shape of, say, linear independence, then the first
         time you meet orthogonal functions, or feedback loops, or causal graphs, you do not store a
         new block. you recognise an old shape and inherit all its intuition for free. the new thing
-        costs almost nothing because you are not learning it, you are relabelling something you
+        costs almost nothing because you are not learning it, you are <Em>relabelling</Em> something you
         already own.
       </P>
       <P>
@@ -260,7 +260,7 @@ export default function SameShapePost() {
       </P>
       <P>
         so the thing that looks like surrender is actually the opposite. it is not the absence of
-        forces. it is their balance.
+        forces. it is their <Em>balance</Em>.
       </P>
 
       <Section id="equilibrium" index="06">
@@ -290,7 +290,7 @@ export default function SameShapePost() {
       </P>
       <P>
         equilibrium in general is like this: not the place where no forces act on you, but the
-        place where they cancel. the difference between those two is the whole difference between a
+        place where they <Em>cancel</Em>. the difference between those two is the whole difference between a
         life lived well and a life merely allowed to happen.
       </P>
       <P>
@@ -310,7 +310,7 @@ export default function SameShapePost() {
         it as the temperature moves.
       </P>
       <P>
-        so when something in your life feels effortless, it is worth asking which kind of effortless
+        so when something in your life feels effortless, it is worth asking <Em>which kind</Em> of effortless
         it is. the empty kind, where you have stopped moving because moving is hard. or the balanced
         kind, where you have moved enough, in enough directions, that nothing is pulling at you
         anymore. they look identical from the outside. they are opposites from the inside.
