@@ -22,16 +22,18 @@ export const LOGOS = {
     "   ▟▀             ▀▙  ",
     "▁▁▟▀               ▀▙▁",
   ],
-  wisteria: [
-    "━━┳━━━━━━┳━━━━━━━┳━━━━━┳━━",
-    "  ┃      ┃       ┃     ┃  ",
-    " @@@    @@@     @@@   @@@ ",
-    " @@@@  @@@@    @@@@   @@@ ",
-    "  @@@   @@@     @@@   @@  ",
-    "  @@o   @@o     @@o    @o ",
-    "  o@    oo      oo     o  ",
-    "   o     o       .     .  ",
-    "   .     .                ",
+  // cherry blossom, five petals each, a few already falling. (a wisteria
+  // came first; every way of drawing a raceme in text read as grapes)
+  sakura: [
+    "                  _       ",
+    "         _      _(_)_     ",
+    "       _(_)_   (_)@(_)    ",
+    "      (_)@(_)    (_) \\    ",
+    "  _     (_)  \\        \\   ",
+    "_(_)_         \\_______/   ",
+    "(_)@(_)______/     '      ",
+    " (_)               ,   '  ",
+    "        '     ,           ",
   ],
   // after cbonsai, which grows these in a terminal
   bonsai: [
