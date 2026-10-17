@@ -10,6 +10,7 @@ const toc = [
   { label: "Sydney Scholars", href: "#sydney-scholars" },
   { label: "This site", href: "#this-site" },
   { label: "Proxima", href: "#proxima" },
+  { label: "claude-hub", href: "#claude-hub" },
 ];
 
 interface Project {
@@ -55,6 +56,16 @@ const projects: Project[] = [
     role: "designer, and the learner it grades",
     stack: "claude code · obsidian · plain markdown, on purpose",
     links: [{ label: "the philosophy", href: "/writing/the-same-shape-everywhere" }],
+  },
+  {
+    id: "claude-hub",
+    index: "04",
+    name: "claude-hub",
+    claim:
+      "two claude code sessions on two accounts, one chat room, and me in the middle. it exists because the pair kept doing the same work at the same time without asking each other. now the hub decides whose turn a task is, pushes a direction board and a claim board into every prompt, watches which files each one actually writes, and says so in the room the moment both write the same one. there's a mission control with a git graph per lane, a board of things only i can do, and a ui that borrows its layout from claude code and its clothes from this site.",
+    role: "designer, operator, and the tiebreaker",
+    stack: "Node · Express · WebSockets · Claude Agent SDK · vanilla js, no build step",
+    links: [],
   },
 ];
 
@@ -104,6 +115,9 @@ export default function ProjectsPage() {
               links
             </dt>
             <dd className="flex items-baseline gap-3">
+              {project.links.length === 0 && (
+                <span style={{ color: "var(--soft)" }}>private repo</span>
+              )}
               {project.links.map((link) => (
                 <a
                   key={link.href}
