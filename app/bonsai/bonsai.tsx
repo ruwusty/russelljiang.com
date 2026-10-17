@@ -22,6 +22,7 @@ const STAGES: [number, string][] = [
 ];
 const BLOOM_H = 336;
 const DRAIN_PER_H = 100 / 48; // a full pot lasts two days
+const SAUCER_DRAIN_PER_H = 100 / 72; // three, with the deeper saucer
 const PETAL_EVERY_H = 3;
 const PETALS_CAP = 12;
 
@@ -29,7 +30,23 @@ interface Owned {
   plaque: string | null;
   lantern: boolean;
   glaze: boolean;
+  stones: boolean;
+  frog: boolean;
+  saucer: boolean;
+  moon: boolean;
 }
+
+type ShopKey = Exclude<keyof Owned, "plaque">;
+
+// everything but the plaque, cheapest first
+const SHOP: { key: ShopKey; name: string; price: number; blurb: string; got: string; line: string }[] = [
+  { key: "stones", name: "river stones", price: 8, blurb: "for the ground", got: "placed", line: "stones. they were going to be here anyway." },
+  { key: "glaze", name: "clay glaze", price: 15, blurb: "reglaze the pot", got: "applied", line: "the pot wears clay now." },
+  { key: "frog", name: "ceramic frog", price: 20, blurb: "for safe returns", got: "sitting", line: "a frog. it'll make sure you come back." },
+  { key: "lantern", name: "stone lantern", price: 25, blurb: "for the garden's edge", got: "placed", line: "a lantern. the evenings improve." },
+  { key: "saucer", name: "deeper saucer", price: 30, blurb: "a full pot lasts three days", got: "under the pot", line: "a deeper saucer. the roots relax." },
+  { key: "moon", name: "the moon", price: 50, blurb: "for viewing", got: "risen", line: "it was always there. now it's yours." },
+];
 
 interface BonsaiState {
   seed: number;
@@ -42,7 +59,7 @@ interface BonsaiState {
   owned: Owned;
 }
 
-const PRICES = { plaque: 10, glaze: 15, lantern: 25 } as const;
+const PLAQUE_PRICE = 10;
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
@@ -66,20 +83,21 @@ function freshState(now: number): BonsaiState {
     petalsReady: 0,
     petals: 0,
     lastTick: now,
-    owned: { plaque: null, lantern: false, glaze: false },
+    owned: { plaque: null, lantern: false, glaze: false, stones: false, frog: false, saucer: false, moon: false },
   };
 }
 
 // growth happens while there's water, even when the tab is closed
 function catchUp(s: BonsaiState, now: number): BonsaiState {
   const elapsedH = Math.max(0, (now - s.lastTick) / 3_600_000);
-  const wateredH = Math.min(elapsedH, s.water / DRAIN_PER_H);
+  const drain = s.owned.saucer ? SAUCER_DRAIN_PER_H : DRAIN_PER_H;
+  const wateredH = Math.min(elapsedH, s.water / drain);
   const growthH = s.growthH + wateredH;
   const blooming = growthH >= BLOOM_H;
   return {
     ...s,
     growthH,
-    water: clamp(s.water - elapsedH * DRAIN_PER_H, 0, 100),
+    water: clamp(s.water - elapsedH * drain, 0, 100),
     petalsReady: blooming
       ? clamp(s.petalsReady + wateredH / PETAL_EVERY_H, 0, PETALS_CAP)
       : 0,
@@ -200,6 +218,15 @@ function TreeSvg({ state, season }: { state: BonsaiState; season: Season }) {
     const put = (x: number, y: number, color: string) => {
       if (x >= 0 && x < W && y >= 0 && y < H) map.set(`${x},${y}`, color);
     };
+    const stamp = (art: string[], x0: number, y0: number, colors: Record<string, string>) =>
+      art.forEach((row, dy) =>
+        [...row].forEach((ch, dx) => colors[ch] && put(x0 + dx, y0 + dy, colors[ch]))
+      );
+
+    // the moon, drawn first so branches can cross it
+    if (state.owned.moon) {
+      stamp(["..@@@..", ".@@....", "@@.....", "@@.....", "@@.....", ".@@....", "..@@@.."], 35, 2, { "@": "var(--accent)" });
+    }
 
     // pot: unfired and pale until you've earned the glaze, which darkens it.
     // never accent — a solid slab of clay reads as a brown block on paper
@@ -229,21 +256,25 @@ function TreeSvg({ state, season }: { state: BonsaiState; season: Season }) {
         "...KKK...",
         "..KKKKK..",
       ];
-      const x0 = 2;
-      const y0 = H - 2 - LANTERN.length + 1;
-      LANTERN.forEach((row, dy) => {
-        row.split("").forEach((ch, dx) => {
-          if (ch === "K") put(x0 + dx, y0 + dy, "var(--soft)");
-          if (ch === "@") put(x0 + dx, y0 + dy, "var(--accent)");
-        });
-      });
+      stamp(LANTERN, 2, H - 2 - LANTERN.length + 1, { K: "var(--soft)", "@": "var(--accent)" });
     }
+
+    // river stones, right of the pot
+    if (state.owned.stones) {
+      stamp(["..KK...K..", ".KKKK.KKK."], 33, H - 3, { K: "var(--soft)" });
+    }
+
+    // the frog sits on the rim, in front of everything, so it goes on last
+    const frog = () => {
+      if (state.owned.frog) stamp([".I.I.", "KKKKK", "K.K.K"], 25, H - 8, { K: "var(--soft)", I: "var(--ink)" });
+    };
 
     const g = state.growthH;
     if (g < 2) {
       // a seed's worth of optimism
       put(21, H - 7, "var(--rose)");
       if (g > 0.5) put(21, H - 8, "var(--rose)");
+      frog();
       return map;
     }
 
@@ -285,8 +316,9 @@ function TreeSvg({ state, season }: { state: BonsaiState; season: Season }) {
       }
     }
 
+    frog();
     return map;
-  }, [tree, state.growthH, state.seed, season, state.owned.glaze, state.owned.lantern]);
+  }, [tree, state.growthH, state.seed, season, state.owned]);
 
   return (
     <svg
@@ -400,7 +432,7 @@ export function Bonsai() {
   const engrave = () => {
     const name = (plaqueDraft ?? "").replace(/\s+/g, " ").trim().slice(0, 16);
     if (!name) return;
-    spend(PRICES.plaque, { plaque: name }, "engraved.");
+    spend(PLAQUE_PRICE, { plaque: name }, "engraved.");
     setPlaqueDraft(null);
   };
 
@@ -523,32 +555,25 @@ export function Bonsai() {
               className="tui-btn text-left text-[12px]"
               style={{ color: "var(--soft)" }}
             >
-              [name plaque · {PRICES.plaque} petals] — give the tree a name
+              [name plaque · {PLAQUE_PRICE} petals] — give the tree a name
             </button>
           )}
 
-          {state.owned.glaze ? (
-            <span style={{ color: "var(--soft)" }}>clay glaze · applied</span>
-          ) : (
-            <button
-              onClick={() => spend(PRICES.glaze, { glaze: true }, "the pot wears clay now.")}
-              className="tui-btn text-left text-[12px]"
-              style={{ color: "var(--soft)" }}
-            >
-              [clay glaze · {PRICES.glaze} petals] — reglaze the pot
-            </button>
-          )}
-
-          {state.owned.lantern ? (
-            <span style={{ color: "var(--soft)" }}>stone lantern · placed</span>
-          ) : (
-            <button
-              onClick={() => spend(PRICES.lantern, { lantern: true }, "a lantern. the evenings improve.")}
-              className="tui-btn text-left text-[12px]"
-              style={{ color: "var(--soft)" }}
-            >
-              [stone lantern · {PRICES.lantern} petals] — for the garden&apos;s edge
-            </button>
+          {SHOP.map((item) =>
+            state.owned[item.key] ? (
+              <span key={item.key} style={{ color: "var(--soft)" }}>
+                {item.name} · {item.got}
+              </span>
+            ) : (
+              <button
+                key={item.key}
+                onClick={() => spend(item.price, { [item.key]: true }, item.line)}
+                className="tui-btn text-left text-[12px]"
+                style={{ color: "var(--soft)" }}
+              >
+                [{item.name} · {item.price} petals] — {item.blurb}
+              </button>
+            )
           )}
         </div>
       )}
