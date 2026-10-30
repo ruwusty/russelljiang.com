@@ -51,6 +51,7 @@ const ROUTES: Record<string, string> = {
   vim: "/vim",
   bonsai: "/bonsai",
   projects: "/projects",
+  games: "/games",
   stats: "/stats",
 };
 

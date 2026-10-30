@@ -11,7 +11,6 @@ const toc = [
   { label: "This site", href: "#this-site" },
   { label: "Proxima", href: "#proxima" },
   { label: "claude-hub", href: "#claude-hub" },
-  { label: "scoop", href: "#scoop" },
 ];
 
 interface Project {
@@ -67,16 +66,6 @@ const projects: Project[] = [
     role: "designer, operator, and the tiebreaker",
     stack: "Node · Express · WebSockets · Claude Agent SDK · vanilla js, no build step",
     links: [],
-  },
-  {
-    id: "scoop",
-    index: "05",
-    name: "scoop",
-    claim:
-      "a daily beach game: read the morning paper, read the rival ice cream vendors, and park your cart where the crowd will be. it's hotelling's model of competition with a newspaper clipping in front. the crowd stays hidden, the clipping hints at it, and every vendor follows one rule you can read by eye, including a shadow that sets up beside whoever's selling the most. forty-three twists, each with its own pixel art, and a script that refuses to ship two twists that make the same puzzle.",
-    role: "designer and builder, with a pair programmer",
-    stack: "Next.js 15 · React 19 · canvas pixel art · no backend",
-    links: [{ label: "scoop.russelljiang.com", href: "https://scoop.russelljiang.com" }],
   },
 ];
 
