@@ -36,8 +36,8 @@ const games: Game[] = [
     name: "late",
     claim:
       "allow extra time. get across port wattle to every stop on today's list, on a day its trains are having. the clock only moves when you do: stay on or get off, wait for the express, walk to the metro. trackwork, signal faults and floods all happen on schedule, and the only warning is a feed full of people shouting into the void, some of whom are right.",
-    play: "as many days as you like",
-    links: [],
+    play: "today's commute, plus as many days as you like",
+    links: [{ label: "late.russelljiang.com", href: "https://late.russelljiang.com" }],
   },
 ];
 
