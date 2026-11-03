@@ -30,7 +30,7 @@ export default async function Home() {
               russell jiang
             </h1>
             <p className="mt-2 text-[12px] lowercase" style={{ color: "var(--soft)" }}>
-              education director @ unsw datasoc · 1st-year data science · building sydney scholars
+              education director @ unsw datasoc · 1st-year data science · building sydney scholars · amusa
             </p>
           </>
         }
