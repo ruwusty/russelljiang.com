@@ -1,20 +1,25 @@
 import type { MDXComponents } from "mdx/types";
+import { slugify } from "./app/lib/slug";
 
 // house-style prose for .mdx essays. headings are auto-numbered via the css
 // counter on `.essay` (see globals.css), so essays just write `## heading`.
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
+    // the id is what the outline pane links to (essay-layout.tsx builds the
+    // same slug from the same heading text)
     h2: (props) => (
       <h2
-        className="essay-h2 mt-14 text-[13px] lowercase tracking-[0.15em]"
+        id={typeof props.children === "string" ? slugify(props.children) : undefined}
+        className="essay-h2 mt-14 scroll-mt-6 text-[13px] lowercase tracking-[0.15em]"
         style={{ color: "var(--ink)" }}
         {...props}
       />
     ),
     p: (props) => (
-      <p className="mt-5 text-[14px] leading-[1.9]" style={{ color: "var(--soft)" }} {...props} />
+      <p className="mt-5 text-[14px] leading-[1.9]" style={{ color: "var(--ink)" }} {...props} />
     ),
-    strong: (props) => <span style={{ color: "var(--ink)" }} {...props} />,
+    // body is ink, so the leaned-on line takes the accent (no bold weights)
+    strong: (props) => <span style={{ color: "var(--accent)" }} {...props} />,
     em: (props) => <em className="italic" {...props} />,
     blockquote: (props) => (
       <blockquote
@@ -37,7 +42,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       <ul className="mt-5 flex flex-col gap-1 list-none p-0" {...props} />
     ),
     li: (props) => (
-      <li className="flex items-baseline gap-3 text-[14px] leading-[1.9]" style={{ color: "var(--soft)" }}>
+      <li className="flex items-baseline gap-3 text-[14px] leading-[1.9]" style={{ color: "var(--ink)" }}>
         <span style={{ color: "var(--faint)" }}>▸</span>
         <span>{props.children}</span>
       </li>

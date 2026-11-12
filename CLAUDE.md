@@ -58,7 +58,13 @@ anything visual or touching content.
   radius ≈ lipgloss RoundedBorder), and the powerline `StatusBar`. panes:
   [1] ~/site nav, [2] status, [3] main (prompt + page, content capped at
   720px), [4] outline at xl when the page's toc has 2+ entries. below lg
-  the nav wraps into a strip above main and status drops below it.
+  the nav is one sideways-scrolling row above main and status drops below it.
+  the nav + status column is sticky at lg and the status bar is pinned to the
+  bottom of the viewport (`.statusbar`), so the chrome never scrolls away.
+  nav rows come in three groups (pages, toys, elsewhere) via `group` in
+  `sidebar.tsx`. mdx essays get their outline from their own `## headings`
+  (`outlineFor()` in `essay-layout.tsx`); essay body is `--ink`, capped at 70ch,
+  and `**bold**` renders in the accent.
   `.hrule` is a 1px `--line` rule across the column under each heading.
 - animations, the complete list (corrected 15 sep 2026 — this line used to
   name three while `globals.css` shipped six): the blinking cursors

@@ -16,7 +16,8 @@ i spent an evening on something that was supposed to be something else.
 
 ## the first section
 
-paragraphs. **bold** renders in ink, *italics* stay italic. section headings
+paragraphs. **bold** renders in the accent (save it for the thesis line),
+*italics* stay italic. section headings
 (`##`) number themselves (01, 02, …) automatically — do not number them
 by hand.
 

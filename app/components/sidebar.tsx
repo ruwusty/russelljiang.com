@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -9,6 +9,8 @@ interface NavItem {
   href: string;
   soon?: boolean;
   external?: boolean;
+  /** first row of a group: pages, then toys, then elsewhere */
+  group?: boolean;
 }
 
 const items: NavItem[] = [
@@ -16,12 +18,12 @@ const items: NavItem[] = [
   { label: "writing", href: "/writing" },
   { label: "digest", href: "/digest" },
   { label: "library", href: "/library" },
-  { label: "guestbook", href: "/guestbook" },
+  { label: "projects", href: "/projects" },
+  { label: "guestbook", href: "/guestbook", group: true },
   { label: "vim", href: "/vim" },
   { label: "bonsai", href: "/bonsai" },
-  { label: "projects", href: "/projects" },
   { label: "games", href: "/games" },
-  { label: "linkedin", href: "https://linkedin.com/in/russelljiang", external: true },
+  { label: "linkedin", href: "https://linkedin.com/in/russelljiang", external: true, group: true },
   { label: "email", href: "mailto:russelljiang@pm.me", external: true },
 ];
 
@@ -42,6 +44,17 @@ export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [selected, setSelected] = useState(-1);
+  const listRef = useRef<HTMLUListElement>(null);
+
+  // on a phone the nav is one scrolling row: bring the current page into it.
+  // scrollLeft, not scrollIntoView, so the page itself never jumps.
+  useEffect(() => {
+    const list = listRef.current;
+    const current = list?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (list && current) {
+      list.scrollLeft = current.offsetLeft - (list.clientWidth - current.clientWidth) / 2;
+    }
+  }, [pathname]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -78,9 +91,13 @@ export function Sidebar() {
 
   return (
     <nav className="text-[13px]" aria-label="site navigation">
-      {/* a list widget on desktop; on a phone the rows wrap into a strip so
-          the page itself is above the fold */}
-      <ul className="mt-1 list-none p-0 m-0 flex flex-wrap gap-x-4 gap-y-1.5 lg:block lg:space-y-0.5">
+      {/* a list widget on desktop; on a phone it is one row that scrolls
+          sideways, so the page itself is above the fold */}
+      <ul
+        ref={listRef}
+        className="relative mt-1 list-none m-0 -mx-2 px-2 py-1 flex gap-x-4 overflow-x-auto whitespace-nowrap lg:mx-0 lg:p-0 lg:block lg:space-y-0.5 lg:overflow-visible lg:whitespace-normal"
+        style={{ scrollbarWidth: "none" }}
+      >
         {items.map((item, i) => {
           const index = String(i + 1).padStart(2, "0");
           const active =
@@ -107,7 +124,7 @@ export function Sidebar() {
 
           const LinkTag = item.external ? "a" : Link;
           return (
-            <li key={item.label}>
+            <li key={item.label} className={item.group ? "lg:!mt-3" : undefined}>
               <LinkTag
                 href={item.href}
                 className="tui-item nav-row flex items-baseline gap-3 py-1 lg:py-0"
@@ -117,7 +134,12 @@ export function Sidebar() {
                   ? { target: "_blank", rel: "noopener noreferrer" }
                   : {})}
               >
-                <span className="hidden lg:inline text-[11px]" style={{ color: "var(--faint)" }} aria-hidden="true">
+                {/* links out keep the column but not a page number */}
+                <span
+                  className={`hidden lg:inline text-[11px] ${item.external ? "invisible" : ""}`}
+                  style={{ color: "var(--faint)" }}
+                  aria-hidden="true"
+                >
                   {index}
                 </span>
                 <span className="marker hidden lg:inline" aria-hidden="true">▸</span>

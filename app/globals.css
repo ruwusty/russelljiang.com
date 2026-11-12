@@ -567,6 +567,24 @@ button:focus-visible,
 .essay {
   counter-reset: essay-section;
   line-height: 1.9;
+  /* a readable measure: mono at the full 720px runs ~85 characters */
+  max-width: 70ch;
+}
+
+/* `tree` draws a trunk past a wrapped row; the glyph alone stops after one
+   line. a 1px line through the middle of the first character cell */
+.tree-trunk {
+  background: linear-gradient(var(--faint), var(--faint)) no-repeat calc(0.5ch - 0.5px) 0 / 1px 100%;
+}
+
+/* the status bar stays on screen like a real one. opaque, because the page
+   scrolls underneath it */
+.statusbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  background: var(--bg);
+  border-radius: 0 0 10px 10px;
 }
 
 .essay .essay-h2 {

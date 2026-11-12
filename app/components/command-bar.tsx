@@ -812,7 +812,7 @@ export function StatusBar({ crumb, commit }: { crumb: string; commit: string }) 
 
   return (
     <footer
-      className="relative flex items-center justify-between gap-4 px-2 py-1.5 text-[11px] lowercase"
+      className="statusbar flex items-center justify-between gap-4 px-2 py-1.5 text-[11px] lowercase"
       style={{ borderTop: "1px solid var(--line)", color: "var(--soft)" }}
     >
       <span className="flex items-center min-w-0 flex-1">

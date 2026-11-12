@@ -1,4 +1,21 @@
-import { DocsShell } from "./docs-shell";
+import { readFileSync } from "fs";
+import { join } from "path";
+import { slugify } from "../lib/slug";
+import { DocsShell, type TocItem } from "./docs-shell";
+
+// the outline comes from the essay's own `## headings`, read at build time
+// (essay pages are static), so nobody has to keep a toc in sync by hand.
+function outlineFor(crumb: string): TocItem[] {
+  try {
+    const src = readFileSync(join(process.cwd(), "app", crumb, "content.mdx"), "utf8");
+    return [...src.matchAll(/^## (.+)$/gm)].map((m) => {
+      const label = m[1].trim();
+      return { label, href: `#${slugify(label)}` };
+    });
+  } catch {
+    return [];
+  }
+}
 
 interface EssayLayoutProps {
   title: string;
@@ -21,7 +38,7 @@ export function EssayLayout({
   children,
 }: EssayLayoutProps) {
   return (
-    <DocsShell crumb={crumb} toc={[]}>
+    <DocsShell crumb={crumb} toc={outlineFor(crumb)}>
       <h1 className="display text-[24px] leading-[1.5]" style={{ color: "var(--ink)" }}>
         {title}
       </h1>

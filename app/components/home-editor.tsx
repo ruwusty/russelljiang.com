@@ -224,7 +224,10 @@ export function HomeEditor({
         <ul className="mt-4 text-[14px] leading-[1.55] list-none p-0" style={{ color: "var(--ink)" }}>
           {/* `tree`, not bullets */}
           {content.interests.map((line, i) => (
-            <li key={line} className="flex items-baseline gap-2">
+            <li
+              key={line}
+              className={`flex items-baseline gap-2 ${i === content.interests.length - 1 ? "" : "tree-trunk"}`}
+            >
               <span className="shrink-0" style={{ color: "var(--faint)" }} aria-hidden="true">
                 {i === content.interests.length - 1 ? "└──" : "├──"}
               </span>
