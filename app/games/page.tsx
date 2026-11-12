@@ -25,7 +25,7 @@ const games: Game[] = [
     index: "01",
     name: "scoop",
     claim:
-      "a daily beach game: fifteen spots along the water, a crowd you can count, and two rival ice cream carts. hal never moves. shadow sam sets up next to whoever's selling the most, which could be you. everyone buys from the nearest cart, so it's hotelling's model of competition on one line. the busiest spot is the right answer about a third of the time.",
+      "a daily beach game: fifteen spots along the water, a crowd you can count, and two rival ice cream carts. mr flake never moves. shadow sam sets up next to whoever's selling the most, which could be you. everyone buys from the nearest cart, so it's hotelling's model of competition on one line. the busiest spot is the right answer about a third of the time.",
     play: "one beach a day, plus unlimited",
     links: [{ label: "scoop.russelljiang.com", href: "https://scoop.russelljiang.com" }],
   },
