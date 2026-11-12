@@ -1,5 +1,8 @@
 "use client";
 
+// first-run seed and outage fallback only: the blob is the source of truth.
+// backups/ is refreshed weekly from the live site, so this never needs editing.
+import backup from "@/backups/library.json";
 import { useEffect, useState } from "react";
 import { useSiteAuth } from "../components/site-auth";
 import { BookForm } from "./book-form";
@@ -7,31 +10,7 @@ import { Shelf } from "./shelf";
 import { EMPTY_DRAFT, type Book, type Draft, type Status } from "./types";
 import s from "./library.module.css";
 
-// first-run seed + outage fallback only — the blob is the source of truth.
-// edit on the site while logged in, not here.
-const DEFAULT_BOOKS: Book[] = [
-  { id: "simulacra", title: "simulacra and simulation", author: "jean baudrillard", status: "reading" },
-  { id: "geb", title: "gödel, escher, bach", author: "douglas hofstadter", status: "reading" },
-  // the pick-3-next, in order
-  { id: "godels-proof", title: "gödel's proof", author: "nagel & newman", status: "to-read", tag: "rigor", note: "short, mechanics of gödel numbering and the actual proof" },
-  { id: "posthuman", title: "how we became posthuman", author: "n. katherine hayles", status: "to-read", tag: "bridge", note: "info theory/cybernetics into posthumanism, closest link to baudrillard" },
-  { id: "strange-loop", title: "i am a strange loop", author: "douglas hofstadter", status: "to-read", tag: "rigor", note: "his own distilled version of GEB's self-reference argument" },
-  // rest of the rigor track
-  { id: "forever-undecided", title: "forever undecided", author: "raymond smullyan", status: "to-read", tag: "rigor", note: "the gödel material as logic puzzles, gentler entry" },
-  // rest of the bridge track
-  { id: "semiotics", title: "a theory of semiotics", author: "umberto eco", status: "to-read", tag: "bridge", note: "rigorous formal treatment of the sign/representation stuff simulacra runs on" },
-  { id: "ecology-of-mind", title: "steps to an ecology of mind", author: "gregory bateson", status: "to-read", tag: "bridge", note: "cybernetics, self-referential feedback loops, pushes into systems theory" },
-  { id: "origin-of-objects", title: "on the origin of objects", author: "brian cantwell smith", status: "to-read", tag: "bridge", note: "cs/philosophy of what it means for a system to represent something; sits between GEB and baudrillard" },
-  { id: "understanding-media", title: "understanding media", author: "marshall mcluhan", status: "to-read", tag: "bridge", note: "proto-baudrillard, media theory angle" },
-  // the throughline picks
-  { id: "infinity-mind", title: "infinity and the mind", author: "rudy rucker", status: "to-read", tag: "throughline" },
-  { id: "chaos", title: "chaos", author: "james gleick", status: "to-read", tag: "throughline" },
-  { id: "the-information", title: "the information", author: "james gleick", status: "to-read", tag: "throughline" },
-  { id: "number-sense", title: "the number sense", author: "stanislas dehaene", status: "to-read", tag: "throughline" },
-  { id: "sync", title: "sync", author: "steven strogatz", status: "to-read", tag: "throughline" },
-  { id: "nonlinear-history", title: "a thousand years of nonlinear history", author: "manuel delanda", status: "to-read", tag: "throughline" },
-  { id: "consciousness", title: "consciousness explained", author: "daniel dennett", status: "to-read", tag: "throughline" },
-];
+const DEFAULT_BOOKS = backup.books as Book[];
 
 // the table's columns: cursor, number, title, author. author folds into a
 // line under the title below sm.

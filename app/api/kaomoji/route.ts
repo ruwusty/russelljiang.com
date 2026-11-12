@@ -1,5 +1,5 @@
-import { head, put } from "@vercel/blob";
 import { NextResponse } from "next/server";
+import { readJson, writeJson } from "../../lib/blob-json";
 import { passwordOk } from "../_lib/auth";
 
 export const runtime = "nodejs";
@@ -24,10 +24,7 @@ function isValidSlots(value: unknown): value is Record<string, string> {
 
 async function readSlots(): Promise<Record<string, string>> {
   try {
-    const meta = await head(BLOB_PATH);
-    const res = await fetch(`${meta.url}?v=${Date.now()}`, { cache: "no-store" });
-    if (!res.ok) throw new Error(`blob fetch failed: ${res.status}`);
-    const data: unknown = await res.json();
+    const data = await readJson(BLOB_PATH);
     return isValidSlots(data) ? data : {};
   } catch {
     return {};
@@ -66,12 +63,7 @@ export async function PUT(req: Request) {
   }
 
   try {
-    await put(BLOB_PATH, JSON.stringify(merged), {
-      access: "public",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      contentType: "application/json",
-    });
+    await writeJson(BLOB_PATH, merged);
     return NextResponse.json({ slots: merged });
   } catch (error: unknown) {
     console.error("kaomoji blob write failed", error);

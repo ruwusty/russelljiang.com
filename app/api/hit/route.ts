@@ -1,7 +1,7 @@
 import { put } from "@vercel/blob";
-import { createHash } from "crypto";
 import { NextResponse } from "next/server";
 import { sydneyDateString } from "../../lib/digest";
+import { ipHash } from "../_lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -38,9 +38,8 @@ export async function POST(req: Request) {
   if (!path) return new NextResponse(null, { status: 204 });
 
   const day = sydneyDateString();
-  const ip = (req.headers.get("x-forwarded-for") ?? "local").split(",")[0].trim();
   // salted by the day: counts a visitor once per day and is unlinkable across days
-  const hash = createHash("sha256").update(`hit:${day}:${ip}:${ua}`).digest("hex").slice(0, 10);
+  const hash = ipHash(req, `hit:${day}:${ua}`).slice(0, 10);
 
   const last = recent.get(hash) ?? 0;
   const now = Date.now();

@@ -1,7 +1,6 @@
-import { head, put } from "@vercel/blob";
-import { createHash } from "crypto";
 import { NextResponse } from "next/server";
-import { passwordOk } from "../_lib/auth";
+import { readJson, writeJson } from "../../lib/blob-json";
+import { ipHash, passwordOk } from "../_lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -50,10 +49,7 @@ function isStoredEntry(value: unknown): value is StoredEntry {
 
 async function readEntries(): Promise<StoredEntry[]> {
   try {
-    const meta = await head(BLOB_PATH);
-    const res = await fetch(`${meta.url}?v=${Date.now()}`, { cache: "no-store" });
-    if (!res.ok) throw new Error(`blob fetch failed: ${res.status}`);
-    const data: unknown = await res.json();
+    const data = await readJson(BLOB_PATH);
     if (!Array.isArray(data)) return [];
     return data.filter(isStoredEntry);
   } catch {
@@ -62,19 +58,12 @@ async function readEntries(): Promise<StoredEntry[]> {
 }
 
 async function writeEntries(entries: StoredEntry[]): Promise<void> {
-  await put(BLOB_PATH, JSON.stringify(entries), {
-    access: "public",
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    contentType: "application/json",
-  });
+  await writeJson(BLOB_PATH, entries);
 }
 
-function ipHash(req: Request): string {
-  const forwarded = req.headers.get("x-forwarded-for") ?? "local";
-  const ip = forwarded.split(",")[0].trim();
-  return createHash("sha256").update(`guestbook:${ip}`).digest("hex").slice(0, 16);
-}
+// the hash only exists to enforce the cooldown, so drop it once it can't
+const forget = (e: StoredEntry): StoredEntry =>
+  e.iphash && Date.now() - Date.parse(e.ts) >= COOLDOWN_MS ? { ...e, iphash: "" } : e;
 
 export async function GET() {
   const entries = await readEntries();
@@ -102,7 +91,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "message required" }, { status: 400 });
   }
 
-  const hash = ipHash(req);
+  const hash = ipHash(req, "guestbook");
   const entries = await readEntries();
 
   const lastFromIp = [...entries].reverse().find((e) => e.iphash === hash);
@@ -119,7 +108,7 @@ export async function POST(req: Request) {
   };
 
   try {
-    await writeEntries([...entries, entry].slice(-MAX_ENTRIES));
+    await writeEntries([...entries.map(forget), entry].slice(-MAX_ENTRIES));
     return NextResponse.json({ entry: toPublic(entry) });
   } catch (error: unknown) {
     console.error("guestbook blob write failed", error);

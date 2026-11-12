@@ -6,7 +6,7 @@
 /* site */
   stack: next.js · react · tailwind · vercel blob
   aesthetic: tui x japanese minimal
-  type: jetbrains mono, a mincho serif for headings
+  type: maple mono, all the way down
   animations: a blinking cursor, a typewriter, and one restless cat
 
 /* colophon */

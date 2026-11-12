@@ -1,7 +1,6 @@
-import { head, put } from "@vercel/blob";
-import { createHash } from "crypto";
 import { NextResponse } from "next/server";
-import { passwordOk } from "../_lib/auth";
+import { readJson, writeJson } from "../../lib/blob-json";
+import { ipHash, passwordOk } from "../_lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -61,10 +60,7 @@ function isStoredEntry(value: unknown): value is StoredEntry {
 
 async function readBoards(): Promise<Boards> {
   try {
-    const meta = await head(BLOB_PATH);
-    const res = await fetch(`${meta.url}?v=${Date.now()}`, { cache: "no-store" });
-    if (!res.ok) throw new Error(`blob fetch failed: ${res.status}`);
-    const data: unknown = await res.json();
+    const data = await readJson(BLOB_PATH);
     if (typeof data !== "object" || data === null) return { ...EMPTY_BOARDS };
     const o = data as Record<string, unknown>;
     const boards: Boards = { ...EMPTY_BOARDS };
@@ -78,19 +74,12 @@ async function readBoards(): Promise<Boards> {
 }
 
 async function writeBoards(boards: Boards): Promise<void> {
-  await put(BLOB_PATH, JSON.stringify(boards), {
-    access: "public",
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    contentType: "application/json",
-  });
+  await writeJson(BLOB_PATH, boards);
 }
 
-function ipHash(req: Request): string {
-  const forwarded = req.headers.get("x-forwarded-for") ?? "local";
-  const ip = forwarded.split(",")[0].trim();
-  return createHash("sha256").update(`vim:${ip}`).digest("hex").slice(0, 16);
-}
+// the hash only exists to enforce the cooldown, so drop it once it can't
+const forget = (e: StoredEntry): StoredEntry =>
+  e.iphash && Date.now() - Date.parse(e.ts) >= COOLDOWN_MS ? { ...e, iphash: "" } : e;
 
 export async function GET() {
   const boards = await readBoards();
@@ -133,7 +122,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid score" }, { status: 400 });
   }
 
-  const hash = ipHash(req);
+  const hash = ipHash(req, "vim");
   const boards = await readBoards();
 
   const lastFromIp = [...boards[difficulty]]
@@ -154,7 +143,7 @@ export async function POST(req: Request) {
 
   const updated: Boards = {
     ...boards,
-    [difficulty]: [...boards[difficulty], entry]
+    [difficulty]: [...boards[difficulty].map(forget), entry]
       .sort((a, b) => a.time - b.time || a.keys - b.keys)
       .slice(0, STORED_PER_BOARD),
   };

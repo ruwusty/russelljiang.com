@@ -1,5 +1,5 @@
-import { head, put } from "@vercel/blob";
 import { NextResponse } from "next/server";
+import { readJson, writeJson } from "../../lib/blob-json";
 import { passwordOk } from "../_lib/auth";
 
 export const runtime = "nodejs";
@@ -33,10 +33,7 @@ function isValidBooks(value: unknown): boolean {
 
 export async function GET() {
   try {
-    const meta = await head(BLOB_PATH);
-    const res = await fetch(`${meta.url}?v=${Date.now()}`, { cache: "no-store" });
-    if (!res.ok) throw new Error(`blob fetch failed: ${res.status}`);
-    const books: unknown = await res.json();
+    const books = await readJson(BLOB_PATH);
     if (!isValidBooks(books)) throw new Error("stored library is malformed");
     return NextResponse.json({ books });
   } catch {
@@ -62,12 +59,7 @@ export async function PUT(req: Request) {
   }
 
   try {
-    await put(BLOB_PATH, JSON.stringify(body), {
-      access: "public",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      contentType: "application/json",
-    });
+    await writeJson(BLOB_PATH, body);
     return NextResponse.json({ ok: true });
   } catch (error: unknown) {
     console.error("library blob write failed", error);

@@ -8,14 +8,12 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 // vercel sends `Authorization: Bearer <CRON_SECRET>` to scheduled routes.
-// require it when set so nobody can trigger the (paid) job by hitting the url.
+// fail closed: with no secret configured nobody can run the job, vercel included.
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
-  if (secret && !secretOk(req.headers.get("authorization"), `Bearer ${secret}`)) {
+  if (!secret) console.error("digest cron: CRON_SECRET is not set, refusing to run");
+  if (!secret || !secretOk(req.headers.get("authorization"), `Bearer ${secret}`)) {
     return NextResponse.json({ error: "unauthorised" }, { status: 401 });
-  }
-  if (!secret) {
-    console.warn("digest cron: CRON_SECRET is not set — endpoint is unprotected");
   }
 
   try {

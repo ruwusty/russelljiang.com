@@ -1,5 +1,5 @@
-import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
+import { writeJson } from "../../lib/blob-json";
 import { passwordOk } from "../_lib/auth";
 import { isValidHomeContent } from "../../lib/home-content";
 import { HOME_BLOB_PATH, readHomeContent } from "../../lib/home-store";
@@ -29,12 +29,7 @@ export async function PUT(req: Request) {
   }
 
   try {
-    await put(HOME_BLOB_PATH, JSON.stringify(body), {
-      access: "public",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      contentType: "application/json",
-    });
+    await writeJson(HOME_BLOB_PATH, body);
     return NextResponse.json({ ok: true });
   } catch (error: unknown) {
     console.error("home blob write failed", error);

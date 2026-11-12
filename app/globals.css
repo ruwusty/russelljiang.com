@@ -38,11 +38,6 @@
   --glow-b: color-mix(in srgb, var(--accent) 16%, transparent);
   --lift: 0 40px 90px -40px rgba(50, 40, 60, 0.28), 0 2px 6px -2px rgba(20, 20, 30, 0.08);
 
-  /* legacy aliases kept so older components keep working */
-  --text: var(--ink);
-  --muted: var(--soft);
-  --border: var(--line);
-
   --font-display: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", Georgia, serif;
   --font-mono: "Maple Mono", "RJ Glyphs", ui-monospace, SFMono-Regular, Menlo,
     monospace;

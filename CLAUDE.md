@@ -80,15 +80,18 @@ anything visual or touching content.
 
 - next.js 15 app router, tailwind v3, no ui libraries.
 - editable content lives in vercel blob, one json blob per feature, behind
-  api routes in `app/api/*`: public GET, password-gated PUT via
+  api routes in `app/api/*` (all storage goes through `readJson` /
+  `writeJson` in `app/lib/blob-json.ts`): public GET, password-gated PUT via
   `x-site-password` header → `passwordOk()` in `app/api/_lib/auth.ts`
   (timing-safe, env `SITE_PASSWORD`).
 - client auth = `useSiteAuth()` in `app/components/site-auth.tsx`
   (sessionStorage `site_pw`, broadcasts changes via window event so all
   components unlock together). one password for everything.
-- **the blob is the source of truth.** hardcoded defaults in components
-  (DEFAULT_ITEMS, DEFAULT_HOME, DEFAULT_COURSES, DEFAULT_PRESETS,
-  DEFAULT_BOOKS) are
+- **the blob is the source of truth.** the defaults in components
+  (DEFAULT_ITEMS, DEFAULT_COURSES, DEFAULT_PRESETS, DEFAULT_BOOKS) are
+  imported straight from `backups/*.json`, which a weekly action refreshes
+  from the live site (DEFAULT_HOME is still hand-written in
+  `app/lib/home-content.ts`). they are
   first-run seeds and outage fallbacks only — to change live content, edit
   on the site while logged in, or PUT to the api. do not edit the defaults
   expecting the site to change.
@@ -96,7 +99,8 @@ anything visual or touching content.
   (force-dynamic) so bio/background/interests stay in the SSR html for seo.
   keep it that way.
 - public-write endpoints (guestbook, vim-scores) have honeypots, per-ip
-  cooldowns (hashed ips, never raw), length caps, validation. keep all of
+  cooldowns (ips keyed-hashed via `ipHash()` in `app/api/_lib/auth.ts`,
+  never raw, and blanked once the cooldown has passed), length caps, validation. keep all of
   these when touching them.
 - analytics: home-made, owner-only. `app/components/hit-beacon.tsx` posts
   `{path, referrer}` to `POST /api/hit` on every route change (production
@@ -164,8 +168,6 @@ essays are hand-rolled jsx; leave them.
 
 - `node scripts/backup-blobs.mjs [base-url]` — snapshot all blob content to
   `backups/` (sanitised, via public api). run occasionally, commit the diff.
-- `node scripts/sync-defaults.mjs` — rewrite in-repo fallback defaults from
-  `backups/` (skips blobs that don't exist yet).
 
 ## workflow
 

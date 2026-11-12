@@ -25,6 +25,9 @@ for (const [name, path] of ENDPOINTS) {
     const res = await fetch(`${base}${path}`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
+    // a null payload means the blob read failed, not that the content is gone.
+    // components import these files as their fallbacks, so never write one.
+    if (Object.values(data).some((v) => v === null)) throw new Error("empty payload");
     writeFileSync(`backups/${name}.json`, JSON.stringify(data, null, 2) + "\n");
     console.log(`backups/${name}.json ok`);
   } catch (error) {

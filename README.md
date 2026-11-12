@@ -82,8 +82,8 @@ planner. visitors never see any of it.
 | vim trial leaderboard (public writes) | `/api/vim-scores` |
 
 the home page reads its blob on the server so the content stays in the html
-for search engines. the hardcoded defaults in components are first-run seeds
-and outage fallbacks, nothing more. public writes get honeypots, hashed-ip
+for search engines. the fallbacks components import from `backups/` are first-run
+seeds and outage cover, nothing more. public writes get honeypots, hashed-ip
 cooldowns, length caps and validation.
 
 ## pages
@@ -98,6 +98,7 @@ cooldowns, length caps and validation.
 - **`/bonsai`**: a tree that grows in real time whether you water it or not.
 - **`/guestbook`**: like the old web.
 - **`/projects`**: a short list, on purpose.
+- **`/games`**: two small daily games, linked out.
 
 ## stack
 
@@ -110,7 +111,6 @@ blob per view, no cookies, no raw ips.
 
 ```sh
 node scripts/backup-blobs.mjs [base-url]   # snapshot all blob content into backups/
-node scripts/sync-defaults.mjs             # rewrite the in-repo fallbacks from backups/
 ```
 
 ---

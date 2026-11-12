@@ -1,5 +1,5 @@
-import { head, put } from "@vercel/blob";
 import { NextResponse } from "next/server";
+import { readJson, writeJson } from "../../lib/blob-json";
 import { passwordOk } from "../_lib/auth";
 
 export const runtime = "nodejs";
@@ -38,11 +38,7 @@ function isValidCourse(value: unknown): value is Course {
 
 export async function GET() {
   try {
-    const meta = await head(BLOB_PATH);
-    // blob URLs are CDN-cached; the query param + no-store gets the latest write
-    const res = await fetch(`${meta.url}?v=${Date.now()}`, { cache: "no-store" });
-    if (!res.ok) throw new Error(`blob fetch failed: ${res.status}`);
-    const courses: unknown = await res.json();
+    const courses = await readJson(BLOB_PATH);
     if (!Array.isArray(courses) || !courses.every(isValidCourse)) {
       throw new Error("stored plan is malformed");
     }
@@ -74,12 +70,7 @@ export async function PUT(req: Request) {
   }
 
   try {
-    await put(BLOB_PATH, JSON.stringify(body), {
-      access: "public",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      contentType: "application/json",
-    });
+    await writeJson(BLOB_PATH, body);
     return NextResponse.json({ ok: true });
   } catch (error: unknown) {
     console.error("plan blob write failed", error);
