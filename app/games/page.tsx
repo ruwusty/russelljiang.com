@@ -8,7 +8,6 @@ export const metadata: Metadata = {
 
 const toc = [
   { label: "scoop", href: "#scoop" },
-  { label: "late", href: "#late" },
 ];
 
 interface Game {
@@ -29,15 +28,6 @@ const games: Game[] = [
       "a daily beach game: read the morning paper, read the rival ice cream vendors, and park your cart where the crowd will be. it's hotelling's model of competition with a newspaper clipping in front. the crowd stays hidden, the clipping hints at it, and every vendor follows one rule you can read by eye, including a shadow that sets up beside whoever's selling the most. forty-three twists, each with its own pixel art, and a script that refuses to ship two twists that make the same puzzle.",
     play: "one beach a day, plus unlimited",
     links: [{ label: "scoop.russelljiang.com", href: "https://scoop.russelljiang.com" }],
-  },
-  {
-    id: "late",
-    index: "02",
-    name: "late",
-    claim:
-      "allow extra time. get across port wattle to every stop on today's list, on a day its trains are having. the clock only moves when you do: stay on or get off, wait for the express, walk to the metro. trackwork, signal faults and floods all happen on schedule, and the only warning is a feed full of people shouting into the void, some of whom are right.",
-    play: "today's commute, plus as many days as you like",
-    links: [{ label: "late.russelljiang.com", href: "https://late.russelljiang.com" }],
   },
 ];
 
