@@ -10,7 +10,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h2: (props) => (
       <h2
         id={typeof props.children === "string" ? slugify(props.children) : undefined}
-        className="essay-h2 mt-14 scroll-mt-6 text-[13px] lowercase tracking-[0.15em]"
+        className="essay-h2 mt-14 scroll-mt-6 text-[17px] lowercase tracking-[0.04em]"
         style={{ color: "var(--ink)" }}
         {...props}
       />
